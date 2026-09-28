@@ -89,7 +89,7 @@ def _fetch(doctype, where, fields, time_field):
 		filters=where,
 		fields=fields,
 		order_by=f"{time_field} desc",
-		limit_page_length=ROW_LIMIT_PER_SOURCE,
+		limit=ROW_LIMIT_PER_SOURCE,
 	)
 
 

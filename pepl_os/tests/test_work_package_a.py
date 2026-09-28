@@ -17,17 +17,22 @@ from pepl_os.tests.utils import PEPLTestCase, make_user, set_param
 TODAY = {"from_date": today(), "to_date": today()}
 
 
-def _make_item(code):
-	if frappe.db.exists("Item", code):
-		return frappe.get_doc("Item", code)
+# A tracked PEPL record type that needs no ERPNext masters (Item Group, UOM,
+# Company). The CI site is a bare install without the ERPNext setup wizard.
+TRACKED_DOCTYPE = "PEPL RM Group"
+
+
+def _make_tracked_record(name):
+	if frappe.db.exists(TRACKED_DOCTYPE, name):
+		return frappe.get_doc(TRACKED_DOCTYPE, name)
 	return frappe.get_doc(
 		{
-			"doctype": "Item",
-			"item_code": code,
-			"item_name": code,
-			"item_group": frappe.db.get_value("Item Group", {"is_group": 0}, "name") or "All Item Groups",
-			"stock_uom": frappe.db.get_value("UOM", {}, "name") or "Nos",
-			"is_stock_item": 0,
+			"doctype": TRACKED_DOCTYPE,
+			"group_name": name,
+			"material_base": "Brass",
+			"default_uom": None,
+			"typical_wastage_percent": 5,
+			"auto_sync_to_item_group": 0,
 		}
 	).insert(ignore_permissions=True)
 
@@ -125,18 +130,18 @@ class TestTracking(PEPLTestCase):
 				self.assertTrue(frappe.get_meta(doctype).track_views, doctype)
 
 	def test_change_is_attributed_to_the_user(self):
-		item = _make_item("PEPL-WPA-TRACK-ITEM")
-		item.item_name = "Renamed for audit test"
-		item.save(ignore_permissions=True)
+		record = _make_tracked_record("PEPL-WPA-TRACK")
+		record.typical_wastage_percent = 7
+		record.save(ignore_permissions=True)
 		version = frappe.get_all(
 			"Version",
-			filters={"ref_doctype": "Item", "docname": item.name},
+			filters={"ref_doctype": TRACKED_DOCTYPE, "docname": record.name},
 			fields=["owner", "data"],
 			order_by="creation desc",
 			limit=1,
 		)[0]
 		self.assertEqual(version.owner, frappe.session.user)
-		self.assertIn("item_name", version.data)
+		self.assertIn("typical_wastage_percent", version.data)
 
 
 # A4 -----------------------------------------------------------------------
@@ -159,9 +164,9 @@ class TestAuditTrail(PEPLTestCase):
 		self.assertIn("items: row added", lines)
 
 	def _make_one_event_of_each_kind(self):
-		item = _make_item("PEPL-WPA-TRAIL-ITEM")
-		item.item_name = "Changed for trail test"
-		item.save(ignore_permissions=True)
+		record = _make_tracked_record("PEPL-WPA-TRAIL")
+		record.typical_wastage_percent = 9
+		record.save(ignore_permissions=True)
 		user = frappe.session.user
 		frappe.get_doc(
 			{
@@ -177,9 +182,9 @@ class TestAuditTrail(PEPLTestCase):
 			{
 				"doctype": "Access Log",
 				"user": user,
-				"export_from": "Item",
+				"export_from": TRACKED_DOCTYPE,
 				"file_type": "CSV",
-				"report_name": "Item",
+				"report_name": TRACKED_DOCTYPE,
 			}
 		).insert(ignore_permissions=True)
 		frappe.get_doc(
@@ -194,11 +199,13 @@ class TestAuditTrail(PEPLTestCase):
 			{
 				"doctype": "View Log",
 				"viewed_by": user,
-				"reference_doctype": "Item",
-				"reference_name": item.name,
+				"reference_doctype": TRACKED_DOCTYPE,
+				"reference_name": record.name,
 			}
 		).insert(ignore_permissions=True)
-		log_override("TEST-TRAIL", "Item", item.name, "Test override", "Approved by MD for the test")
+		log_override(
+			"TEST-TRAIL", TRACKED_DOCTYPE, record.name, "Test override", "Approved by MD for the test"
+		)
 
 	def test_merges_all_six_sources(self):
 		self._make_one_event_of_each_kind()

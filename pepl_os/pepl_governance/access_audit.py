@@ -59,7 +59,6 @@ def _logins_since(since):
 		"Activity Log",
 		filters={"operation": "Login", "status": "Success", "creation": [">=", since]},
 		fields=["user", "creation", "ip_address"],
-		limit_page_length=0,
 	)
 	by_user = {}
 	for row in rows:
@@ -77,7 +76,6 @@ def get_rows(as_of=None):
 		filters={"name": ["not in", SKIP_USERS]},
 		fields=["name", "full_name", "enabled", "user_type", "last_login", "last_ip"],
 		order_by="enabled desc, name asc",
-		limit_page_length=0,
 	)
 
 	rows = []
