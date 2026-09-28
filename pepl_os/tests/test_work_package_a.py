@@ -12,29 +12,18 @@ from pepl_os.pepl_governance import access_audit, audit_trail
 from pepl_os.pepl_governance.report.pepl_audit_trail import pepl_audit_trail
 from pepl_os.pepl_governance.retention import apply_log_retention
 from pepl_os.setup import permissions, property_setters, roles
+from pepl_os.tests.factories import make_rm_group
 from pepl_os.tests.utils import PEPLTestCase, make_user, set_param
 
 TODAY = {"from_date": today(), "to_date": today()}
 
 
-# A tracked PEPL record type that needs no ERPNext masters (Item Group, UOM,
-# Company). The CI site is a bare install without the ERPNext setup wizard.
+# A change-tracked PEPL record type; its masters come from the shared factories.
 TRACKED_DOCTYPE = "PEPL RM Group"
 
 
 def _make_tracked_record(name):
-	if frappe.db.exists(TRACKED_DOCTYPE, name):
-		return frappe.get_doc(TRACKED_DOCTYPE, name)
-	return frappe.get_doc(
-		{
-			"doctype": TRACKED_DOCTYPE,
-			"group_name": name,
-			"material_base": "Brass",
-			"default_uom": None,
-			"typical_wastage_percent": 5,
-			"auto_sync_to_item_group": 0,
-		}
-	).insert(ignore_permissions=True)
+	return make_rm_group(name)
 
 
 # A1 -----------------------------------------------------------------------
