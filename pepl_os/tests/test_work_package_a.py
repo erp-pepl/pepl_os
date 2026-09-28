@@ -121,7 +121,8 @@ class TestTracking(PEPLTestCase):
 	def test_change_is_attributed_to_the_user(self):
 		record = _make_tracked_record("PEPL-WPA-TRACK")
 		record.typical_wastage_percent = 7
-		record.save(ignore_permissions=True)
+		# Frappe v16 skips Versions in tests unless asked (document.py: ignore_version = frappe.in_test).
+		record.save(ignore_permissions=True, ignore_version=False)
 		version = frappe.get_all(
 			"Version",
 			filters={"ref_doctype": TRACKED_DOCTYPE, "docname": record.name},
@@ -155,7 +156,8 @@ class TestAuditTrail(PEPLTestCase):
 	def _make_one_event_of_each_kind(self):
 		record = _make_tracked_record("PEPL-WPA-TRAIL")
 		record.typical_wastage_percent = 9
-		record.save(ignore_permissions=True)
+		# Frappe v16 skips Versions in tests unless asked (document.py: ignore_version = frappe.in_test).
+		record.save(ignore_permissions=True, ignore_version=False)
 		user = frappe.session.user
 		frappe.get_doc(
 			{
