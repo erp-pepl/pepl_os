@@ -49,9 +49,21 @@ bench --site <site> install-app pepl_os   # erpnext and pepl_sales must already 
 
 Admin screens after install:
 
-- `/app/pepl-system-health` shows each PEPL job, its schedule and its last successful run.
-- `/app/pepl-override-log` lists every override with its reason.
-- `/app/pepl-job-run` holds one row per job run.
+- `/desk/pepl-system-health` shows each PEPL job, its schedule and its last successful run.
+- `/desk/pepl-override-log` lists every override with its reason.
+- `/desk/pepl-job-run` holds one row per job run.
+
+## Work Package A (audit trail and attribution)
+
+| What | Where |
+| --- | --- |
+| Access audit of every login (A1) | Report **PEPL Access Audit** |
+| Seven role profiles (A2) | Role Profile: PEPL Purchase Manager, PEPL Stores, PEPL Production Manager, PEPL Foreman, PEPL Quality Manager, PEPL Accounts, PEPL CEO |
+| Delete restricted to System Manager (A2, A5) | Re-applied on every deploy; switch in PEPL System Parameters → PEPL OS → Audit Trail |
+| Change and view tracking (A3) | Applied on every deploy (`pepl_os/setup/property_setters.py`) |
+| One audit screen (A4) | Report **PEPL Audit Trail** |
+| Log retention (A5) | PEPL System Parameters → Audit Log Retention (Days), default 1095 |
+| User note for the manuals | `docs/wp_a_user_note.md` |
 
 ## Tests
 

@@ -16,7 +16,9 @@ app_include_js = ["/assets/pepl_os/js/pepl_os_common.js"]
 # ------------
 # Custom fields and property setters are applied here (idempotent), never in
 # patches: Frappe marks patches as done without running them on fresh installs.
+before_install = "pepl_os.install.before_install"
 after_install = "pepl_os.install.after_install"
+before_migrate = "pepl_os.install.before_migrate"
 after_migrate = "pepl_os.install.after_migrate"
 
 # Client scripts for standard DocTypes are added per deliverable, e.g.
@@ -24,7 +26,12 @@ after_migrate = "pepl_os.install.after_migrate"
 doctype_js = {}
 
 # Document events are added per deliverable.
-doc_events = {}
+doc_events = {
+	"PEPL System Parameters": {
+		# A5: a changed audit-log retention applies immediately.
+		"on_update": "pepl_os.pepl_governance.retention.on_parameters_update",
+	},
+}
 
 # Every job is wrapped in @tracked_job so each run is recorded in PEPL Job Run
 # and shown on the PEPL System Health page.

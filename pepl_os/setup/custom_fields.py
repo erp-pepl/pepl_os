@@ -69,6 +69,31 @@ CUSTOM_FIELDS = {
 			"insert_after": "custom_production_notification_owner",
 			"description": OWNER_HELP.format("Quality (calibration due, CAPA verification)"),
 		},
+		# Work Package A - audit trail rules
+		{
+			"fieldname": "custom_audit_section",
+			"label": "Audit Trail",
+			"fieldtype": "Section Break",
+			"insert_after": "custom_quality_notification_owner",
+		},
+		{
+			"fieldname": "custom_enforce_delete_restriction",
+			"label": "Restrict Delete to System Manager",
+			"fieldtype": "Check",
+			"default": "1",
+			"insert_after": "custom_audit_section",
+			"description": "When on, only the System Manager can delete transactions, masters and audit logs. "
+			"Re-applied on every deploy.",
+		},
+		{
+			"fieldname": "custom_audit_log_retention_days",
+			"label": "Audit Log Retention (Days)",
+			"fieldtype": "Int",
+			"default": "1095",
+			"insert_after": "custom_enforce_delete_restriction",
+			"description": "Login history (Activity Log) and other audit logs that Frappe clears automatically "
+			"are kept at least this many days. Frappe's own default for login history is 90 days.",
+		},
 	],
 }
 
@@ -77,3 +102,18 @@ def apply_custom_fields():
 	create_custom_fields(CUSTOM_FIELDS, update=True)
 	for doctype in CUSTOM_FIELDS:
 		frappe.clear_cache(doctype=doctype)
+	seed_single_defaults()
+
+
+def seed_single_defaults():
+	"""Store the default of each new System Parameter once, so reads return it.
+
+	A Single stores nothing until it is first saved, and an unsaved Check
+	reads as 0, so defaults are written explicitly - only when no value exists.
+	"""
+	for field in CUSTOM_FIELDS[SYSTEM_PARAMETERS]:
+		if "default" not in field:
+			continue
+		if frappe.db.exists("Singles", {"doctype": SYSTEM_PARAMETERS, "field": field["fieldname"]}):
+			continue
+		frappe.db.set_single_value(SYSTEM_PARAMETERS, field["fieldname"], field["default"])
