@@ -57,8 +57,9 @@ class TestAccessAudit(PEPLTestCase):
 
 
 class TestRoleProfiles(PEPLTestCase):
-	def test_seven_profiles_exist_with_expected_roles(self):
-		self.assertEqual(len(roles.ROLE_PROFILES), 7)
+	def test_all_profiles_exist_with_expected_roles(self):
+		# Seven Cycle 2+ profiles, the CEO included, and three for the Cycle 1 (Sales) jobs.
+		self.assertEqual(len(roles.ROLE_PROFILES), 10)
 		for profile, expected in roles.ROLE_PROFILES.items():
 			self.assertTrue(frappe.db.exists("Role Profile", profile), profile)
 			have = set(frappe.get_all("Has Role", filters={"parent": profile}, pluck="role"))
@@ -76,6 +77,25 @@ class TestRoleProfiles(PEPLTestCase):
 		roles.ensure_role_profiles()
 		have = set(frappe.get_all("Has Role", filters={"parent": "PEPL Foreman"}, pluck="role"))
 		self.assertIn("Stock User", have)
+
+
+class TestProfileCorrections(PEPLTestCase):
+	def test_stores_no_longer_carries_purchase_user(self):
+		self.assertNotIn("Purchase User", roles.ROLE_PROFILES["PEPL Stores"])
+
+	def test_correction_removes_only_the_listed_role(self):
+		profile = frappe.get_doc("Role Profile", "PEPL Stores")
+		profile.append("roles", {"role": "Purchase User"})
+		profile.save(ignore_permissions=True)
+		changed = roles.remove_roles_from_profiles(roles.PROFILE_CORRECTIONS_V0_3)
+		self.assertEqual(changed, {"PEPL Stores": ["Purchase User"]})
+		have = set(frappe.get_all("Has Role", filters={"parent": "PEPL Stores"}, pluck="role"))
+		self.assertNotIn("Purchase User", have)
+		self.assertIn("Stock User", have)
+
+	def test_correction_is_safe_to_repeat(self):
+		roles.remove_roles_from_profiles(roles.PROFILE_CORRECTIONS_V0_3)
+		self.assertEqual(roles.remove_roles_from_profiles(roles.PROFILE_CORRECTIONS_V0_3), {})
 
 
 class TestDeleteRestriction(PEPLTestCase):

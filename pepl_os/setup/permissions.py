@@ -10,9 +10,13 @@ that DocType's permissions are managed as customisations.
 """
 
 import frappe
-from frappe.permissions import update_permission_property
+from frappe.permissions import add_permission, setup_custom_perms, update_permission_property
 
 ALLOWED_TO_DELETE = {"System Manager", "Administrator"}
+
+# The CEO sees everything and changes nothing.
+CEO_ROLE = "PEPL CEO"
+CEO_VIEW_RIGHTS = ("read", "print", "report")
 
 # Transactions and masters in operational use.
 CORE_DOCTYPES = (
@@ -38,6 +42,9 @@ CORE_DOCTYPES = (
 	"Work Order",
 	"Job Card",
 	"Quality Inspection",
+	"Item Price",
+	"Workstation",
+	"Production Plan",
 )
 
 # A5 - the audit trail itself.
@@ -84,7 +91,7 @@ def perm_rows(doctype):
 	return frappe.get_all(
 		table,
 		filters={"parent": doctype},
-		fields=["role", "permlevel", "delete"],
+		fields=["*"],
 	)
 
 
@@ -116,3 +123,54 @@ def restrict_delete(doctypes=None, force=False):
 		changed[doctype] = sorted({r.role for r in offenders})
 		frappe.clear_cache(doctype=doctype)
 	return changed
+
+
+def ceo_view_doctypes():
+	"""Every business record: core transactions and masters plus every PEPL DocType.
+
+	The audit logs are left out: the CEO reads those through the PEPL Audit Trail report.
+	"""
+	return [d for d in delete_restricted_doctypes() if d not in LOG_DOCTYPES]
+
+
+# Read access ERPNext does not give by default but a PEPL job needs.
+EXTRA_VIEW_GRANTS = {
+	# Accounts books supplier bills against the Purchase Order (three-way match).
+	"Accounts User": ("Purchase Order",),
+}
+
+
+def grant_view(role, doctypes, rights=CEO_VIEW_RIGHTS):
+	"""Give `role` the listed rights on each DocType. Additive only; returns what changed."""
+	if not frappe.db.exists("Role", role):
+		return []
+	changed = []
+	for doctype in doctypes:
+		if not frappe.db.exists("DocType", doctype):
+			continue
+		row = next(
+			(r for r in perm_rows(doctype) if r.role == role and not r.permlevel and not r.if_owner),
+			None,
+		)
+		missing = [p for p in rights if not (row and row.get(p))]
+		if not missing:
+			continue
+		setup_custom_perms(doctype)  # copies standard permissions first, as Role Permission Manager does
+		if not frappe.db.exists(
+			"Custom DocPerm", {"parent": doctype, "role": role, "permlevel": 0, "if_owner": 0}
+		):
+			add_permission(doctype, role, 0)
+		for ptype in missing:
+			update_permission_property(doctype, role, 0, ptype, 1, validate=False)
+		frappe.clear_cache(doctype=doctype)
+		changed.append(doctype)
+	return changed
+
+
+def grant_ceo_view(doctypes=None):
+	"""PEPL CEO: read, print and report on every business record. Never create, edit or approve."""
+	return grant_view(CEO_ROLE, doctypes or ceo_view_doctypes())
+
+
+def grant_extra_views():
+	return {role: grant_view(role, doctypes) for role, doctypes in EXTRA_VIEW_GRANTS.items()}

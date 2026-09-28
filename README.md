@@ -58,7 +58,9 @@ Admin screens after install:
 | What | Where |
 | --- | --- |
 | Access audit of every login (A1) | Report **PEPL Access Audit** |
-| Seven role profiles (A2) | Role Profile: PEPL Purchase Manager, PEPL Stores, PEPL Production Manager, PEPL Foreman, PEPL Quality Manager, PEPL Accounts, PEPL CEO |
+| Ten role profiles (A2) | Role Profile: PEPL Purchase Manager, PEPL Stores, PEPL Production Manager, PEPL Foreman, PEPL Quality Manager, PEPL Accounts, PEPL CEO, PEPL Sales & Tender Manager, PEPL Sales & Tender Executive, PEPL Engineering |
+| What each profile can do (A2) | Report **PEPL Role Access Matrix** (live, exportable) |
+| CEO sees every record, changes none (A2) | Applied on every deploy (`grant_ceo_view`) |
 | Delete restricted to System Manager (A2, A5) | Re-applied on every deploy; switch in PEPL System Parameters → PEPL OS → Audit Trail |
 | Change and view tracking (A3) | Applied on every deploy (`pepl_os/setup/property_setters.py`) |
 | One audit screen (A4) | Report **PEPL Audit Trail** |

@@ -32,3 +32,11 @@ documents) or ask the System Manager.
 When the system stops you, for example with an unapproved supplier or a missing heat number,
 you can continue only by typing a reason. Write a real reason ("Breakdown spare, MD approved on
 phone"), because it is recorded with your name.
+
+## Your job profile
+
+Your login has one Job Profile (sometimes two) that matches your job, for example PEPL Stores.
+The profile decides what you can open, create, submit and print. If you cannot do something
+your job needs, tell your HOD; the profile is changed for everyone in that job, not for one
+person. To see what a profile allows, the administrator opens the report
+**PEPL Role Access Matrix**.

@@ -2,7 +2,7 @@
 
 from pepl_os.pepl_governance.retention import apply_log_retention
 from pepl_os.setup.custom_fields import apply_custom_fields
-from pepl_os.setup.permissions import restrict_delete
+from pepl_os.setup.permissions import grant_ceo_view, grant_extra_views, restrict_delete
 from pepl_os.setup.property_setters import apply_property_setters
 from pepl_os.setup.roles import ensure_role_profiles, ensure_roles
 
@@ -18,6 +18,8 @@ def ensure_setup():
 	apply_property_setters()  # A3
 	ensure_role_profiles()  # A2
 	restrict_delete()  # A2 / A5
+	grant_ceo_view()  # A2: the CEO sees every record, changes none
+	grant_extra_views()  # A2: e.g. Accounts sees Purchase Orders
 	apply_log_retention()  # A5
 
 
