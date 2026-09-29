@@ -25,12 +25,34 @@ after_migrate = "pepl_os.install.after_migrate"
 # "Purchase Order": "public/js/purchase_order.js"
 doctype_js = {}
 
+# C2-03: Supplier list coloured by approval state.
+doctype_list_js = {"Supplier": "public/js/supplier_list.js"}
+
+# Values the desk needs in the browser (alert days for list colours and panels).
+boot_session = "pepl_os.boot.boot_session"
+
+# CI / test sites: build ERPNext's standard test company, items, suppliers and
+# warehouses (the setup wizard never runs there), then apply pepl_os setup to them.
+before_tests = "pepl_os.tests.bootstrap.before_tests"
+
 # Document events are added per deliverable.
+CSM_SEGREGATION = "pepl_os.pepl_stores.stock_tree.validate_csm_segregation"
+
 doc_events = {
 	"PEPL System Parameters": {
+		# C2-02: no negative days, percentages 0-100, class A + B below 100.
+		"validate": "pepl_os.pepl_purchase.params.validate_purchase_params",
 		# A5: a changed audit-log retention applies immediately.
 		"on_update": "pepl_os.pepl_governance.retention.on_parameters_update",
 	},
+	# C2-03: Udyam number required for MSME suppliers.
+	"Supplier": {"validate": "pepl_os.pepl_purchase.supplier.validate_supplier"},
+	# C2-04: stock class from the Item Group; Capital never stock; CSM customer-provided.
+	"Item": {"validate": "pepl_os.pepl_stores.stock_tree.validate_item"},
+	# C2-04: customer-supplied material and PEPL material never share a store.
+	"Stock Entry": {"validate": CSM_SEGREGATION},
+	"Purchase Receipt": {"validate": CSM_SEGREGATION},
+	"Delivery Note": {"validate": CSM_SEGREGATION},
 }
 
 # Every job is wrapped in @tracked_job so each run is recorded in PEPL Job Run
@@ -38,5 +60,7 @@ doc_events = {
 scheduler_events = {
 	"daily": [
 		"pepl_os.pepl_governance.jobs.daily_heartbeat",
+		# C2-05: warranty and AMC expiry alerts
+		"pepl_os.pepl_stores.capital_equipment.daily_equipment_alerts",
 	],
 }

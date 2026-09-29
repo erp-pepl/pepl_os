@@ -1,0 +1,29 @@
+"""before_tests hook for pepl_os (runs once, before the pepl_os test suite).
+
+The CI site is a bare install: ERPNext is installed but its setup wizard has
+not run, so there is no Company, fiscal year, warehouse, supplier or item.
+Importing erpnext.tests.utils builds ERPNext's own standard test data
+(_Test Company, _Test Supplier, _Test Item, ...) exactly as ERPNext's CI does.
+pepl_os setup is then applied to that data.
+"""
+
+import frappe
+
+TEST_COMPANY = "_Test Company"
+
+
+def before_tests():
+	frappe.flags.in_test = True
+	# ERPNext's test items use groups such as "_Test Item Group", outside PEPL's stock classes.
+	frappe.flags.pepl_allow_items_outside_tree = True
+	try:
+		import erpnext.tests.utils  # the module import builds the test data
+	finally:
+		frappe.flags.pepl_allow_items_outside_tree = False
+
+	from pepl_os.install import ensure_setup
+	from pepl_os.pepl_stores.stock_tree import seed_stock_structure
+
+	ensure_setup()
+	seed_stock_structure(TEST_COMPANY)
+	frappe.db.commit()

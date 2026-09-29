@@ -5,6 +5,15 @@ frappe.pages["pepl-system-health"].on_page_load = function (wrapper) {
 		single_column: true,
 	});
 	page.set_primary_action(__("Refresh"), () => render(page));
+	if (frappe.user.has_role("System Manager")) {
+		// C2-01: read-only audit of purchase and stores data, downloaded as Excel.
+		page.add_inner_button(__("Download Cycle 2 audit"), () => {
+			window.open(
+				"/api/method/pepl_os.pepl_stores.audit.download_cycle2_audit?since=2026-07-01",
+				"_blank"
+			);
+		});
+	}
 	render(page);
 };
 

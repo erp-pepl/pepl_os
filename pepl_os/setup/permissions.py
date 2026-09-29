@@ -133,11 +133,17 @@ def ceo_view_doctypes():
 	return [d for d in delete_restricted_doctypes() if d not in LOG_DOCTYPES]
 
 
-# Read access ERPNext does not give by default but a PEPL job needs.
-EXTRA_VIEW_GRANTS = {
+SYSTEM_PARAMETERS = "PEPL System Parameters"
+
+# Access ERPNext does not give by default but a PEPL job needs: (role, DocTypes, rights).
+EXTRA_GRANTS = (
 	# Accounts books supplier bills against the Purchase Order (three-way match).
-	"Accounts User": ("Purchase Order",),
-}
+	("Accounts User", ("Purchase Order",), CEO_VIEW_RIGHTS),
+	# C2-02: the Purchase Manager reads the rulebook; the CEO may change it (with the System Manager).
+	("Purchase Manager", (SYSTEM_PARAMETERS,), ("read",)),
+	("Stock Manager", (SYSTEM_PARAMETERS,), ("read",)),
+	("PEPL CEO", (SYSTEM_PARAMETERS,), ("read", "write")),
+)
 
 
 def grant_view(role, doctypes, rights=CEO_VIEW_RIGHTS):
@@ -173,4 +179,4 @@ def grant_ceo_view(doctypes=None):
 
 
 def grant_extra_views():
-	return {role: grant_view(role, doctypes) for role, doctypes in EXTRA_VIEW_GRANTS.items()}
+	return [grant_view(role, doctypes, rights) for role, doctypes, rights in EXTRA_GRANTS]

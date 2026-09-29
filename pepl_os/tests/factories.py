@@ -43,3 +43,48 @@ def make_rm_group(name, material_base="Brass", wastage=5):
 			"auto_sync_to_item_group": 0,
 		}
 	).insert(ignore_permissions=True)
+
+
+# Cycle 2 ------------------------------------------------------------------
+# These need ERPNext's standard test data (tests/bootstrap.py builds it before the suite).
+
+TEST_COMPANY = "_Test Company"
+TEST_SUPPLIER_GROUP = "_Test Supplier Group"
+
+
+def make_item(item_code, item_group, is_stock_item=1, **fields):
+	"""An Item in the given group (UOM Nos). Returns the existing one if it is already there."""
+	ensure_test_masters()
+	if frappe.db.exists("Item", item_code):
+		return frappe.get_doc("Item", item_code)
+	return frappe.get_doc(
+		{
+			"doctype": "Item",
+			"item_code": item_code,
+			"item_name": item_code,
+			"item_group": item_group,
+			"stock_uom": "Nos",
+			"is_stock_item": is_stock_item,
+			**fields,
+		}
+	).insert(ignore_permissions=True)
+
+
+def make_supplier(name, **fields):
+	return frappe.get_doc(
+		{
+			"doctype": "Supplier",
+			"supplier_name": name,
+			"supplier_group": TEST_SUPPLIER_GROUP,
+			**fields,
+		}
+	)
+
+
+def make_file(file_name, content=b"%PDF-1.4 PEPL test file"):
+	"""A private File, for Attach fields. Returns its file_url."""
+	return (
+		frappe.get_doc({"doctype": "File", "file_name": file_name, "content": content, "is_private": 1})
+		.insert(ignore_permissions=True)
+		.file_url
+	)

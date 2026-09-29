@@ -38,6 +38,7 @@ MATRIX_DOCTYPES = (
 	("Stores", "Purchase Receipt", "Purchase Receipt (GRN)"),
 	("Stores", "Stock Entry", "Stock Entry (issue / transfer)"),
 	("Stores", "Stock Reconciliation", "Stock count correction"),
+	("Stores", "PEPL Capital Equipment", "Capital Equipment Register"),
 	("Production", "Work Order", "Job Order"),
 	("Production", "Job Card", "Job Card"),
 	("Production", "Production Plan", "Production Plan"),

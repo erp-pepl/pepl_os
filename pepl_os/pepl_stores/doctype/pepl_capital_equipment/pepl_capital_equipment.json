@@ -1,0 +1,290 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-09-29 13:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "equipment_name",
+  "equipment_type",
+  "make",
+  "model",
+  "serial_number",
+  "column_break_id",
+  "status",
+  "workshop",
+  "location",
+  "workstation",
+  "section_purchase",
+  "supplier",
+  "invoice_number",
+  "invoice_date",
+  "column_break_purchase",
+  "purchase_value",
+  "commissioning_date",
+  "linked_asset",
+  "section_cover",
+  "warranty_until",
+  "warranty_days_left",
+  "column_break_cover",
+  "amc_vendor",
+  "amc_until",
+  "amc_days_left",
+  "section_documents",
+  "documents",
+  "document_status",
+  "missing_documents"
+ ],
+ "fields": [
+  {
+   "fieldname": "equipment_name",
+   "fieldtype": "Data",
+   "label": "Equipment Name",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "bold": 1
+  },
+  {
+   "fieldname": "equipment_type",
+   "fieldtype": "Select",
+   "label": "Type",
+   "options": "Machine\nInstrument\nVehicle\nIT\nUtility\nOther",
+   "reqd": 1,
+   "default": "Machine",
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "make",
+   "fieldtype": "Data",
+   "label": "Make"
+  },
+  {
+   "fieldname": "model",
+   "fieldtype": "Data",
+   "label": "Model"
+  },
+  {
+   "fieldname": "serial_number",
+   "fieldtype": "Data",
+   "label": "Serial Number"
+  },
+  {
+   "fieldname": "column_break_id",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Active\nUnder Repair\nIdle\nDisposed",
+   "default": "Active",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "workshop",
+   "fieldtype": "Data",
+   "label": "Workshop",
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "location",
+   "fieldtype": "Data",
+   "label": "Location"
+  },
+  {
+   "fieldname": "workstation",
+   "fieldtype": "Link",
+   "label": "Workstation",
+   "options": "Workstation",
+   "depends_on": "eval:doc.equipment_type=='Machine'",
+   "description": "The machine as set up in Production. Used by OEE in Cycle 3a."
+  },
+  {
+   "fieldname": "section_purchase",
+   "fieldtype": "Section Break",
+   "label": "Purchase"
+  },
+  {
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "label": "Supplier",
+   "options": "Supplier"
+  },
+  {
+   "fieldname": "invoice_number",
+   "fieldtype": "Data",
+   "label": "Invoice Number"
+  },
+  {
+   "fieldname": "invoice_date",
+   "fieldtype": "Date",
+   "label": "Invoice Date"
+  },
+  {
+   "fieldname": "column_break_purchase",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "purchase_value",
+   "fieldtype": "Currency",
+   "label": "Purchase Value",
+   "non_negative": 1
+  },
+  {
+   "fieldname": "commissioning_date",
+   "fieldtype": "Date",
+   "label": "Commissioning Date"
+  },
+  {
+   "fieldname": "linked_asset",
+   "fieldtype": "Link",
+   "label": "Linked Asset",
+   "options": "Asset",
+   "description": "Optional. For a future move of this equipment into ERPNext Assets."
+  },
+  {
+   "fieldname": "section_cover",
+   "fieldtype": "Section Break",
+   "label": "Warranty and AMC"
+  },
+  {
+   "fieldname": "warranty_until",
+   "fieldtype": "Date",
+   "label": "Warranty Until",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "warranty_days_left",
+   "fieldtype": "Int",
+   "label": "Warranty Days Left",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "column_break_cover",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "amc_vendor",
+   "fieldtype": "Link",
+   "label": "AMC Vendor",
+   "options": "Supplier"
+  },
+  {
+   "fieldname": "amc_until",
+   "fieldtype": "Date",
+   "label": "AMC Until"
+  },
+  {
+   "fieldname": "amc_days_left",
+   "fieldtype": "Int",
+   "label": "AMC Days Left",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "section_documents",
+   "fieldtype": "Section Break",
+   "label": "Documents"
+  },
+  {
+   "fieldname": "documents",
+   "fieldtype": "Table",
+   "label": "Documents",
+   "options": "PEPL Equipment Document"
+  },
+  {
+   "fieldname": "document_status",
+   "fieldtype": "Select",
+   "label": "Document Status",
+   "options": "Complete\nMissing",
+   "read_only": 1,
+   "no_copy": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "missing_documents",
+   "fieldtype": "Small Text",
+   "label": "Missing Documents",
+   "read_only": 1,
+   "no_copy": 1
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-09-29 13:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "PEPL Stores",
+ "name": "PEPL Capital Equipment",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "Stock Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "Stock User",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "Purchase Manager",
+   "read": 1,
+   "print": 1,
+   "export": 1,
+   "report": 1
+  },
+  {
+   "role": "Manufacturing Manager",
+   "read": 1,
+   "print": 1,
+   "report": 1
+  },
+  {
+   "role": "Accounts Manager",
+   "read": 1,
+   "print": 1,
+   "export": 1,
+   "report": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1,
+ "autoname": "CAP-.#####",
+ "naming_rule": "Expression (old style)",
+ "title_field": "equipment_name",
+ "show_title_field_in_link": 1,
+ "search_fields": "equipment_type,serial_number,workshop"
+}

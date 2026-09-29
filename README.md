@@ -67,12 +67,25 @@ Admin screens after install:
 | Log retention (A5) | PEPL System Parameters → Audit Log Retention (Days), default 1095 |
 | User note for the manuals | `docs/wp_a_user_note.md` |
 
+## Cycle 2 · Purchase & Stores
+
+| What | Where |
+| --- | --- |
+| C2-01 Live audit (read-only) | PEPL System Health → **Download Cycle 2 audit** (System Manager) |
+| C2-02 Purchase & Stores rulebook | PEPL System Parameters → **Purchase & Stores** tab |
+| C2-03 Supplier criticality, MSME, RM groups | Supplier → **PEPL** section; list coloured by approval state |
+| C2-04 Stock classes, stores, CSM rule | Item Group tree, warehouses per company, Item → Stock Class |
+| C2-05 Capital Equipment Register | **PEPL Capital Equipment**; daily warranty / AMC alerts |
+
 ## Tests
 
 ```bash
 bench --site <site> set-config allow_tests true
 bench --site <site> run-tests --app pepl_os
 ```
+
+Before the suite, `pepl_os.tests.bootstrap.before_tests` builds ERPNext's standard
+test data (`_Test Company`, suppliers, items) so stock tests have a company.
 
 ## License
 
