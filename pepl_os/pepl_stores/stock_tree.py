@@ -198,11 +198,31 @@ def workshops():
 
 
 def _company_root_warehouse(company):
-	return frappe.db.get_value(
+	"""The company's top warehouse group ("All Warehouses - ABBR"). Created when missing."""
+	root = frappe.db.get_value(
 		"Warehouse",
 		{"company": company, "is_group": 1, "parent_warehouse": ["is", "not set"]},
 		"name",
 	) or frappe.db.get_value("Warehouse", {"company": company, "is_group": 1}, "name", order_by="lft asc")
+	if root:
+		return root
+	# Same record ERPNext creates with a new company.
+	return _insert_warehouse(company, _("All Warehouses"), None, is_group=1)
+
+
+def _insert_warehouse(company, store, parent, is_group=0):
+	doc = frappe.get_doc(
+		{
+			"doctype": "Warehouse",
+			"warehouse_name": store,
+			"company": company,
+			"parent_warehouse": parent,
+			"is_group": is_group,
+		}
+	)
+	doc.flags.ignore_permissions = True
+	doc.flags.ignore_inventory_account_validation = True
+	return doc.insert().name
 
 
 def warehouse_name(company, store):
@@ -212,28 +232,12 @@ def warehouse_name(company, store):
 
 def _ensure_warehouse(company, store, parent, is_group=0):
 	name = frappe.db.get_value("Warehouse", {"company": company, "warehouse_name": store}, "name")
-	if name:
-		return name
-	return (
-		frappe.get_doc(
-			{
-				"doctype": "Warehouse",
-				"warehouse_name": store,
-				"company": company,
-				"parent_warehouse": parent,
-				"is_group": is_group,
-			}
-		)
-		.insert(ignore_permissions=True)
-		.name
-	)
+	return name or _insert_warehouse(company, store, parent, is_group)
 
 
 def seed_warehouses(company):
 	"""Create PEPL's stores under the company. Returns {store: warehouse name}."""
 	root = _company_root_warehouse(company)
-	if not root:
-		return {}
 	made = {store: _ensure_warehouse(company, store, root) for store in LEAF_STORES}
 	wip = _ensure_warehouse(company, WIP_GROUP, root, is_group=1)
 	for shop in workshops():
@@ -271,18 +275,33 @@ def set_item_group_defaults(company):
 
 
 def default_company():
-	return frappe.defaults.get_global_default("company") or frappe.db.get_single_value(
+	return frappe.db.get_single_value(
 		"Global Defaults", "default_company"
-	)
+	) or frappe.defaults.get_global_default("company")
 
 
 def seed_stock_structure(company=None):
-	"""The whole C2-04 seed. Called from after_migrate; safe to repeat."""
+	"""The whole C2-04 seed. Called from after_migrate; safe to repeat.
+
+	Without a company, every company on the site gets PEPL's stores and
+	Item Group defaults (PEPL has one; a second company, e.g. for testing,
+	gets its own set rather than none).
+	"""
 	seed_item_groups()
-	company = company or default_company()
-	if company and frappe.db.exists("Company", company):
-		seed_warehouses(company)
-		set_item_group_defaults(company)
+	companies = [company] if company else frappe.get_all("Company", pluck="name", order_by="creation asc")
+	done = {}
+	for name in companies:
+		if frappe.db.exists("Company", name):
+			done[name] = seed_warehouses(name)
+			set_item_group_defaults(name)
+	return done
+
+
+@frappe.whitelist()
+def reapply_stock_structure():
+	"""System Manager: re-run the C2-04 seed now (what every deploy does). Returns the stores per company."""
+	frappe.only_for("System Manager")
+	return {company: sorted(stores) for company, stores in seed_stock_structure().items()}
 
 
 # Rules --------------------------------------------------------------------

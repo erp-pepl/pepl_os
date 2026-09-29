@@ -99,6 +99,26 @@ class TestStockTree(PEPLTestCase):
 			self.assertTrue(st.is_csm_warehouse(_wh(store)))
 		self.assertFalse(st.is_csm_warehouse(_wh("RM Stores")))
 
+	def test_every_company_gets_the_stores(self):
+		st.seed_stock_structure()
+		for company in frappe.get_all("Company", pluck="name"):
+			for store in ("RM Stores", "CSM Stores", "WIP Main Workshop"):
+				self.assertTrue(
+					frappe.db.exists("Warehouse", {"company": company, "warehouse_name": store}),
+					f"{company}: {store}",
+				)
+
+	def test_reapply_is_system_manager_only(self):
+		from pepl_os.tests.utils import make_user
+
+		self.assertIn(TEST_COMPANY, st.reapply_stock_structure())
+		frappe.set_user(make_user("pepl.stores.reapply@example.com"))
+		try:
+			with self.assertRaises(frappe.PermissionError):
+				st.reapply_stock_structure()
+		finally:
+			frappe.set_user("Administrator")
+
 	def test_item_group_default_store(self):
 		def default(group):
 			return frappe.db.get_value(
