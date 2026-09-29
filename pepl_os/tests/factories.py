@@ -81,10 +81,26 @@ def make_supplier(name, **fields):
 	)
 
 
-def make_file(file_name, content=b"%PDF-1.4 PEPL test file"):
+def blank_pdf():
+	"""A real one-page PDF. Frappe opens every uploaded PDF to check it for scripts,
+	so a file that only looks like a PDF is refused."""
+	from io import BytesIO
+
+	from pypdf import PdfWriter
+
+	writer = PdfWriter()
+	writer.add_blank_page(width=72, height=72)
+	out = BytesIO()
+	writer.write(out)
+	return out.getvalue()
+
+
+def make_file(file_name, content=None):
 	"""A private File, for Attach fields. Returns its file_url."""
 	return (
-		frappe.get_doc({"doctype": "File", "file_name": file_name, "content": content, "is_private": 1})
+		frappe.get_doc(
+			{"doctype": "File", "file_name": file_name, "content": content or blank_pdf(), "is_private": 1}
+		)
 		.insert(ignore_permissions=True)
 		.file_url
 	)
