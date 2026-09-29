@@ -162,7 +162,8 @@
    "fieldtype": "Int",
    "label": "Warranty Days Left",
    "read_only": 1,
-   "no_copy": 1
+   "no_copy": 1,
+   "depends_on": "warranty_until"
   },
   {
    "fieldname": "column_break_cover",
@@ -184,7 +185,8 @@
    "fieldtype": "Int",
    "label": "AMC Days Left",
    "read_only": 1,
-   "no_copy": 1
+   "no_copy": 1,
+   "depends_on": "amc_until"
   },
   {
    "fieldname": "section_documents",
@@ -217,7 +219,7 @@
  ],
  "index_web_pages_for_search": 0,
  "links": [],
- "modified": "2026-09-29 13:00:00.000000",
+ "modified": "2026-09-29 21:10:00.000000",
  "modified_by": "Administrator",
  "module": "PEPL Stores",
  "name": "PEPL Capital Equipment",

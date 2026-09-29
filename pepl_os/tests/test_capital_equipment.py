@@ -93,6 +93,26 @@ class TestCapitalEquipment(PEPLTestCase):
 		cap.daily_equipment_alerts()
 		self.assertTrue(frappe.db.exists("PEPL Job Run", {"method": JOB, "status": "Success"}))
 
+	def test_daily_job_with_equipment_missing_dates(self):
+		# Regression: the job failed on the test site with "Column 'amc_days_left' cannot be null"
+		# for a machine with a warranty but no AMC. Frappe v16 Int columns are NOT NULL.
+		no_amc = _equipment("PEPL-T-NO-AMC", warranty_until=add_days(today(), 10))
+		no_dates = _equipment("PEPL-T-NO-DATES")
+		cap.daily_equipment_alerts()
+		run = frappe.get_all(
+			"PEPL Job Run",
+			filters={"method": JOB},
+			fields=["status", "error"],
+			order_by="creation desc",
+			limit=1,
+		)[0]
+		self.assertEqual(run.status, "Success", run.error)
+		self.assertEqual(frappe.db.get_value(cap.DOCTYPE, no_amc.name, "warranty_days_left"), 10)
+		self.assertEqual(frappe.db.get_value(cap.DOCTYPE, no_amc.name, "amc_days_left"), 0)
+		self.assertEqual(frappe.db.get_value(cap.DOCTYPE, no_dates.name, "warranty_days_left"), 0)
+		self.assertEqual(len(_open_todos(no_amc.name)), 1)
+		self.assertEqual(_open_todos(no_dates.name), [])
+
 	def test_equipment_is_not_stock(self):
 		self.assertFalse(frappe.get_meta(cap.DOCTYPE).is_submittable)
 		self.assertFalse(frappe.db.exists("DocField", {"parent": cap.DOCTYPE, "options": "Warehouse"}))

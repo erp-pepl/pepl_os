@@ -3,7 +3,7 @@
 
 from frappe.model.document import Document
 
-from pepl_os.pepl_stores.capital_equipment import core_document_gaps, cover_days_left
+from pepl_os.pepl_stores.capital_equipment import core_document_gaps, cover_days_left, stored_days
 
 
 class PEPLCapitalEquipment(Document):
@@ -11,6 +11,7 @@ class PEPLCapitalEquipment(Document):
 		missing = core_document_gaps(self)
 		self.missing_documents = "\n".join(missing)
 		self.document_status = "Missing" if missing else "Complete"
-		self.warranty_days_left, self.amc_days_left = cover_days_left(self)
+		warranty, amc = cover_days_left(self)
+		self.warranty_days_left, self.amc_days_left = stored_days(warranty), stored_days(amc)
 		if self.equipment_type != "Machine":
 			self.workstation = None

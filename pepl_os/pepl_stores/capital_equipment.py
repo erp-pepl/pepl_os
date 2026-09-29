@@ -29,7 +29,14 @@ def _days_left(date_value, as_of=None):
 
 
 def cover_days_left(doc, as_of=None):
+	"""(warranty days left, AMC days left). None when that date is not set."""
 	return _days_left(doc.get("warranty_until"), as_of), _days_left(doc.get("amc_until"), as_of)
+
+
+def stored_days(days):
+	"""Int columns cannot hold NULL in Frappe v16; a missing date is stored as 0 and the
+	field is hidden on the form (depends_on the date), so 0 never reads as 'expires today'."""
+	return 0 if days is None else days
 
 
 def expiring_cover(doc, alert_days, as_of=None):
@@ -84,5 +91,8 @@ def refresh_days_left():
 	):
 		warranty, amc = cover_days_left(row)
 		frappe.db.set_value(
-			DOCTYPE, row.name, {"warranty_days_left": warranty, "amc_days_left": amc}, update_modified=False
+			DOCTYPE,
+			row.name,
+			{"warranty_days_left": stored_days(warranty), "amc_days_left": stored_days(amc)},
+			update_modified=False,
 		)
