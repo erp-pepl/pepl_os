@@ -385,6 +385,31 @@ CUSTOM_FIELDS["Material Request"] = [
 	},
 ]
 
+# C2-09 - RFQ created per RM group from a Material Request.
+CUSTOM_FIELDS["Request for Quotation"] = [
+	{
+		"fieldname": "custom_rm_group",
+		"label": "RM Group",
+		"fieldtype": "Link",
+		"options": "PEPL RM Group",
+		"read_only": 1,
+		"no_copy": 1,
+		"in_standard_filter": 1,
+		"in_list_view": 1,
+		"insert_after": "transaction_date",
+	},
+	{
+		"fieldname": "custom_material_request",
+		"label": "From Material Request",
+		"fieldtype": "Link",
+		"options": "Material Request",
+		"read_only": 1,
+		"no_copy": 1,
+		"in_standard_filter": 1,
+		"insert_after": "custom_rm_group",
+	},
+]
+
 # C2-04 - Item: the stock class, set from the Item Group tree.
 CUSTOM_FIELDS["Item"] = [
 	{

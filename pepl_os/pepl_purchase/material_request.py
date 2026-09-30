@@ -136,27 +136,9 @@ def rm_group_of(item_code):
 
 
 def approved_supplier_count(rm_group):
-	if not rm_group:
-		return 0
-	return len(
-		frappe.get_all(
-			"Supplier",
-			filters={
-				"disabled": 0,
-				"custom_approval_state": ["in", ["Approved", "Conditionally Approved"]],
-				"name": [
-					"in",
-					frappe.get_all(
-						"PEPL Supplier RM Group",
-						filters={"parenttype": "Supplier", "rm_group": rm_group},
-						pluck="parent",
-					)
-					or [""],
-				],
-			},
-			pluck="name",
-		)
-	)
+	from pepl_os.pepl_purchase.rfq import approved_suppliers  # rfq imports this module
+
+	return len(approved_suppliers(rm_group))
 
 
 def requested_elsewhere(item_code, material_request):

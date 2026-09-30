@@ -41,3 +41,12 @@ that checklist. Only the Purchase Manager can approve, and only when every manda
 is attached and in date. Expired documents make the supplier **Expired** automatically, and
 Purchase gets a ToDo 30 days before a document expires. Sending an RFQ or Purchase Order to a
 supplier who is not approved needs a typed reason, recorded in the Audit Trail.
+
+## Requests for Quotation by RM group
+
+On a submitted Material Request, press **RFQ by RM Group**. The lines are grouped by the RM
+group of each item, and for each group the suppliers approved for it are already ticked, with
+their delivery and quality scores. Untick any you do not want, or add another supplier (one
+not approved for that group will need a reason when the RFQ is submitted). **Create RFQs**
+makes one draft RFQ per group. Open each one, check it and submit it to e-mail the suppliers.
+Lines already on an RFQ are not offered again.

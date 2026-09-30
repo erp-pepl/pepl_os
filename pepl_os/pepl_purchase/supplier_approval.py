@@ -231,13 +231,35 @@ def supplier_state(supplier):
 
 
 def unapproved_suppliers(doc):
+	"""[(supplier, state)] for suppliers not approved, or (C2-09) approved but not for the RFQ's RM group."""
+	rm_group = None
 	if doc.doctype == "Request for Quotation":
 		suppliers = [row.supplier for row in doc.get("suppliers") or [] if row.supplier]
+		rm_group = doc.get("custom_rm_group")
 	else:
 		suppliers = [doc.supplier] if doc.get("supplier") else []
-	return [
-		(s, supplier_state(s)) for s in dict.fromkeys(suppliers) if supplier_state(s) not in APPROVED_STATES
-	]
+	pairs = []
+	for s in dict.fromkeys(suppliers):
+		state = supplier_state(s)
+		if state not in APPROVED_STATES:
+			pairs.append((s, state))
+		elif rm_group and not _covers(s, rm_group):
+			pairs.append((s, _("{0}, not for {1}").format(_(state), rm_group)))
+	return pairs
+
+
+def _covers(supplier, rm_group):
+	return bool(
+		frappe.db.exists(
+			"PEPL Supplier RM Group",
+			{
+				"parenttype": "Supplier",
+				"parentfield": "custom_rm_groups",
+				"parent": supplier,
+				"rm_group": rm_group,
+			},
+		)
+	)
 
 
 def gate_message(pairs):
