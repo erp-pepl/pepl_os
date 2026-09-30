@@ -29,7 +29,8 @@ doctype_js = {
 	# C2-08: reason before submitting to a supplier who is not approved
 	# C2-10: "Quotation Comparison" button on a submitted RFQ
 	"Request for Quotation": ["public/js/supplier_gate.js", "public/js/request_for_quotation.js"],
-	"Purchase Order": "public/js/supplier_gate.js",
+	# C2-11 approval check runs before the C2-08 reason dialog
+	"Purchase Order": ["public/js/purchase_order.js", "public/js/supplier_gate.js"],
 }
 
 # C2-03: Supplier list coloured by approval state.
@@ -45,6 +46,7 @@ before_tests = "pepl_os.tests.bootstrap.before_tests"
 # Document events are added per deliverable.
 CSM_SEGREGATION = "pepl_os.pepl_stores.stock_tree.validate_csm_segregation"
 SUPPLIER_GATE = "pepl_os.pepl_purchase.supplier_approval.before_submit_gate"
+PO_APPROVAL = "pepl_os.pepl_purchase.po_approval"
 
 doc_events = {
 	"PEPL System Parameters": {
@@ -67,7 +69,14 @@ doc_events = {
 	"Sales Order": {"on_submit": "pepl_os.pepl_purchase.material_request.on_sales_order_submit"},
 	# C2-08: the supplier approval gate
 	"Request for Quotation": {"before_submit": SUPPLIER_GATE},
-	"Purchase Order": {"before_submit": SUPPLIER_GATE},
+	# C2-08 supplier gate; C2-11 approval by value (MD above) and promised dates
+	"Purchase Order": {
+		"validate": f"{PO_APPROVAL}.validate",
+		"before_submit": [f"{PO_APPROVAL}.before_submit", SUPPLIER_GATE],
+		"on_update": f"{PO_APPROVAL}.on_update",
+		"on_submit": f"{PO_APPROVAL}.on_update",
+		"on_cancel": f"{PO_APPROVAL}.on_update",
+	},
 }
 
 # Every job is wrapped in @tracked_job so each run is recorded in PEPL Job Run

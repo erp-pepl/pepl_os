@@ -143,6 +143,9 @@ EXTRA_GRANTS = (
 	("Purchase Manager", (SYSTEM_PARAMETERS,), ("read",)),
 	("Stock Manager", (SYSTEM_PARAMETERS,), ("read",)),
 	("PEPL CEO", (SYSTEM_PARAMETERS,), ("read", "write")),
+	# C2-11: the MD / CEO approves (submits) Purchase Orders above the PO Approval Value.
+	# Write is needed to open the form for submit and to record a reason; never create, cancel or delete.
+	("PEPL CEO", ("Purchase Order",), ("read", "write", "submit")),
 )
 
 

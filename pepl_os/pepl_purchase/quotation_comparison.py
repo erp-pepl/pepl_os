@@ -405,29 +405,49 @@ def _po_item(r):
 	}
 
 
+def _attach(purchase_order, file_name, content):
+	frappe.get_doc(
+		{
+			"doctype": "File",
+			"file_name": file_name,
+			"content": content,
+			"attached_to_doctype": "Purchase Order",
+			"attached_to_name": purchase_order,
+			"is_private": 1,
+		}
+	).insert(ignore_permissions=True)
+
+
 def attach_comparison_pdf(doc, purchase_order):
-	"""Attach the comparison PDF to the PO. A PDF failure never blocks the approval."""
+	"""Attach the comparison to the PO: as PDF, or as a printable HTML page when no PDF can be made.
+
+	Never blocks the approval. Returns "pdf", "html" or None.
+	"""
 	try:
 		pdf = frappe.attach_print(DOCTYPE, doc.name, file_name=doc.name, doc=doc)
-		frappe.get_doc(
-			{
-				"doctype": "File",
-				"file_name": pdf["fname"],
-				"content": pdf["fcontent"],
-				"attached_to_doctype": "Purchase Order",
-				"attached_to_name": purchase_order,
-				"is_private": 1,
-			}
-		).insert(ignore_permissions=True)
-		return True
+		_attach(purchase_order, pdf["fname"], pdf["fcontent"])
+		return "pdf" if pdf["fname"].endswith(".pdf") else "html"
 	except Exception:
-		frappe.log_error(title=f"PEPL: comparison PDF not attached to {purchase_order}")
+		frappe.log_error(title=f"PEPL: comparison PDF not made for {purchase_order}")
+	try:
+		html = frappe.get_print(DOCTYPE, doc.name, doc=doc, no_letterhead=1)
+		_attach(purchase_order, f"{doc.name}.html", html.encode("utf-8"))
 		frappe.msgprint(
-			_("The comparison PDF could not be attached to {0}. See the Error Log.").format(purchase_order),
+			_(
+				"No PDF could be made (see the Error Log), so the comparison was attached to {0} as a printable page."
+			).format(purchase_order),
 			indicator="orange",
 			alert=True,
 		)
-		return False
+		return "html"
+	except Exception:
+		frappe.log_error(title=f"PEPL: comparison not attached to {purchase_order}")
+		frappe.msgprint(
+			_("The comparison could not be attached to {0}. See the Error Log.").format(purchase_order),
+			indicator="orange",
+			alert=True,
+		)
+		return None
 
 
 # Buttons -----------------------------------------------------------------------

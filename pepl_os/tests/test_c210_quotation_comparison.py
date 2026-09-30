@@ -184,7 +184,7 @@ class TestQuotationComparison(PEPLTestCase):
 		po = frappe.get_all("Purchase Order", filters={qc.PO_LINK: doc.name}, pluck="name")[0]
 		fake = {"fname": f"{doc.name}.pdf", "fcontent": b"%PDF-1.4 test"}
 		with patch("frappe.attach_print", return_value=fake):
-			self.assertTrue(qc.attach_comparison_pdf(doc, po))
+			self.assertEqual(qc.attach_comparison_pdf(doc, po), "pdf")
 		self.assertTrue(
 			frappe.db.exists("File", {"attached_to_doctype": "Purchase Order", "attached_to_name": po})
 		)
@@ -194,6 +194,13 @@ class TestQuotationComparison(PEPLTestCase):
 		with patch("frappe.attach_print", side_effect=RuntimeError("no pdf engine")):
 			_approve(doc)
 		self.assertEqual(frappe.db.get_value(doc.doctype, doc.name, "docstatus"), 1)
+		for po in frappe.get_all("Purchase Order", filters={qc.PO_LINK: doc.name}, pluck="name"):
+			files = frappe.get_all(
+				"File",
+				filters={"attached_to_doctype": "Purchase Order", "attached_to_name": po},
+				pluck="file_name",
+			)
+			self.assertEqual(files, [f"{doc.name}.html"])  # printable page instead of the PDF
 
 	def test_submitted_comparison_is_locked(self):
 		doc = _comparison()

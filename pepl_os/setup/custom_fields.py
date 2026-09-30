@@ -123,6 +123,14 @@ PURCHASE_STORES_FIELDS = _chain(
 			+ PEPL_VALUE,
 		},
 		{
+			"fieldname": "custom_md_approver",
+			"label": "MD / CEO (approves POs above the value)",
+			"fieldtype": "Link",
+			"options": "User",
+			"description": "Receives a ToDo for every Purchase Order waiting for MD approval. "
+			"Falls back to Notification Fallback Owner when empty.",
+		},
+		{
 			"fieldname": "custom_enforce_override_reason",
 			"label": "Require a Reason for Every Override",
 			"fieldtype": "Check",
@@ -421,6 +429,18 @@ CUSTOM_FIELDS["Purchase Order"] = [
 		"no_copy": 1,
 		"in_standard_filter": 1,
 		"insert_after": "transaction_date",
+	},
+	{
+		# C2-11
+		"fieldname": "custom_needs_md_approval",
+		"label": "Needs MD Approval",
+		"fieldtype": "Check",
+		"read_only": 1,
+		"no_copy": 1,
+		"in_standard_filter": 1,
+		"insert_after": "custom_quotation_comparison",
+		"description": "Set automatically when the grand total is above the PO Approval Value "
+		"in PEPL System Parameters. Only the MD / CEO can then submit it.",
 	},
 ]
 

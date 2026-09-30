@@ -62,3 +62,13 @@ order; giving quantity to a supplier who is not L1 needs a reason in that row. P
 for Approval**. The Purchase Manager checks the summary and presses **Submit**: one draft
 Purchase Order is created per supplier, each line promised by today + the quoted lead time,
 with the comparison PDF attached. An approved comparison cannot be changed.
+
+## Purchase Order approval by value
+
+Set **PO Approval Value (MD above)** and **MD / CEO** in PEPL System Parameters → Purchase &
+Stores. A Purchase Order whose grand total is above that value is marked **Needs MD
+Approval**; only the MD / CEO can submit it, and the MD gets a ToDo for it (closed
+automatically once it is submitted). At or below the value, the Purchase Manager submits it.
+The Purchase User prepares and saves Purchase Orders but does not submit them. Every PO line
+needs a Required By (promised) date, not earlier than the PO date. With no value set, the
+Purchase Manager submits every PO.

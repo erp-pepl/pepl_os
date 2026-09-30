@@ -62,12 +62,19 @@ class TestProfileAccess(PEPLTestCase):
 		self.assertRight("PEPL Purchase Manager", "Purchase Order", "submit", YES)
 
 	def test_ceo_views_everything_changes_nothing(self):
-		for doctype in ("Purchase Order", "Sales Order", "Stock Entry", "Supplier", "Work Order"):
+		for doctype in ("Sales Order", "Stock Entry", "Supplier", "Work Order"):
 			self.assertRight("PEPL CEO", doctype, "read", YES)
 			self.assertRight("PEPL CEO", doctype, "print", YES)
 			self.assertRight("PEPL CEO", doctype, "report", YES)
 			for right in ("create", "write", "submit", "cancel", "delete"):
 				self.assertRight("PEPL CEO", doctype, right, "")
+
+	def test_ceo_approves_purchase_orders_only(self):
+		# C2-11: the MD / CEO submits Purchase Orders above the PO Approval Value.
+		for right in ("read", "write", "submit"):
+			self.assertRight("PEPL CEO", "Purchase Order", right, YES)
+		for right in ("create", "cancel", "delete"):
+			self.assertRight("PEPL CEO", "Purchase Order", right, "")
 
 	def test_accounts_sees_purchase_orders_for_bill_matching(self):
 		self.assertRight("PEPL Accounts", "Purchase Order", "read", YES)
