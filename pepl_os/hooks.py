@@ -23,7 +23,13 @@ after_migrate = "pepl_os.install.after_migrate"
 
 # Client scripts for standard DocTypes are added per deliverable, e.g.
 # "Purchase Order": "public/js/purchase_order.js"
-doctype_js = {}
+doctype_js = {
+	# C2-07: stock, orders and approved suppliers per line
+	"Material Request": "public/js/material_request.js",
+	# C2-08: reason before submitting to a supplier who is not approved
+	"Request for Quotation": "public/js/supplier_gate.js",
+	"Purchase Order": "public/js/supplier_gate.js",
+}
 
 # C2-03: Supplier list coloured by approval state.
 doctype_list_js = {"Supplier": "public/js/supplier_list.js"}
@@ -37,6 +43,7 @@ before_tests = "pepl_os.tests.bootstrap.before_tests"
 
 # Document events are added per deliverable.
 CSM_SEGREGATION = "pepl_os.pepl_stores.stock_tree.validate_csm_segregation"
+SUPPLIER_GATE = "pepl_os.pepl_purchase.supplier_approval.before_submit_gate"
 
 doc_events = {
 	"PEPL System Parameters": {
@@ -53,6 +60,11 @@ doc_events = {
 	"Stock Entry": {"validate": CSM_SEGREGATION},
 	"Purchase Receipt": {"validate": CSM_SEGREGATION},
 	"Delivery Note": {"validate": CSM_SEGREGATION},
+	# C2-07: draft the Material Request for bought-out and short raw material
+	"Sales Order": {"on_submit": "pepl_os.pepl_purchase.material_request.on_sales_order_submit"},
+	# C2-08: the supplier approval gate
+	"Request for Quotation": {"before_submit": SUPPLIER_GATE},
+	"Purchase Order": {"before_submit": SUPPLIER_GATE},
 }
 
 # Every job is wrapped in @tracked_job so each run is recorded in PEPL Job Run
@@ -62,5 +74,7 @@ scheduler_events = {
 		"pepl_os.pepl_governance.jobs.daily_heartbeat",
 		# C2-05: warranty and AMC expiry alerts
 		"pepl_os.pepl_stores.capital_equipment.daily_equipment_alerts",
+		# C2-08: supplier documents expiring / expired
+		"pepl_os.pepl_purchase.supplier_approval.daily_supplier_approvals",
 	],
 }

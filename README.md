@@ -76,6 +76,8 @@ Admin screens after install:
 | C2-03 Supplier criticality, MSME, RM groups | Supplier → **PEPL** section; list coloured by approval state |
 | C2-04 Stock classes, stores, CSM rule | Item Group tree, warehouses per company, Item → Stock Class |
 | C2-05 Capital Equipment Register | **PEPL Capital Equipment**; daily warranty / AMC alerts |
+| C2-07 Material Request from Sales Order | On SO submit: one draft MR for bought-out lines and raw-material shortfall; MR panel |
+| C2-08 Supplier Approval gate | **PEPL Supplier Document Requirement** (the checklist), **PEPL Supplier Approval** per supplier; reason needed to submit an RFQ / PO to a non-approved supplier; daily expiry job |
 
 ## Tests
 

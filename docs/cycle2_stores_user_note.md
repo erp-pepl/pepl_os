@@ -24,3 +24,20 @@ scores are filled in automatically once supplier approval goes live.
 One record per machine or instrument, with the purchase invoice, manual and warranty or
 guarantee certificate attached. A red line at the top shows what is missing. Stores receives
 a ToDo when a warranty or AMC is within the alert days set in PEPL System Parameters.
+
+## Material Requests from Sales Orders
+
+When a Sales Order is submitted, a **draft** Material Request is created for Purchase with
+the bought-out lines (full quantity) and any raw material the stores cannot cover
+(stock + open orders + open requests). One per Sales Order. Purchase reviews and submits it.
+The panel on the Material Request shows stock, orders already placed, other open requests and
+how many approved suppliers exist for each line.
+
+## Supplier approval
+
+The list of documents a supplier must give is kept in **PEPL Supplier Document Requirement**
+(mandatory or not, expiring or not). Each supplier has one **PEPL Supplier Approval** with
+that checklist. Only the Purchase Manager can approve, and only when every mandatory document
+is attached and in date. Expired documents make the supplier **Expired** automatically, and
+Purchase gets a ToDo 30 days before a document expires. Sending an RFQ or Purchase Order to a
+supplier who is not approved needs a typed reason, recorded in the Audit Trail.

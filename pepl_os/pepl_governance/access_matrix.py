@@ -30,6 +30,7 @@ MATRIX_DOCTYPES = (
 	("Sales", "PEPL PSD Tracker", "PSD / BG Tracker"),
 	("Engineering", "PEPL Product Master", "Product Master (drawings, specs)"),
 	("Engineering", "Vendor Approval Status", "Vendor Approval Status"),
+	("Purchase", "PEPL Supplier Approval", "Supplier Approval"),
 	("Purchase", "Material Request", "Material Request (indent)"),
 	("Purchase", "Request for Quotation", "Request for Quotation"),
 	("Purchase", "Supplier Quotation", "Supplier Quotation"),

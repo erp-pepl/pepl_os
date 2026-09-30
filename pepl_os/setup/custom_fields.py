@@ -371,6 +371,20 @@ CUSTOM_FIELDS["Supplier"] = _chain(
 	after="supplier_group",
 )
 
+# C2-07 - Material Request drafted from a Sales Order.
+CUSTOM_FIELDS["Material Request"] = [
+	{
+		"fieldname": "custom_sales_order",
+		"label": "Drafted from Sales Order",
+		"fieldtype": "Link",
+		"options": "Sales Order",
+		"read_only": 1,
+		"no_copy": 1,
+		"in_standard_filter": 1,
+		"insert_after": "material_request_type",
+	},
+]
+
 # C2-04 - Item: the stock class, set from the Item Group tree.
 CUSTOM_FIELDS["Item"] = [
 	{
