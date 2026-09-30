@@ -1,0 +1,231 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-09-29 13:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "rfq_item",
+  "line",
+  "item_code",
+  "item_name",
+  "qty_required",
+  "uom",
+  "supplier",
+  "supplier_quotation",
+  "sq_item",
+  "column_break_rate",
+  "currency",
+  "rate",
+  "base_rate",
+  "is_l1",
+  "lead_time_days",
+  "promised_date",
+  "payment_terms",
+  "last_rates",
+  "delivery_score",
+  "quality_score",
+  "section_award",
+  "awarded_qty",
+  "award_reason",
+  "warehouse",
+  "material_request",
+  "material_request_item"
+ ],
+ "fields": [
+  {
+   "fieldname": "rfq_item",
+   "fieldtype": "Data",
+   "label": "RFQ Line",
+   "hidden": 1,
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "line",
+   "fieldtype": "Int",
+   "label": "Line",
+   "read_only": 1,
+   "columns": 1
+  },
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "label": "Item",
+   "options": "Item",
+   "read_only": 1,
+   "in_list_view": 1,
+   "columns": 2
+  },
+  {
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "label": "Item Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "qty_required",
+   "fieldtype": "Float",
+   "label": "Qty Required",
+   "read_only": 1,
+   "in_list_view": 1,
+   "columns": 1
+  },
+  {
+   "fieldname": "uom",
+   "fieldtype": "Link",
+   "label": "UOM",
+   "options": "UOM",
+   "read_only": 1
+  },
+  {
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "label": "Supplier",
+   "options": "Supplier",
+   "read_only": 1,
+   "in_list_view": 1,
+   "columns": 2
+  },
+  {
+   "fieldname": "supplier_quotation",
+   "fieldtype": "Link",
+   "label": "Supplier Quotation",
+   "options": "Supplier Quotation",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sq_item",
+   "fieldtype": "Data",
+   "label": "Supplier Quotation Line",
+   "hidden": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_rate",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency",
+   "read_only": 1
+  },
+  {
+   "fieldname": "rate",
+   "fieldtype": "Currency",
+   "label": "Quoted Rate",
+   "options": "currency",
+   "read_only": 1
+  },
+  {
+   "fieldname": "base_rate",
+   "fieldtype": "Currency",
+   "label": "Rate (Company Currency)",
+   "read_only": 1,
+   "in_list_view": 1,
+   "columns": 1
+  },
+  {
+   "fieldname": "is_l1",
+   "fieldtype": "Check",
+   "label": "L1",
+   "read_only": 1,
+   "in_list_view": 1,
+   "columns": 1,
+   "description": "Lowest rate for this line."
+  },
+  {
+   "fieldname": "lead_time_days",
+   "fieldtype": "Int",
+   "label": "Lead Time (Days)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "promised_date",
+   "fieldtype": "Date",
+   "label": "Promised By",
+   "read_only": 1
+  },
+  {
+   "fieldname": "payment_terms",
+   "fieldtype": "Link",
+   "label": "Payment Terms",
+   "options": "Payment Terms Template",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_rates",
+   "fieldtype": "Data",
+   "label": "Last 3 PO Rates (12 months)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "delivery_score",
+   "fieldtype": "Percent",
+   "label": "Delivery Score",
+   "read_only": 1
+  },
+  {
+   "fieldname": "quality_score",
+   "fieldtype": "Percent",
+   "label": "Quality Score",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_award",
+   "fieldtype": "Section Break",
+   "label": "Award"
+  },
+  {
+   "fieldname": "awarded_qty",
+   "fieldtype": "Float",
+   "label": "Awarded Qty",
+   "in_list_view": 1,
+   "columns": 1,
+   "non_negative": 1
+  },
+  {
+   "fieldname": "award_reason",
+   "fieldtype": "Small Text",
+   "label": "Reason (when not L1)"
+  },
+  {
+   "fieldname": "warehouse",
+   "fieldtype": "Link",
+   "label": "Warehouse",
+   "options": "Warehouse",
+   "hidden": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "material_request",
+   "fieldtype": "Link",
+   "label": "Material Request",
+   "options": "Material Request",
+   "hidden": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "material_request_item",
+   "fieldtype": "Data",
+   "label": "Material Request Line",
+   "hidden": 1,
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-09-29 13:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "PEPL Purchase",
+ "name": "PEPL Quotation Comparison Row",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "istable": 1,
+ "editable_grid": 1
+}

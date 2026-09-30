@@ -27,7 +27,8 @@ doctype_js = {
 	# C2-07: stock, orders and approved suppliers per line
 	"Material Request": "public/js/material_request.js",
 	# C2-08: reason before submitting to a supplier who is not approved
-	"Request for Quotation": "public/js/supplier_gate.js",
+	# C2-10: "Quotation Comparison" button on a submitted RFQ
+	"Request for Quotation": ["public/js/supplier_gate.js", "public/js/request_for_quotation.js"],
 	"Purchase Order": "public/js/supplier_gate.js",
 }
 

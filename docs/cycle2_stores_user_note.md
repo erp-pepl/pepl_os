@@ -50,3 +50,15 @@ their delivery and quality scores. Untick any you do not want, or add another su
 not approved for that group will need a reason when the RFQ is submitted). **Create RFQs**
 makes one draft RFQ per group. Open each one, check it and submit it to e-mail the suppliers.
 Lines already on an RFQ are not offered again.
+
+## Quotation Comparison
+
+When the Supplier Quotations for an RFQ are submitted, open the RFQ and press **Quotation
+Comparison**. Every supplier's rate for every line is shown side by side, with lead time,
+promised date, payment terms, the last three PO rates for that item from that supplier
+(12 months) and the supplier's delivery and quality scores. The lowest rate of each line is
+marked **L1** and gets the whole quantity. Change the **Awarded Qty** to split or move an
+order; giving quantity to a supplier who is not L1 needs a reason in that row. Press **Send
+for Approval**. The Purchase Manager checks the summary and presses **Submit**: one draft
+Purchase Order is created per supplier, each line promised by today + the quoted lead time,
+with the comparison PDF attached. An approved comparison cannot be changed.

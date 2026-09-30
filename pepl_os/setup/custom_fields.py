@@ -410,6 +410,20 @@ CUSTOM_FIELDS["Request for Quotation"] = [
 	},
 ]
 
+# C2-10 - Purchase Order created from an approved Quotation Comparison.
+CUSTOM_FIELDS["Purchase Order"] = [
+	{
+		"fieldname": "custom_quotation_comparison",
+		"label": "From Quotation Comparison",
+		"fieldtype": "Link",
+		"options": "PEPL Quotation Comparison",
+		"read_only": 1,
+		"no_copy": 1,
+		"in_standard_filter": 1,
+		"insert_after": "transaction_date",
+	},
+]
+
 # C2-04 - Item: the stock class, set from the Item Group tree.
 CUSTOM_FIELDS["Item"] = [
 	{
