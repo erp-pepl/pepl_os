@@ -108,6 +108,28 @@ class TestStockTree(PEPLTestCase):
 					f"{company}: {store}",
 				)
 
+	def test_new_company_gets_the_stores_at_once(self):
+		# Regression: a company made in the setup wizard (after install) had no
+		# PEPL stores until the next migrate, so Material Requests fell back to
+		# ERPNext's "Stores" warehouse.
+		name = "_Test PEPL New Company"
+		if not frappe.db.exists("Company", name):
+			frappe.get_doc(
+				{
+					"doctype": "Company",
+					"company_name": name,
+					"abbr": "_TPNC",
+					"default_currency": "INR",
+					"country": "India",
+				}
+			).insert()
+		for store in ("RM Stores", "Bought-Out Stores", "CSM Stores", "WIP Main Workshop"):
+			self.assertTrue(
+				frappe.db.exists("Warehouse", {"company": name, "warehouse_name": store}), store
+			)
+		bought_out = frappe.get_doc("Item Group", st.BOUGHT_OUT)
+		self.assertTrue(any(d.company == name for d in bought_out.item_group_defaults))
+
 	def test_reapply_is_system_manager_only(self):
 		from pepl_os.tests.utils import make_user
 

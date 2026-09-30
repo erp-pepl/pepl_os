@@ -297,6 +297,18 @@ def seed_stock_structure(company=None):
 	return done
 
 
+def on_company_update(doc, method=None):
+	"""A company created after install (e.g. in the setup wizard) gets PEPL's stores at once.
+
+	Runs after ERPNext's own Company.on_update, so its accounts and default
+	warehouses already exist. Safe to repeat; never blocks saving the company.
+	"""
+	try:
+		seed_stock_structure(doc.name)
+	except Exception:
+		frappe.log_error(title=f"PEPL stores not created for {doc.name}")
+
+
 @frappe.whitelist()
 def reapply_stock_structure():
 	"""System Manager: re-run the C2-04 seed now (what every deploy does). Returns the stores per company."""

@@ -52,6 +52,8 @@ doc_events = {
 		# A5: a changed audit-log retention applies immediately.
 		"on_update": "pepl_os.pepl_governance.retention.on_parameters_update",
 	},
+	# C2-04: a company created after install gets PEPL's stores at once.
+	"Company": {"on_update": "pepl_os.pepl_stores.stock_tree.on_company_update"},
 	# C2-03: Udyam number required for MSME suppliers.
 	"Supplier": {"validate": "pepl_os.pepl_purchase.supplier.validate_supplier"},
 	# C2-04: stock class from the Item Group; Capital never stock; CSM customer-provided.
