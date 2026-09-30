@@ -1,9 +1,9 @@
 name: CI
 
+# Runs only when started by hand: GitHub -> Actions -> CI -> "Run workflow".
+# Pushes to main no longer start it; every change is checked on the demo site instead.
 on:
-  push:
-    branches: [main]
-  pull_request:
+  workflow_dispatch:
 
 concurrency:
   group: ci-pepl_os-${{ github.event.number || github.ref }}
