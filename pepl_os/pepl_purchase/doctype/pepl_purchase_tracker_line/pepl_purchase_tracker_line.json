@@ -1,0 +1,145 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-09-29 13:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "po_item",
+  "item_code",
+  "item_name",
+  "ordered_qty",
+  "received_qty",
+  "pending_qty",
+  "uom",
+  "column_break_dates",
+  "promised_date",
+  "revised_date",
+  "days_to_due",
+  "days_overdue",
+  "line_status"
+ ],
+ "fields": [
+  {
+   "fieldname": "po_item",
+   "fieldtype": "Data",
+   "label": "PO Line",
+   "hidden": 1,
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "label": "Item",
+   "options": "Item",
+   "in_list_view": 1,
+   "columns": 2,
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "label": "Item Name",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "ordered_qty",
+   "fieldtype": "Float",
+   "label": "Ordered",
+   "in_list_view": 1,
+   "columns": 1,
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "received_qty",
+   "fieldtype": "Float",
+   "label": "Received",
+   "in_list_view": 1,
+   "columns": 1,
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "pending_qty",
+   "fieldtype": "Float",
+   "label": "Pending",
+   "in_list_view": 1,
+   "columns": 1,
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "uom",
+   "fieldtype": "Link",
+   "label": "UOM",
+   "options": "UOM",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "column_break_dates",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "promised_date",
+   "fieldtype": "Date",
+   "label": "Promised Date",
+   "in_list_view": 1,
+   "columns": 1,
+   "description": "Copied once from the PO line's Required By date. Never changed.",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "revised_date",
+   "fieldtype": "Date",
+   "label": "Vendor Revised Date",
+   "in_list_view": 1,
+   "columns": 1,
+   "description": "The date the vendor now gives. For chasing only; lateness is always counted from the promised date."
+  },
+  {
+   "fieldname": "days_to_due",
+   "fieldtype": "Int",
+   "label": "Days to Due",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "days_overdue",
+   "fieldtype": "Int",
+   "label": "Days Overdue",
+   "in_list_view": 1,
+   "columns": 1,
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "line_status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Not Due\nPart Received\nDue Soon\nDue Today\nOverdue\nReceived\nShort-Closed",
+   "in_list_view": 1,
+   "columns": 2,
+   "read_only": 1,
+   "no_copy": 1
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-09-29 13:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "PEPL Purchase",
+ "name": "PEPL Purchase Tracker Line",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "istable": 1,
+ "editable_grid": 1
+}

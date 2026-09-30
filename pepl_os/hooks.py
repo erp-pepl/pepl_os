@@ -47,6 +47,7 @@ before_tests = "pepl_os.tests.bootstrap.before_tests"
 CSM_SEGREGATION = "pepl_os.pepl_stores.stock_tree.validate_csm_segregation"
 SUPPLIER_GATE = "pepl_os.pepl_purchase.supplier_approval.before_submit_gate"
 PO_APPROVAL = "pepl_os.pepl_purchase.po_approval"
+TRACKER = "pepl_os.pepl_purchase.tracker"
 
 doc_events = {
 	"PEPL System Parameters": {
@@ -63,7 +64,12 @@ doc_events = {
 	"Item": {"validate": "pepl_os.pepl_stores.stock_tree.validate_item"},
 	# C2-04: customer-supplied material and PEPL material never share a store.
 	"Stock Entry": {"validate": CSM_SEGREGATION},
-	"Purchase Receipt": {"validate": CSM_SEGREGATION},
+	"Purchase Receipt": {
+		"validate": CSM_SEGREGATION,
+		# C2-12: a receipt recomputes the trackers of its Purchase Orders
+		"on_submit": f"{TRACKER}.on_receipt_change",
+		"on_cancel": f"{TRACKER}.on_receipt_change",
+	},
 	"Delivery Note": {"validate": CSM_SEGREGATION},
 	# C2-07: draft the Material Request for bought-out and short raw material
 	"Sales Order": {"on_submit": "pepl_os.pepl_purchase.material_request.on_sales_order_submit"},
@@ -76,6 +82,9 @@ doc_events = {
 		"on_update": f"{PO_APPROVAL}.on_update",
 		"on_submit": f"{PO_APPROVAL}.on_update",
 		"on_cancel": f"{PO_APPROVAL}.on_update",
+		# C2-12: submit creates the Purchase Tracker; cancel, close and Update Items recompute it
+		"on_change": f"{TRACKER}.on_po_change",
+		"on_trash": f"{TRACKER}.on_po_trash",
 	},
 }
 
@@ -88,5 +97,7 @@ scheduler_events = {
 		"pepl_os.pepl_stores.capital_equipment.daily_equipment_alerts",
 		# C2-08: supplier documents expiring / expired
 		"pepl_os.pepl_purchase.supplier_approval.daily_supplier_approvals",
+		# C2-12: every open Purchase Tracker, so days overdue move on each morning
+		"pepl_os.pepl_purchase.tracker.refresh_open_purchase_trackers",
 	],
 }

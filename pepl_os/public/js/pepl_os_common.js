@@ -71,7 +71,7 @@ pepl.override = async function (frm, rule_code, message) {
 // action: { label: "Chase vendor", handler: () => {...} }  (at most one primary action)
 pepl.panel = function (frm, { title, rows = [], action } = {}) {
 	const esc = frappe.utils.escape_html;
-	const allowed = ["green", "orange", "red", "gray", "blue"];
+	const allowed = ["green", "orange", "yellow", "red", "gray", "blue"];
 	const lines = rows
 		.map((r) => {
 			const colour = allowed.includes(r.colour) ? r.colour : "gray";

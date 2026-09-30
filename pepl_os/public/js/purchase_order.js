@@ -3,6 +3,15 @@ const PEPL_PO = "pepl_os.pepl_purchase.po_approval.po_approval_info";
 
 frappe.ui.form.on("Purchase Order", {
 	refresh(frm) {
+		if (frm.doc.docstatus === 1) {
+			// C2-12: the Purchase Tracker's delivery status on the submitted PO
+			frappe.call("pepl_os.pepl_purchase.tracker.get_panel", { purchase_order: frm.doc.name }).then((r) => {
+				if (!r.message) return;
+				pepl.panel(frm, { title: __("Delivery status"), rows: r.message.rows });
+				frm.add_custom_button(__("Purchase Tracker"), () => frappe.set_route("Form", "PEPL Purchase Tracker", r.message.name));
+			});
+			return;
+		}
 		if (frm.is_new() || frm.doc.docstatus !== 0) return;
 		frappe.call(PEPL_PO, { purchase_order: frm.doc.name }).then((r) => {
 			const i = r.message;

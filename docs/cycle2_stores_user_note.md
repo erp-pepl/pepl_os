@@ -72,3 +72,15 @@ automatically once it is submitted). At or below the value, the Purchase Manager
 The Purchase User prepares and saves Purchase Orders but does not submit them. Every PO line
 needs a Required By (promised) date, not earlier than the PO date. With no value set, the
 Purchase Manager submits every PO.
+
+## Purchase Tracker
+
+Every submitted Purchase Order gets one **PEPL Purchase Tracker** automatically. Each line
+shows ordered, received and pending quantity, the **promised date** (taken once from the PO
+line and never changed) and its status: Not Due, Due Soon (within the Delivery Alert Lead
+Days), Due Today, **Overdue** (with days overdue, after the Late Delivery Grace Days), Part
+Received, Received or Short-Closed (PO closed with quantity still pending). The tracker's
+status is its worst line. It is recalculated when the PO is submitted, closed, cancelled or
+changed, when goods are received, every morning, and when you press **Refresh now**. Enter
+the vendor's revised date and your next follow-up date on the tracker; lateness is always
+counted from the promised date.

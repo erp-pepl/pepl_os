@@ -1,0 +1,249 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-09-29 13:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "purchase_order",
+  "supplier",
+  "supplier_name",
+  "vendor_criticality",
+  "buyer",
+  "company",
+  "column_break_status",
+  "status",
+  "next_due_date",
+  "worst_days_overdue",
+  "open_lines",
+  "delivery_score",
+  "last_computed_on",
+  "section_chase",
+  "vendor_revised_date",
+  "next_follow_up_date",
+  "column_break_chase",
+  "last_chased_on",
+  "chase_count",
+  "chase_notes",
+  "section_lines",
+  "lines"
+ ],
+ "fields": [
+  {
+   "fieldname": "purchase_order",
+   "fieldtype": "Link",
+   "label": "Purchase Order",
+   "options": "Purchase Order",
+   "reqd": 1,
+   "unique": 1,
+   "set_only_once": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "label": "Supplier",
+   "options": "Supplier",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "supplier_name",
+   "fieldtype": "Data",
+   "label": "Supplier Name",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "vendor_criticality",
+   "fieldtype": "Data",
+   "label": "Vendor Criticality",
+   "in_standard_filter": 1,
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "buyer",
+   "fieldtype": "Link",
+   "label": "Buyer",
+   "options": "User",
+   "in_standard_filter": 1,
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "column_break_status",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Not Due\nPart Received\nDue Soon\nDue Today\nOverdue\nCompleted\nCancelled",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "next_due_date",
+   "fieldtype": "Date",
+   "label": "Next Due Date",
+   "in_list_view": 1,
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "worst_days_overdue",
+   "fieldtype": "Int",
+   "label": "Worst Days Overdue",
+   "in_list_view": 1,
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "open_lines",
+   "fieldtype": "Int",
+   "label": "Open Lines",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "delivery_score",
+   "fieldtype": "Percent",
+   "label": "Supplier Delivery Score",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "last_computed_on",
+   "fieldtype": "Datetime",
+   "label": "Last Computed On",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "section_chase",
+   "fieldtype": "Section Break",
+   "label": "Chasing"
+  },
+  {
+   "fieldname": "vendor_revised_date",
+   "fieldtype": "Date",
+   "label": "Vendor Revised Date",
+   "description": "The date the vendor now promises for the whole order. For chasing only."
+  },
+  {
+   "fieldname": "next_follow_up_date",
+   "fieldtype": "Date",
+   "label": "Next Follow-up Date"
+  },
+  {
+   "fieldname": "column_break_chase",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "last_chased_on",
+   "fieldtype": "Datetime",
+   "label": "Last Chased On",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "chase_count",
+   "fieldtype": "Int",
+   "label": "Times Chased",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "chase_notes",
+   "fieldtype": "Small Text",
+   "label": "Chase Notes"
+  },
+  {
+   "fieldname": "section_lines",
+   "fieldtype": "Section Break",
+   "label": "Lines"
+  },
+  {
+   "fieldname": "lines",
+   "fieldtype": "Table",
+   "label": "Lines",
+   "options": "PEPL Purchase Tracker Line"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-09-29 13:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "PEPL Purchase",
+ "name": "PEPL Purchase Tracker",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "Purchase Manager",
+   "read": 1,
+   "write": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "Purchase User",
+   "read": 1,
+   "write": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "Stock User",
+   "read": 1,
+   "print": 1,
+   "report": 1
+  },
+  {
+   "role": "Accounts User",
+   "read": 1,
+   "print": 1,
+   "report": 1
+  }
+ ],
+ "sort_field": "next_due_date",
+ "sort_order": "ASC",
+ "states": [],
+ "track_changes": 1,
+ "autoname": "PUR-TRK-.YYYY.-.####",
+ "naming_rule": "Expression (old style)",
+ "title_field": "supplier_name",
+ "search_fields": "purchase_order,supplier,status"
+}

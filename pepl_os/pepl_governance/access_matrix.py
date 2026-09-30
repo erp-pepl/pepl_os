@@ -36,6 +36,7 @@ MATRIX_DOCTYPES = (
 	("Purchase", "Supplier Quotation", "Supplier Quotation"),
 	("Purchase", "PEPL Quotation Comparison", "Quotation Comparison"),
 	("Purchase", "Purchase Order", "Purchase Order"),
+	("Purchase", "PEPL Purchase Tracker", "Purchase Tracker"),
 	("Purchase", "Purchase Invoice", "Purchase Invoice (bill)"),
 	("Stores", "Purchase Receipt", "Purchase Receipt (GRN)"),
 	("Stores", "Stock Entry", "Stock Entry (issue / transfer)"),
