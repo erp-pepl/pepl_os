@@ -500,6 +500,25 @@ CUSTOM_FIELDS["Item"] = [
 		"description": "Receipts and issues must name the heat number (and receipts the test certificate). "
 		"On for new raw material. Without stock history the heat is kept as the Batch.",
 	},
+	{
+		# C2-20
+		"fieldname": "custom_abc_class",
+		"label": "ABC Class",
+		"fieldtype": "Data",
+		"read_only": 1,
+		"no_copy": 1,
+		"in_standard_filter": 1,
+		"insert_after": "custom_heat_tracked",
+		"description": "A / B / C by 12-month consumption value, set every month. Decides how often it is counted.",
+	},
+	{
+		"fieldname": "custom_last_counted_on",
+		"label": "Last Counted On",
+		"fieldtype": "Date",
+		"read_only": 1,
+		"no_copy": 1,
+		"insert_after": "custom_abc_class",
+	},
 ]
 
 # C2-15 - Heat numbers and test certificates.

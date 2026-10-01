@@ -156,6 +156,8 @@ scheduler_events = {
 	"monthly": [
 		# C2-19: next month's draft Reorder Review for the Stores HOD
 		"pepl_os.pepl_stores.reorder.monthly_reorder_review",
+		# C2-20: A / B / C class of every stock item by 12-month consumption value
+		"pepl_os.pepl_stores.cycle_count.monthly_classify_abc",
 	],
 }
 

@@ -193,3 +193,22 @@ submits: the levels go into each Item's standard Reorder table. Every morning an
 projected stock is below its level gets a ToDo for Stores; the Item shows the level against
 stock and a **Create Material Request** button. ERPNext's own automatic Material Request
 (Stock Settings) stays off until the HOD asks for it.
+
+## Cycle count by ABC class
+
+Every month each stock item gets an **ABC Class** from what it consumed over the last 12
+months by value: A = the items making up the top "Class A: Share of Value" %, B = the next
+"Class B" %, C = the rest. A **PEPL Cycle Count** for a store: press **Generate count
+sheet** and only the items that are due appear (never counted, or last counted at least
+"Count Class A / B / C Every (Days)" ago), one line per heat batch for heat items. Print
+the **Blind Count Sheet** - it shows no quantities, and the counter cannot see the book
+qty on screen either. Type each counted qty (tick **Counted** for a qty of zero). Every
+line that differs from the book needs a **Reason**. When the difference is above "Count
+Variance Needing Approval" % of the book value, only the Stores HOD can submit (they get a
+ToDo). On submit one standard Stock Reconciliation corrects only the lines that differed,
+and every counted item gets **Last Counted On**. **PEPL Cycle Count Variance Log** shows
+the differences by store, reason and month.
+
+Note: when an Item has a reorder level, ERPNext shows "You have to enable auto re-order in
+Stock Settings". PEPL keeps that setting off on purpose (Stores gets PEPL's own low-stock
+ToDo instead), so the message can be ignored.

@@ -47,6 +47,7 @@ MATRIX_DOCTYPES = (
 	("Stores", "Stock Reconciliation", "Stock count correction"),
 	("Stores", "PEPL Capital Equipment", "Capital Equipment Register"),
 	("Stores", "PEPL Reorder Review", "Reorder Review (monthly)"),
+	("Stores", "PEPL Cycle Count", "Cycle Count (blind)"),
 	("Stores", "PEPL Scrap Rate", "Scrap Rate"),
 	("Stores", "PEPL Scrap Weighment", "Scrap Weighment"),
 	("Stores", "PEPL Scrap Sale", "Scrap Sale (gate pass)"),

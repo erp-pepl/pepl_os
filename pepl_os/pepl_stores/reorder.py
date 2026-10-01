@@ -274,7 +274,13 @@ def on_submit_review(doc):
 		target.warehouse_reorder_level = flt(row.final_level)
 		target.warehouse_reorder_qty = flt(row.final_qty)
 		item.flags.ignore_permissions = True
-		item.save()
+		# ERPNext warns "enable auto re-order in Stock Settings" on every save; PEPL alerts Stores itself.
+		muted = frappe.flags.mute_messages
+		frappe.flags.mute_messages = True
+		try:
+			item.save()
+		finally:
+			frappe.flags.mute_messages = muted
 	close_resolved(REVIEW_RULE, REVIEW, frappe.get_all(REVIEW, filters={"docstatus": 0}, pluck="name"))
 
 
