@@ -396,7 +396,11 @@ CUSTOM_FIELDS["Material Request"] = [
 		"label": "Drafted from Sales Order",
 		"fieldtype": "Link",
 		"options": "Sales Order",
-		"read_only": 1,
+		# C2-16: the storekeeper names the order on a Customer Provided request; it then
+		# carries over to the Stock Entry that receives the customer's material.
+		"read_only": 0,
+		"read_only_depends_on": "eval:doc.material_request_type != 'Customer Provided'",
+		"description": "For a Customer Provided request: the Sales Order the customer's material is for.",
 		"no_copy": 1,
 		"in_standard_filter": 1,
 		"insert_after": "material_request_type",
@@ -504,6 +508,53 @@ CUSTOM_FIELDS["Stock Entry Detail"] = [
 		"insert_after": "batch_no",
 		"columns": 1,
 		"description": "Filled from the Batch for heat-batch items; type it for other heat-tracked items.",
+	},
+]
+
+# C2-16 - Customer-supplied material moves against its Sales Order.
+CUSTOM_FIELDS["Stock Entry"] = [
+	{
+		"fieldname": "custom_sales_order",
+		"label": "Sales Order (CSM)",
+		"fieldtype": "Link",
+		"options": "Sales Order",
+		"insert_after": "stock_entry_type",
+		"in_standard_filter": 1,
+		"search_index": 1,
+		"description": "Mandatory when a line is customer-supplied material (CSM).",
+	},
+	{
+		"fieldname": "custom_csm_customer",
+		"label": "Customer (CSM)",
+		"fieldtype": "Data",
+		"read_only": 1,
+		"fetch_from": "custom_sales_order.customer_name",
+		"depends_on": "eval:doc.custom_sales_order",
+		"insert_after": "custom_sales_order",
+	},
+]
+CUSTOM_FIELDS["Sales Order"] = [
+	{
+		"fieldname": "custom_has_csm",
+		"label": "Has Customer-Supplied Material",
+		"fieldtype": "Check",
+		"read_only": 1,
+		"hidden": 1,
+		"no_copy": 1,
+		"allow_on_submit": 1,
+		"insert_after": "delivery_date",
+	},
+	{
+		"fieldname": "custom_csm_scrap_disposition",
+		"label": "CSM Scrap",
+		"fieldtype": "Select",
+		"options": "Hold\nReturn to Customer\nPEPL May Sell",
+		"default": "Hold",
+		"allow_on_submit": 1,
+		"no_copy": 1,
+		"depends_on": "eval:doc.custom_has_csm",
+		"insert_after": "custom_has_csm",
+		"description": "What happens to scrap of the customer's material. Hold until the customer decides.",
 	},
 ]
 

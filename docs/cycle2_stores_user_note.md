@@ -121,3 +121,17 @@ typed reason (Reason Required) - set in PEPL System Parameters. The panel at the
 which lines are complete. Every submitted receipt line is written to the **PEPL Receipt Log**
 (never deleted; a cancelled receipt shows Cancelled). **PEPL Heat Number Trace** (report):
 type a heat number to see its receipt, every issue, the Work Order and the dispatch.
+
+## Customer-supplied material (CSM) against its Sales Order
+
+Material the customer sends in (CSM items, in the Item Group Customer-Supplied Material) is
+received with a **Material Request** of type **Customer Provided** - name the Sales Order on
+it - and then **Create > Stock Entry**: a Material Receipt into **CSM Stores** at zero value,
+so PEPL's stock value does not change. The heat number rules apply as for raw material: type
+the **Heat Number** on each line. Every Stock Entry with a CSM line must name its **Sales
+Order (CSM)** - receipts, issues to production, moves to **CSM Scrap** and returns. To give
+material back to the customer use the Stock Entry Type **CSM Return to Customer**. Once an
+order holds customer material, the Sales Order shows **CSM Scrap** (Hold / Return to
+Customer / PEPL May Sell, default Hold) and a **View > CSM Balance** button. **PEPL CSM
+Balance by Order** (report) shows, per order and CSM item, what was received, issued,
+scrapped, returned, the balance still held and the scrap on hand.

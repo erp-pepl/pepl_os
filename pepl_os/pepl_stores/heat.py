@@ -75,10 +75,13 @@ def enable_batches():
 # Item -------------------------------------------------------------------------------
 
 
-def apply_item_heat_defaults(doc, stock_class, raw_material_class):
-	"""Called from the Item validate (C2-04). New raw material is heat-tracked; heat = Batch when possible."""
+def apply_item_heat_defaults(doc, stock_class, heat_classes):
+	"""Called from the Item validate (C2-04). New raw material - and, from C2-16, new customer-supplied
+	material - is heat-tracked; heat = Batch when possible."""
+	if isinstance(heat_classes, str):
+		heat_classes = (heat_classes,)
 	if doc.is_new():
-		doc.set(TRACKED_FIELD, 1 if stock_class == raw_material_class else cint(doc.get(TRACKED_FIELD)))
+		doc.set(TRACKED_FIELD, 1 if stock_class in heat_classes else cint(doc.get(TRACKED_FIELD)))
 	if cint(doc.get(TRACKED_FIELD)) and doc.is_stock_item and not doc.has_batch_no and batches_enabled():
 		if doc.is_new() or not has_stock_history(doc.name):
 			doc.has_batch_no = 1

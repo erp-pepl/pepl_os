@@ -33,7 +33,10 @@ doctype_js = {
 	"Purchase Order": ["public/js/purchase_order.js", "public/js/supplier_gate.js"],
 	# C2-15: heat panel, Split by heat, reason dialog when the gate asks for one
 	"Purchase Receipt": "public/js/purchase_receipt.js",
+	# C2-16: Sales Order (CSM) picked from submitted orders of the company
 	"Stock Entry": "public/js/stock_entry.js",
+	# C2-16: "CSM Balance" button once the order holds customer-supplied material
+	"Sales Order": "public/js/csm_sales_order.js",
 }
 
 # C2-03: Supplier list coloured by approval state.
@@ -53,6 +56,7 @@ PO_APPROVAL = "pepl_os.pepl_purchase.po_approval"
 TRACKER = "pepl_os.pepl_purchase.tracker"
 LETDOWN = "pepl_os.pepl_purchase.letdown"
 HEAT = "pepl_os.pepl_stores.heat"
+CSM = "pepl_os.pepl_stores.csm"
 
 doc_events = {
 	"PEPL System Parameters": {
@@ -69,10 +73,13 @@ doc_events = {
 	"Item": {"validate": "pepl_os.pepl_stores.stock_tree.validate_item"},
 	# C2-04: customer-supplied material and PEPL material never share a store.
 	# C2-15: heat number -> Batch on receipts, Batch -> heat on issues; the heat number gate
+	# C2-16: every customer-supplied line moves against its Sales Order; the order shows its scrap option
 	"Stock Entry": {
-		"before_validate": f"{HEAT}.before_validate_stock_entry",
-		"validate": CSM_SEGREGATION,
+		"before_validate": [f"{CSM}.before_validate_stock_entry", f"{HEAT}.before_validate_stock_entry"],
+		"validate": [CSM_SEGREGATION, f"{CSM}.validate_stock_entry"],
 		"before_submit": f"{HEAT}.before_submit_stock_entry",
+		"on_submit": f"{CSM}.on_stock_entry_change",
+		"on_cancel": f"{CSM}.on_stock_entry_change",
 	},
 	"Purchase Receipt": {
 		# C2-15: heat number -> Batch, the heat / MTC gate, the Receipt Log

@@ -36,7 +36,10 @@ def _shortfall(item_code, warehouse, needed, same_store_reserved=0):
 
 def existing_request(sales_order):
 	return frappe.db.get_value(
-		"Material Request", {MR_LINK_FIELD: sales_order, "docstatus": ["<", 2]}, "name"
+		"Material Request",
+		# C2-16: a Customer Provided request may name the order too; only Purchase requests count here.
+		{MR_LINK_FIELD: sales_order, "docstatus": ["<", 2], "material_request_type": "Purchase"},
+		"name",
 	)
 
 

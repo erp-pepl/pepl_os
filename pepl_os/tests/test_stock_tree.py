@@ -164,7 +164,7 @@ class TestStockTree(PEPLTestCase):
 		)
 
 	def test_csm_item_blocked_from_pepl_warehouse(self):
-		make_item("PEPL-T-CSM-1", st.CSM)
+		make_item("PEPL-T-CSM-1", st.CSM, heat_tracked=False)
 		with self.assertRaises(frappe.ValidationError) as ctx:
 			self._receipt("PEPL-T-CSM-1", "RM Stores", 0).insert(ignore_permissions=True)
 		self.assertIn("customer-supplied", str(ctx.exception))
@@ -175,17 +175,4 @@ class TestStockTree(PEPLTestCase):
 			self._receipt("PEPL-T-RM-1", "CSM Stores", 10).insert(ignore_permissions=True)
 		self.assertIn("PEPL material", str(ctx.exception))
 
-	def test_csm_receipt_zero_valued(self):
-		make_item("PEPL-T-CSM-2", st.CSM)
-		entry = self._receipt("PEPL-T-CSM-2", "CSM Stores", 100)
-		entry.insert(ignore_permissions=True)
-		entry.submit()
-		sle = frappe.get_all(
-			"Stock Ledger Entry",
-			filters={"voucher_no": entry.name, "is_cancelled": 0},
-			fields=["valuation_rate", "stock_value", "actual_qty"],
-		)
-		self.assertEqual(len(sle), 1)
-		self.assertEqual(sle[0].actual_qty, 5)
-		self.assertEqual(sle[0].valuation_rate, 0)
-		self.assertEqual(sle[0].stock_value, 0)
+	# The zero-value CSM receipt (now against its Sales Order) is tested in test_c216_csm.

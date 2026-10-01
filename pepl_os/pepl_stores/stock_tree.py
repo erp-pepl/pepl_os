@@ -340,9 +340,10 @@ def validate_item(doc, method=None):
 		)
 
 	# C2-15: new raw material is heat-tracked, and gets Batch = heat when it has no stock history.
+	# C2-16: so is new customer-supplied material (the customer's steel carries its heat too).
 	from pepl_os.pepl_stores.heat import apply_item_heat_defaults
 
-	apply_item_heat_defaults(doc, stock_class, RAW_MATERIAL)
+	apply_item_heat_defaults(doc, stock_class, (RAW_MATERIAL, CSM))
 
 	if doc.is_stock_item and not stock_class:
 		if frappe.flags.pepl_allow_items_outside_tree:
