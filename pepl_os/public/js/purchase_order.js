@@ -7,8 +7,11 @@ frappe.ui.form.on("Purchase Order", {
 			// C2-12: the Purchase Tracker's delivery status on the submitted PO
 			frappe.call("pepl_os.pepl_purchase.tracker.get_panel", { purchase_order: frm.doc.name }).then((r) => {
 				if (!r.message) return;
-				pepl.panel(frm, { title: __("Delivery status"), rows: r.message.rows });
-				frm.add_custom_button(__("Purchase Tracker"), () => frappe.set_route("Form", "PEPL Purchase Tracker", r.message.name));
+				pepl.panel(frm, {
+					title: __("Delivery status"),
+					rows: r.message.rows,
+					actions: [{ label: __("Purchase Tracker"), handler: () => frappe.set_route("Form", "PEPL Purchase Tracker", r.message.name) }],
+				});
 			});
 			return;
 		}

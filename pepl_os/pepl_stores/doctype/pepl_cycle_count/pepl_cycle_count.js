@@ -17,8 +17,15 @@ frappe.ui.form.on("PEPL Cycle Count", {
 				else go();
 			});
 		}
-		if (frm.doc.needs_hod_approval && frm.doc.docstatus === 0) {
-			frm.dashboard.set_headline_alert(__("The variance is above the approval limit: the Stores HOD must submit this count."), "orange");
+		if (frm.doc.docstatus === 0 && !frm.is_new()) {
+			const lines = frm.doc.items || [];
+			const left = lines.filter((r) => !r.counted).length;
+			const rows = [];
+			if (!lines.length) rows.push({ text: __("No sheet yet: press Generate count sheet."), colour: "gray" });
+			else if (left) rows.push({ text: __("{0} of {1} line(s) still to count", [left, lines.length]), colour: "orange" });
+			else rows.push({ text: __("All {0} line(s) counted", [lines.length]), colour: "green" });
+			if (frm.doc.needs_hod_approval) rows.push({ text: __("Variance above the approval limit: the Stores HOD must submit this count."), colour: "orange" });
+			pepl.panel(frm, { title: __("Cycle count"), rows });
 		}
 	},
 });

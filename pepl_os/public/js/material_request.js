@@ -11,7 +11,7 @@ frappe.ui.form.on("Material Request", {
 			.then((r) => {
 				const rows = [];
 				if (frm.doc.custom_sales_order) {
-					rows.push({ text: __("Drafted from Sales Order {0}", [frm.doc.custom_sales_order]), colour: "blue" });
+					rows.push({ text: __("Drafted from Sales Order {0}", [frm.doc.custom_sales_order]), colour: "gray" });
 				}
 				(r.message || []).forEach((l) => {
 					rows.push({

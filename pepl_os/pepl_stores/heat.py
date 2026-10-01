@@ -393,7 +393,7 @@ def split_by_heat(purchase_receipt, row_name, splits):
 def get_receipt_panel(purchase_receipt):
 	doc = frappe.get_doc("Purchase Receipt", purchase_receipt)
 	doc.check_permission("read")
-	rows = [{"text": _("Heat number gate: {0}").format(_(gate_mode())), "colour": "blue"}]
+	rows = [{"text": _("Heat number gate: {0}").format(_(gate_mode())), "colour": "gray"}]
 	tracked_rows = 0
 	for row in doc.items:
 		tracked, batched = item_flags(row.item_code)

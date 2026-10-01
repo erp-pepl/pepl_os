@@ -277,7 +277,7 @@ def _colour(row):
 		return "red"
 	if row.flag in ("Due Soon", "Due Today"):
 		return "orange"
-	return "blue"
+	return "gray"
 
 
 @frappe.whitelist()

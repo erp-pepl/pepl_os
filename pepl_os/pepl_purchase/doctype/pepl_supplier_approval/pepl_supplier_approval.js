@@ -25,7 +25,7 @@ frappe.ui.form.on("PEPL Supplier Approval", {
 			})
 		);
 		if (frm.doc.earliest_expiry) {
-			rows.push({ text: __("Earliest expiry: {0}", [frappe.datetime.str_to_user(frm.doc.earliest_expiry)]), colour: "blue" });
+			rows.push({ text: __("Earliest expiry: {0}", [frappe.datetime.str_to_user(frm.doc.earliest_expiry)]), colour: "gray" });
 		}
 		pepl.panel(frm, { title: __("Approval documents"), rows });
 	},

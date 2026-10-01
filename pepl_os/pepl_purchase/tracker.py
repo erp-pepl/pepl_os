@@ -295,7 +295,7 @@ def panel_rows(doc):
 		if scored
 		else _("no delivery score yet")
 	)
-	rows.append({"text": f"{chase}; {score}", "colour": "blue"})
+	rows.append({"text": f"{chase}; {score}", "colour": "gray"})
 	return rows
 
 

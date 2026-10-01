@@ -222,3 +222,14 @@ or **Machine Group** (fill the new Machine Group column on the Stock Entry line 
 issuing). The day totals of a week add up to that week, and the weeks to the month. Choose
 **Chart = % of Sales** to see each month's consumables value as a % of that month's net
 total of submitted Sales Invoices; the same figures are shown above the table.
+
+## The panel at the top of each form
+
+Every key purchase and stores form now shows one or more panels at the top in the same way:
+a title, lines in **green** (in order), **orange** (needs attention soon), **red** (blocked or
+late) or **grey** (for information), and at most one blue main button for the next step.
+Material Request (purchase check), Supplier (approval and payment priority), Supplier
+Approval (documents), Quotation Comparison (summary), Purchase Order (approval before
+submit; delivery status after, with **Purchase Tracker**), Purchase Tracker (delivery and
+chase), Purchase Receipt (heat numbers, with **Split by heat**), Purchase Invoice (payment
+priority), Item (reorder) and Cycle Count (lines left to count).

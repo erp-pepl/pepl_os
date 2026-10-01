@@ -27,7 +27,7 @@ frappe.ui.form.on("PEPL Quotation Comparison", {
 		frappe.call({ method: `${QC}.get_panel`, args: { name: frm.doc.name } }).then((r) => {
 			const rows = r.message || [];
 			if (frm.doc.purchase_orders) {
-				rows.unshift({ text: __("Purchase Orders: {0}", [frm.doc.purchase_orders.split("\n").join(", ")]), colour: "blue" });
+				rows.unshift({ text: __("Purchase Orders: {0}", [frm.doc.purchase_orders.split("\n").join(", ")]), colour: "gray" });
 			}
 			pepl.panel(frm, { title: __("Comparison"), rows });
 		});

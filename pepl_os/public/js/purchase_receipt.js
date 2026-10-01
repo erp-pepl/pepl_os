@@ -5,11 +5,11 @@ frappe.ui.form.on("Purchase Receipt", {
 	refresh(frm) {
 		if (frm.is_new()) return;
 		frappe.call(`${PEPL_HEAT}.get_receipt_panel`, { purchase_receipt: frm.doc.name }).then((r) => {
-			if (r.message) pepl.panel(frm, { title: __("Heat numbers"), rows: r.message });
+			if (!r.message) return;
+			// C2-22: the one action a storekeeper needs is on the panel itself.
+			const actions = frm.doc.docstatus === 0 ? [{ label: __("Split by heat"), handler: () => pepl.split_by_heat(frm) }] : [];
+			pepl.panel(frm, { title: __("Heat numbers"), rows: r.message, actions });
 		});
-		if (frm.doc.docstatus === 0) {
-			frm.add_custom_button(__("Split by heat"), () => pepl.split_by_heat(frm));
-		}
 	},
 	async before_submit(frm) {
 		const r = await frappe.call(`${PEPL_HEAT}.heat_gate_check`, { doctype: frm.doctype, name: frm.doc.name });
