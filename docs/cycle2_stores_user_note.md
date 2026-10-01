@@ -84,3 +84,15 @@ status is its worst line. It is recalculated when the PO is submitted, closed, c
 changed, when goods are received, every morning, and when you press **Refresh now**. Enter
 the vendor's revised date and your next follow-up date on the tracker; lateness is always
 counted from the promised date.
+
+## Chase list, chase letter and Open PO Ageing
+
+**PEPL Chase List** (report) shows every PO line that is Overdue, Due Today or Due Soon,
+grouped by supplier, Critical suppliers first, then by days overdue, with the supplier's
+phone and e-mail. Press **Chase** beside a supplier (or **Chase vendor** on a Purchase
+Tracker) to e-mail that supplier one letter, on letterhead, listing all its pending lines;
+the tracker then shows when it was last chased and how many times. **Preview chase letter**
+shows the letter first. Every morning the Purchase owner gets one ToDo per overdue PO; it
+closes itself when the PO is no longer overdue. **PEPL Open PO Ageing** (report) shows each
+supplier's open PO value by age since the PO date and by days overdue since the promised
+date, worked out live.

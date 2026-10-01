@@ -238,8 +238,14 @@ def refresh_all(as_of=None):
 
 @tracked_job("Purchase Tracker daily recompute")
 def refresh_open_purchase_trackers():
+	from pepl_os.pepl_purchase.chase import sync_chase_todos  # C2-13; chase imports this module
+
 	count = refresh_all()
-	return {"records_touched": count, "message": f"{count} open purchase tracker(s) recomputed"}
+	overdue = sync_chase_todos()
+	return {
+		"records_touched": count,
+		"message": f"{count} open purchase tracker(s) recomputed; {overdue} overdue (chase ToDos updated)",
+	}
 
 
 # Buttons and panels ----------------------------------------------------------

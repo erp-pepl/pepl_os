@@ -101,3 +101,6 @@ scheduler_events = {
 		"pepl_os.pepl_purchase.tracker.refresh_open_purchase_trackers",
 	],
 }
+
+# C2-13: the Vendor Chase Letter print format lists a supplier's pending lines.
+jinja = {"methods": ["pepl_os.pepl_purchase.chase.pepl_chase_lines"]}
