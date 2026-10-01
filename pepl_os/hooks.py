@@ -162,4 +162,24 @@ scheduler_events = {
 }
 
 # C2-13: the Vendor Chase Letter print format lists a supplier's pending lines.
-jinja = {"methods": ["pepl_os.pepl_purchase.chase.pepl_chase_lines"]}
+# C2-24: the RFQ Cover Letter's addressee and message.
+jinja = {
+	"methods": [
+		"pepl_os.pepl_purchase.chase.pepl_chase_lines",
+		"pepl_os.common.letterhead.pepl_rfq_letter",
+	]
+}
+
+# C2-24: PEPL print formats come out of the PDF button on the official letterhead.
+# Every other print format is passed straight to Frappe / ERPNext unchanged.
+override_whitelisted_methods = {
+	"frappe.utils.print_format.download_pdf": "pepl_os.common.letterhead.download_pdf",
+	"erpnext.buying.doctype.request_for_quotation.request_for_quotation.get_pdf": (
+		"pepl_os.common.letterhead.rfq_pdf"
+	),
+}
+
+# C2-24: the RFQ e-mail to suppliers attaches the cover letter on the letterhead.
+override_doctype_class = {
+	"Request for Quotation": "pepl_os.pepl_purchase.rfq.PEPLRequestforQuotation",
+}

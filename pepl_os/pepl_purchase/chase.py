@@ -185,7 +185,14 @@ def chase_vendor(supplier, send_email=True):
 			)
 		from frappe.core.doctype.communication.email import make
 
+		from pepl_os.common.letterhead import file_name, render
+
 		name = frappe.db.get_value("Supplier", supplier, "supplier_name") or supplier
+		# C2-24: the chase letter goes as a PDF on the official letterhead
+		letter = {
+			"fname": file_name(f"Pending-Deliveries-{supplier}"),
+			"fcontent": render("Supplier", supplier, LETTER_FORMAT),
+		}
 		make(
 			doctype="Supplier",
 			name=supplier,
@@ -196,8 +203,7 @@ def chase_vendor(supplier, send_email=True):
 				"Purchase Orders. Kindly confirm the dispatch dates by return.<br><br>Regards"
 			).format(frappe.utils.escape_html(name)),
 			send_email=True,
-			print_format=LETTER_FORMAT,
-			print_letterhead=True,
+			attachments=[letter],
 		)
 	stamped = []
 	for tracker in sorted({line.tracker for line in lines}):

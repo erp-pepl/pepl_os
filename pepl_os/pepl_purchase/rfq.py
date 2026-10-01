@@ -16,6 +16,7 @@ used unchanged.
 import json
 
 import frappe
+from erpnext.buying.doctype.request_for_quotation.request_for_quotation import RequestforQuotation
 from frappe import _
 from frappe.utils import getdate, today
 
@@ -208,3 +209,13 @@ def create_rfqs(material_request, groups):
 	if isinstance(groups, str):
 		groups = json.loads(groups)
 	return create(material_request, groups)
+
+
+# C2-24: the RFQ e-mailed to each supplier carries the cover letter on the PEPL letterhead -------
+
+
+class PEPLRequestforQuotation(RequestforQuotation):
+	def send_email(self, data, sender, subject, message, attachments):
+		from pepl_os.common.letterhead import swap_print_attachment
+
+		return super().send_email(data, sender, subject, message, swap_print_attachment(self, attachments))

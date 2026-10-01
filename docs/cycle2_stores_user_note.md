@@ -247,3 +247,17 @@ the report or list behind its number, and links to every watching report includi
 fully received). Under the cards, "Purchase Tracker last refreshed" shows green when the
 morning refresh ran today and red when it did not. To open the Buyer's Desk on login, set
 it as the user's Default Workspace (User > Settings).
+
+## Printing on the company letterhead
+
+The Purchase Order, RFQ cover letter, vendor chase letter, scrap weighment slip, scrap gate
+pass, blind count sheet and CSM return challan now come out on the official PEPL letterhead
+(the same letterhead file Sales uses). Open the document, click **Print**, then **PDF**: the
+PDF has the letterhead behind every page, the content placed between the header and the
+certification footer, and no blank last page. PO and RFQ open in the PEPL format by default
+(also the weighment slip, gate pass and count sheet); the old **Standard** format is still in
+the list if ever needed. The screen preview leaves the header and footer bands empty - the
+artwork is added in the PDF. On the RFQ, **Tools > Download PDF for Supplier** gives a letter
+addressed to the chosen supplier, and the RFQ e-mail to each supplier attaches that
+supplier's letter as a PDF (**Send Document Print** is now ticked by default on new RFQs). The vendor chase e-mail attaches the chase letter the same way.
+Draft documents print with a red **DRAFT** mark.
