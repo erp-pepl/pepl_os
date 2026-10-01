@@ -17,7 +17,7 @@ def execute(filters=None):
 			"width": 170,
 		},
 		{"fieldname": "reason", "label": _("Reason"), "fieldtype": "Data", "width": 150},
-		{"fieldname": "lines", "label": _("Lines"), "fieldtype": "Int", "width": 70},
+		{"fieldname": "line_count", "label": _("Lines"), "fieldtype": "Int", "width": 70},
 		{"fieldname": "variance_qty", "label": _("Variance Qty"), "fieldtype": "Float", "width": 110},
 		{"fieldname": "variance_value", "label": _("Variance Value"), "fieldtype": "Currency", "width": 130},
 		{"fieldname": "items", "label": _("Items"), "fieldtype": "Data", "width": 260},

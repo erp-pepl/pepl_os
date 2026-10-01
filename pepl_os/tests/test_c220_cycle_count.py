@@ -124,3 +124,7 @@ class TestCycleCount(PEPLTestCase):
 			before - 5,
 		)
 		self.assertEqual(str(frappe.db.get_value("Item", FRESH, cc.COUNTED_FIELD)), today())
+		log = [r for r in cc.variance_log({"warehouse": doc.warehouse}) if r.reason == "Measurement"]
+		self.assertEqual(
+			(log[0].line_count, log[0].variance_qty), (1, -5)
+		)  # regression: 'lines' is reserved in MariaDB

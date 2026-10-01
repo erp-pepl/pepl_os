@@ -329,7 +329,7 @@ def variance_log(filters=None):
 		values["to_date"] = filters.to_date
 	return frappe.db.sql(
 		f"""select c.warehouse, i.reason, date_format(c.count_date, '%%Y-%%m') as month,
-			count(*) as lines, sum(i.variance_qty) as variance_qty, sum(i.variance_value) as variance_value,
+			count(*) as line_count, sum(i.variance_qty) as variance_qty, sum(i.variance_value) as variance_value,
 			group_concat(distinct i.item_code separator ', ') as items
 		from `tabPEPL Cycle Count Item` i join `tabPEPL Cycle Count` c on c.name = i.parent
 		where {" and ".join(conditions)}
