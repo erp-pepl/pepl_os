@@ -97,3 +97,65 @@ pepl.panel = function (frm, { title, rows = [], actions, action } = {}) {
 		if (idx === 0 && btn) btn.addClass("btn-primary");
 	});
 };
+
+// C2-24: the Print button on the print page prints the PDF on the PEPL letterhead -------------------
+// For the PEPL letterhead formats (frappe.boot.pepl_letterhead_formats) the black Print button no longer
+// prints the plain web page: it fetches the letterhead PDF (the same one the PDF button gives) and opens
+// the browser's print dialog on it. Every other print format prints exactly as before.
+pepl.print_letterhead_pdf = function (doctype, name, format, lang) {
+	const query = new URLSearchParams({ doctype, name, format, no_letterhead: 1 });
+	if (lang) query.set("_lang", lang);
+	const url = frappe.urllib.get_full_url("/api/method/frappe.utils.print_format.download_pdf?" + query.toString());
+	frappe.show_alert({ message: __("Preparing {0} on the PEPL letterhead...", [name]), indicator: "blue" }, 4);
+	fetch(url, { credentials: "same-origin" })
+		.then((r) => {
+			if (!r.ok) throw new Error(r.statusText);
+			return r.blob();
+		})
+		.then((blob) => {
+			const blob_url = URL.createObjectURL(new Blob([blob], { type: "application/pdf" }));
+			const frame = document.createElement("iframe");
+			frame.setAttribute("style", "visibility: hidden; height: 0; width: 0; position: absolute; border: 0;");
+			frame.onload = () => {
+				try {
+					frame.contentWindow.focus();
+					frame.contentWindow.print();
+				} catch (e) {
+					window.open(blob_url); // the browser opens the PDF; print it from there
+				}
+			};
+			frame.src = blob_url;
+			document.body.appendChild(frame);
+			setTimeout(() => {
+				frame.remove();
+				URL.revokeObjectURL(blob_url);
+			}, 10 * 60 * 1000);
+		})
+		.catch(() => {
+			if (!window.open(url)) frappe.msgprint(__("Please enable pop-ups"));
+		});
+};
+
+pepl.patch_print_view = function () {
+	const PrintView = frappe.ui.form && frappe.ui.form.PrintView;
+	if (!PrintView) return false; // the print page has not loaded yet
+	if (PrintView.prototype.__pepl_letterhead) return true;
+	const original = PrintView.prototype.printit;
+	PrintView.prototype.printit = function () {
+		const format = this.selected_format && this.selected_format();
+		if ((frappe.boot.pepl_letterhead_formats || []).includes(format) && this.frm && this.frm.doc) {
+			return pepl.print_letterhead_pdf(this.frm.doc.doctype, this.frm.doc.name, format, this.lang_code);
+		}
+		return original.apply(this, arguments);
+	};
+	PrintView.prototype.__pepl_letterhead = true;
+	return true;
+};
+
+$(document).on("page-change", () => {
+	if (frappe.get_route()[0] !== "print") return;
+	let tries = 0;
+	const attempt = () => !pepl.patch_print_view() && ++tries < 25 && setTimeout(attempt, 200);
+	attempt();
+});
+pepl.patch_print_view();

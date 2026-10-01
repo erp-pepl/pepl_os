@@ -257,8 +257,9 @@ PDF has the letterhead behind every page, the content placed between the header 
 certification footer, and no blank last page. PO and RFQ open in the PEPL format by default
 (also the weighment slip, gate pass and count sheet); the old **Standard** format is still in
 the list if ever needed. The screen preview shows the letterhead header and footer as a guide; the
-PDF carries the official letterhead file. The browser **Print** button (Ctrl+P) prints
-without the artwork - always print from the PDF. On the RFQ, **Tools > Download PDF for Supplier** gives a letter
+PDF carries the official letterhead file. The black **Print** button on the print page now prints
+that same letterhead PDF (a print dialog opens on it). Only the browser's own Ctrl+P, or
+**Print** on the Full Page view, prints the plain page without the artwork. On the RFQ, **Tools > Download PDF for Supplier** gives a letter
 addressed to the chosen supplier, and the RFQ e-mail to each supplier attaches that
 supplier's letter as a PDF (**Send Document Print** is now ticked by default on new RFQs). The vendor chase e-mail attaches the chase letter the same way.
 Draft documents print with a red **DRAFT** mark.

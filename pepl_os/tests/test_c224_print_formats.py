@@ -230,3 +230,10 @@ class TestPrintFormats(PEPLTestCase):
 		self.assertIn("PARASRAMKA", _pages(frappe.local.response.filecontent)[0].extract_text())
 		lh.download_pdf("Purchase Order", po.name, format="Standard")
 		self.assertNotIn("PARASRAMKA", _pages(frappe.local.response.filecontent)[0].extract_text() or "")
+
+	def test_print_button_knows_the_letterhead_formats(self):
+		from pepl_os.boot import boot_session
+
+		bootinfo = frappe._dict()
+		boot_session(bootinfo)
+		self.assertEqual(sorted(bootinfo.pepl_letterhead_formats), sorted(lh.LETTERHEAD_FORMATS))
