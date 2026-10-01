@@ -177,3 +177,19 @@ Return to Customer** and print the **PEPL CSM Return Challan**. **PEPL Scrap Rec
 master, value realised, closing kg and value, and scrap as a % of raw material issued.
 If scrap is ever invoiced through an ERPNext Sales Invoice, Cycle 1's Payment Tracker hook
 must first be told to skip the Scrap Buyers group.
+
+## Reorder levels from actual consumption
+
+For raw material (RM Stores) and consumables (Consumables Stores) the system works out
+reorder levels from what was really used: everything issued, consumed in manufacture or
+moved into a WIP store over the **Reorder: Usage Period** (store-to-store moves do not
+count), divided by those days. The lead time is the median number of days from PO to
+receipt for that item (else the Item's Lead Time). **Level = daily use x (lead time +
+Reorder: Safety Stock days)**; **order qty = 30 days of use**, rounded up to the Item's
+minimum order qty. Items used for under 30 days are marked "insufficient history" and are
+not ticked. Each month the Stores HOD gets a draft **PEPL Reorder Review** (or creates one
+and presses **Compute suggestions**), ticks Accept, may change the final level / qty, and
+submits: the levels go into each Item's standard Reorder table. Every morning an item whose
+projected stock is below its level gets a ToDo for Stores; the Item shows the level against
+stock and a **Create Material Request** button. ERPNext's own automatic Material Request
+(Stock Settings) stays off until the HOD asks for it.

@@ -1,0 +1,145 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-09-29 13:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "item_code",
+  "item_name",
+  "warehouse",
+  "current_level",
+  "current_qty",
+  "daily_consumption",
+  "lead_time_days",
+  "suggested_level",
+  "suggested_qty",
+  "insufficient_history",
+  "basis",
+  "column_break_decision",
+  "accept",
+  "final_level",
+  "final_qty"
+ ],
+ "fields": [
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "label": "Item",
+   "options": "Item",
+   "reqd": 1,
+   "in_list_view": 1,
+   "columns": 2,
+   "read_only": 1
+  },
+  {
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "label": "Item Name",
+   "fetch_from": "item_code.item_name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "warehouse",
+   "fieldtype": "Link",
+   "label": "Store",
+   "options": "Warehouse",
+   "reqd": 1,
+   "in_list_view": 1,
+   "columns": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "current_level",
+   "fieldtype": "Float",
+   "label": "Current Level",
+   "in_list_view": 1,
+   "columns": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "current_qty",
+   "fieldtype": "Float",
+   "label": "Current Qty",
+   "read_only": 1
+  },
+  {
+   "fieldname": "daily_consumption",
+   "fieldtype": "Float",
+   "label": "Used per Day",
+   "in_list_view": 1,
+   "columns": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "lead_time_days",
+   "fieldtype": "Int",
+   "label": "Lead Time (Days)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "suggested_level",
+   "fieldtype": "Float",
+   "label": "Suggested Level",
+   "in_list_view": 1,
+   "columns": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "suggested_qty",
+   "fieldtype": "Float",
+   "label": "Suggested Qty",
+   "read_only": 1
+  },
+  {
+   "fieldname": "insufficient_history",
+   "fieldtype": "Check",
+   "label": "Insufficient History",
+   "read_only": 1
+  },
+  {
+   "fieldname": "basis",
+   "fieldtype": "Small Text",
+   "label": "Basis",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_decision",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "accept",
+   "fieldtype": "Check",
+   "label": "Accept",
+   "in_list_view": 1,
+   "columns": 1
+  },
+  {
+   "fieldname": "final_level",
+   "fieldtype": "Float",
+   "label": "Final Level",
+   "in_list_view": 1,
+   "columns": 1
+  },
+  {
+   "fieldname": "final_qty",
+   "fieldtype": "Float",
+   "label": "Final Qty",
+   "in_list_view": 1,
+   "columns": 1
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-09-29 13:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "PEPL Stores",
+ "name": "PEPL Reorder Review Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "istable": 1,
+ "editable_grid": 1
+}

@@ -40,6 +40,8 @@ doctype_js = {
 	# C2-17: payment-priority panel ("Rank #4 this week · MSME due in 6 days")
 	"Purchase Invoice": "public/js/purchase_invoice.js",
 	"Supplier": "public/js/supplier_payments.js",
+	# C2-19: reorder level vs projected stock; "Create Material Request" when below
+	"Item": "public/js/item_reorder.js",
 }
 
 # C2-03: Supplier list coloured by approval state.
@@ -148,6 +150,12 @@ scheduler_events = {
 		"pepl_os.pepl_purchase.letdown.daily_delivery_scores",
 		# C2-17: MSME days left; ToDo to Accounts at 7 days or fewer (PUR-MSME-DUE)
 		"pepl_os.pepl_purchase.payments.daily_msme_payments",
+		# C2-19: one ToDo per item below its reorder level (STO-REORDER)
+		"pepl_os.pepl_stores.reorder.daily_reorder_alerts",
+	],
+	"monthly": [
+		# C2-19: next month's draft Reorder Review for the Stores HOD
+		"pepl_os.pepl_stores.reorder.monthly_reorder_review",
 	],
 }
 
