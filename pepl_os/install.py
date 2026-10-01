@@ -1,6 +1,7 @@
 """Install and migrate hooks. Everything here must be safe to run repeatedly."""
 
 from pepl_os.pepl_governance.retention import apply_log_retention
+from pepl_os.pepl_stores.heat import enable_batches
 from pepl_os.pepl_stores.stock_tree import seed_stock_structure
 from pepl_os.setup.custom_fields import apply_custom_fields
 from pepl_os.setup.permissions import grant_ceo_view, grant_extra_views, restrict_delete
@@ -23,6 +24,7 @@ def ensure_setup():
 	grant_extra_views()  # A2: e.g. Accounts sees Purchase Orders
 	apply_log_retention()  # A5
 	seed_stock_structure()  # C2-04: stock classes, stores, Item Group defaults
+	enable_batches()  # C2-15: Batch = heat number needs batches switched on in Stock Settings
 
 
 def before_install():

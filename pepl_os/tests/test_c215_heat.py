@@ -72,6 +72,13 @@ class TestHeatNumbers(PEPLTestCase):
 		set_param("custom_heat_number_gate_mode", heat.HARD_BLOCK)
 		set_param("custom_enforce_override_reason", 1)
 
+	def test_batches_switched_on_by_setup(self):
+		# Regression: ERPNext v16 refuses every Batch until this Stock Settings switch is on.
+		frappe.db.set_single_value("Stock Settings", heat.BATCH_SWITCH, 0)
+		self.assertTrue(heat.enable_batches())
+		self.assertTrue(heat.batches_enabled())
+		self.assertFalse(heat.enable_batches())  # already on: nothing to do
+
 	def test_new_raw_material_is_heat_batch_item(self):
 		item = frappe.get_doc("Item", ROD)
 		self.assertEqual((item.custom_heat_tracked, item.has_batch_no, item.create_new_batch), (1, 1, 0))

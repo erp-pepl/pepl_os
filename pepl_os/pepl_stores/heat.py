@@ -52,6 +52,26 @@ def has_stock_history(item_code):
 	return bool(frappe.db.exists("Stock Ledger Entry", {"item_code": item_code, "is_cancelled": 0}))
 
 
+# Stock Settings ----------------------------------------------------------------------
+
+BATCH_SWITCH = "enable_serial_and_batch_no_for_item"
+
+
+def batches_enabled():
+	return cint(frappe.db.get_single_value("Stock Settings", BATCH_SWITCH))
+
+
+def enable_batches():
+	"""Install / migrate: ERPNext v16 refuses every Batch until 'Activate Serial / Batch No for Item'
+	is on in Stock Settings. Batch = heat needs it, so it is switched on (and never off)."""
+	if batches_enabled():
+		return False
+	frappe.db.set_single_value("Stock Settings", BATCH_SWITCH, 1)
+	frappe.db.set_default(BATCH_SWITCH, 1)
+	frappe.clear_cache(doctype="Stock Settings")
+	return True
+
+
 # Item -------------------------------------------------------------------------------
 
 
@@ -59,7 +79,7 @@ def apply_item_heat_defaults(doc, stock_class, raw_material_class):
 	"""Called from the Item validate (C2-04). New raw material is heat-tracked; heat = Batch when possible."""
 	if doc.is_new():
 		doc.set(TRACKED_FIELD, 1 if stock_class == raw_material_class else cint(doc.get(TRACKED_FIELD)))
-	if cint(doc.get(TRACKED_FIELD)) and doc.is_stock_item and not doc.has_batch_no:
+	if cint(doc.get(TRACKED_FIELD)) and doc.is_stock_item and not doc.has_batch_no and batches_enabled():
 		if doc.is_new() or not has_stock_history(doc.name):
 			doc.has_batch_no = 1
 			doc.create_new_batch = 0  # the Batch is made from the heat number at receipt
