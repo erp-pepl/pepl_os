@@ -67,6 +67,15 @@ class TestReorder(PEPLTestCase):
 		_move("Material Transfer", OIL, 300, 20, s=self.store, t=_wip())  # to WIP: consumption
 		_move("Material Transfer", OIL, 50, 10, s=self.store, t=_wh("Tool Room"))  # store to store: not
 
+	def test_auto_mr_switched_off_once(self):
+		frappe.db.set_default(reorder.AUTO_MR_FLAG, 0)
+		frappe.db.set_single_value("Stock Settings", reorder.AUTO_MR_FIELD, 1)
+		self.assertTrue(reorder.switch_off_auto_mr_once())
+		self.assertFalse(frappe.db.get_single_value("Stock Settings", reorder.AUTO_MR_FIELD))
+		frappe.db.set_single_value("Stock Settings", reorder.AUTO_MR_FIELD, 1)  # the HOD asks for it later
+		self.assertFalse(reorder.switch_off_auto_mr_once())
+		self.assertTrue(frappe.db.get_single_value("Stock Settings", reorder.AUTO_MR_FIELD))
+
 	def test_consumption_excludes_store_transfers(self):
 		self._history()
 		self.assertEqual(reorder.consumption(OIL, self.store, today(), 90), 900)

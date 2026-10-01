@@ -41,6 +41,24 @@ TRANSFERS = ("Material Transfer", "Material Transfer for Manufacture")
 REORDER_CLASSES = (stock_tree.RAW_MATERIAL, stock_tree.CONSUMABLES)
 
 
+AUTO_MR_FIELD = "auto_indent"
+AUTO_MR_FLAG = "pepl_auto_indent_switched_off"
+
+
+def switch_off_auto_mr_once():
+	"""Install / migrate: ERPNext's setup wizard turns on "Raise Material Request when stock reaches
+	re-order level". PEPL reviews reorder levels first (Reorder Review) and alerts Stores instead, so it is
+	switched off - once. If the Stores HOD later asks for it and it is ticked again, it stays on."""
+	if cint(frappe.db.get_default(AUTO_MR_FLAG)):
+		return False
+	changed = bool(cint(frappe.db.get_single_value("Stock Settings", AUTO_MR_FIELD)))
+	if changed:
+		frappe.db.set_single_value("Stock Settings", AUTO_MR_FIELD, 0)
+		frappe.clear_cache(doctype="Stock Settings")
+	frappe.db.set_default(AUTO_MR_FLAG, 1)
+	return changed
+
+
 def lookback_days():
 	return params.get_int("custom_reorder_lookback_days", 90) or 90
 

@@ -3,6 +3,7 @@
 from pepl_os.pepl_governance.retention import apply_log_retention
 from pepl_os.pepl_stores.csm import ensure_return_type
 from pepl_os.pepl_stores.heat import enable_batches
+from pepl_os.pepl_stores.reorder import switch_off_auto_mr_once
 from pepl_os.pepl_stores.scrap import ensure_scrap_masters
 from pepl_os.pepl_stores.stock_tree import seed_stock_structure
 from pepl_os.setup.custom_fields import apply_custom_fields
@@ -29,6 +30,7 @@ def ensure_setup():
 	enable_batches()  # C2-15: Batch = heat number needs batches switched on in Stock Settings
 	ensure_return_type()  # C2-16: Stock Entry Type "CSM Return to Customer"
 	ensure_scrap_masters()  # C2-18: CSM Scrap item group, Scrap Buyers, the default scrap items (once)
+	switch_off_auto_mr_once()  # C2-19: ERPNext's automatic MR stays off until the Stores HOD asks for it
 
 
 def before_install():
