@@ -121,9 +121,19 @@ def ensure_batch(item_code, supplier, heat, certificate=None, reference=None):
 	heat = heat.strip()
 	name = find_batch(item_code, supplier, heat)
 	if name:
-		if certificate and not frappe.db.get_value("Batch", name, MTC_FIELD):
-			frappe.db.set_value("Batch", name, MTC_FIELD, certificate, update_modified=False)
+		current = frappe.db.get_value("Batch", name, [MTC_FIELD, "reference_name"], as_dict=True)
+		updates = {}
+		if certificate and not current.get(MTC_FIELD):
+			updates[MTC_FIELD] = certificate
+		if reference and not current.reference_name and frappe.db.exists(*reference):
+			updates.update({"reference_doctype": reference[0], "reference_name": reference[1]})
+		if updates:
+			frappe.db.set_value("Batch", name, updates, update_modified=False)
 		return name
+	if reference and not frappe.db.exists(*reference):
+		# The receipt is being saved for the first time and is not in the database yet:
+		# create the Batch without the link; the next save / submit fills it in (above).
+		reference = None
 	batch = frappe.get_doc(
 		{
 			"doctype": "Batch",

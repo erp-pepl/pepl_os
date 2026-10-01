@@ -119,6 +119,9 @@ class TestHeatNumbers(PEPLTestCase):
 		batch = frappe.get_doc("Batch", row.batch_no)
 		self.assertEqual((batch.item, batch.supplier, batch.custom_heat_number), (ROD, S1, "H-B-100"))
 		self.assertTrue(batch.custom_test_certificate)
+		# Regression: a heat number typed on a NEW receipt must not fail the Batch's link to it.
+		pr.submit()
+		self.assertEqual(frappe.db.get_value("Batch", row.batch_no, "reference_name"), pr.name)
 		again = _receipt(S1, 5, heat_number="H-B-100")  # same supplier, same heat: the same batch
 		self.assertEqual(again.items[0].batch_no, row.batch_no)
 
