@@ -212,3 +212,13 @@ the differences by store, reason and month.
 Note: when an Item has a reorder level, ERPNext shows "You have to enable auto re-order in
 Stock Settings". PEPL keeps that setting off on purpose (Stores gets PEPL's own low-stock
 ToDo instead), so the message can be ignored.
+
+## Consumables issued: day, week, month and % of sales
+
+**PEPL Consumables Issued** (report) shows the qty and value of consumables used - issued,
+consumed in manufacture or moved into a WIP store (moves between stores are not counted) -
+per **Day**, **Week** (Monday to Sunday) or **Month**, grouped by **Item**, **Item Group**
+or **Machine Group** (fill the new Machine Group column on the Stock Entry line when
+issuing). The day totals of a week add up to that week, and the weeks to the month. Choose
+**Chart = % of Sales** to see each month's consumables value as a % of that month's net
+total of submitted Sales Invoices; the same figures are shown above the table.

@@ -549,6 +549,14 @@ CUSTOM_FIELDS["Stock Entry Detail"] = [
 		"columns": 1,
 		"description": "Filled from the Batch for heat-batch items; type it for other heat-tracked items.",
 	},
+	{
+		# C2-21: consumables issued per machine group (Cycle 3a's shift entries fill it)
+		"fieldname": "custom_machine_group",
+		"label": "Machine Group",
+		"fieldtype": "Data",
+		"insert_after": "custom_heat_number",
+		"description": "For consumables: the machine group they were issued to.",
+	},
 ]
 
 # C2-16 - Customer-supplied material moves against its Sales Order.
