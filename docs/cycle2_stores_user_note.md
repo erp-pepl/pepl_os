@@ -233,3 +233,17 @@ Approval (documents), Quotation Comparison (summary), Purchase Order (approval b
 submit; delivery status after, with **Purchase Tracker**), Purchase Tracker (delivery and
 chase), Purchase Receipt (heat numbers, with **Split by heat**), Purchase Invoice (payment
 priority), Item (reorder) and Cycle Count (lines left to count).
+
+## Procurement Command Centre
+
+Two new screens on the desk. **Buyer's Desk** (Purchase Manager and Purchase User): live
+cards for overdue deliveries, POs due this week and open PO value; one-click lists of
+Material Requests to review, RFQs awaiting quotes, comparisons awaiting approval, trackers
+overdue, the Chase List and the Vendor Payment Priority. **MD Stores Overview** (CEO and
+Stores HOD, read-only): six live cards - Overdue Deliveries, POs Due This Week, MSME
+Payments Due, Open PO Value, Supplier Documents Expiring and Scrap Stock Value - each opening
+the report or list behind its number, and links to every watching report including the new
+**PEPL Procurement Funnel** (per month: Material Requests, RFQs, comparisons approved, POs,
+fully received). Under the cards, "Purchase Tracker last refreshed" shows green when the
+morning refresh ran today and red when it did not. To open the Buyer's Desk on login, set
+it as the user's Default Workspace (User > Settings).

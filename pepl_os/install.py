@@ -1,6 +1,7 @@
 """Install and migrate hooks. Everything here must be safe to run repeatedly."""
 
 from pepl_os.pepl_governance.retention import apply_log_retention
+from pepl_os.pepl_purchase.command_centre import ensure_command_centre_block
 from pepl_os.pepl_stores.csm import ensure_return_type
 from pepl_os.pepl_stores.heat import enable_batches
 from pepl_os.pepl_stores.reorder import switch_off_auto_mr_once
@@ -31,6 +32,7 @@ def ensure_setup():
 	ensure_return_type()  # C2-16: Stock Entry Type "CSM Return to Customer"
 	ensure_scrap_masters()  # C2-18: CSM Scrap item group, Scrap Buyers, the default scrap items (once)
 	switch_off_auto_mr_once()  # C2-19: ERPNext's automatic MR stays off until the Stores HOD asks for it
+	ensure_command_centre_block()  # C2-23: the "Purchase Tracker last refreshed" line on both workspaces
 
 
 def before_install():

@@ -1,0 +1,32 @@
+{
+ "app": "pepl_os",
+ "creation": "2026-10-01 18:00:00.000000",
+ "docstatus": 0,
+ "doctype": "Desktop Icon",
+ "hidden": 0,
+ "icon": "buying",
+ "icon_type": "Link",
+ "idx": 50,
+ "label": "Buyer's Desk",
+ "link_to": "Buyers Desk",
+ "link_type": "Workspace Sidebar",
+ "modified": "2026-10-01 18:00:00.000000",
+ "modified_by": "Administrator",
+ "name": "Buyers Desk",
+ "owner": "Administrator",
+ "parent_icon": "",
+ "restrict_removal": 0,
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Purchase Manager"
+  },
+  {
+   "role": "Purchase User"
+  }
+ ],
+ "standard": 1,
+ "sidebar": "Buyers Desk"
+}

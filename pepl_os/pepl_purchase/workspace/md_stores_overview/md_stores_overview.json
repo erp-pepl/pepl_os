@@ -1,0 +1,218 @@
+{
+ "app": "pepl_os",
+ "charts": [],
+ "content": "[{\"id\": \"hdr\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>MD Stores Overview</b></span>\", \"col\": 12}}, {\"id\": \"card0\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"PEPL Overdue Deliveries\", \"col\": 4}}, {\"id\": \"card1\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"PEPL POs Due This Week\", \"col\": 4}}, {\"id\": \"card2\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"PEPL MSME Payments Due\", \"col\": 4}}, {\"id\": \"card3\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"PEPL Open PO Value\", \"col\": 4}}, {\"id\": \"card4\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"PEPL Supplier Documents Expiring\", \"col\": 4}}, {\"id\": \"card5\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"PEPL Scrap Stock Value\", \"col\": 4}}, {\"id\": \"refreshed\", \"type\": \"custom_block\", \"data\": {\"custom_block_name\": \"PEPL Tracker Refreshed\", \"col\": 12}}, {\"id\": \"spacer\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"card_links0\", \"type\": \"card\", \"data\": {\"card_name\": \"Purchase\", \"col\": 4}}, {\"id\": \"card_links1\", \"type\": \"card\", \"data\": {\"card_name\": \"Payables\", \"col\": 4}}, {\"id\": \"card_links2\", \"type\": \"card\", \"data\": {\"card_name\": \"Stores\", \"col\": 4}}]",
+ "creation": "2026-10-01 18:00:00.000000",
+ "custom_blocks": [
+  {
+   "custom_block_name": "PEPL Tracker Refreshed",
+   "label": "Purchase Tracker last refreshed"
+  }
+ ],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "buying",
+ "idx": 0,
+ "indicator_color": "blue",
+ "is_hidden": 0,
+ "label": "MD Stores Overview",
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Purchase",
+   "link_count": 3,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Open PO Ageing",
+   "link_count": 0,
+   "link_to": "PEPL Open PO Ageing",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Procurement Funnel",
+   "link_count": 0,
+   "link_to": "PEPL Procurement Funnel",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Chase List",
+   "link_count": 0,
+   "link_to": "PEPL Chase List",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Payables",
+   "link_count": 3,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "MSME 45-Day Compliance",
+   "link_count": 0,
+   "link_to": "PEPL MSME 45-Day Compliance",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Outstanding Vendor Bills",
+   "link_count": 0,
+   "link_to": "PEPL Outstanding Vendor Bills",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Vendor Payment Priority",
+   "link_count": 0,
+   "link_to": "PEPL Vendor Payment Priority",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Stores",
+   "link_count": 5,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Scrap Recovery",
+   "link_count": 0,
+   "link_to": "PEPL Scrap Recovery",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Consumables Issued",
+   "link_count": 0,
+   "link_to": "PEPL Consumables Issued",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Heat Number Trace",
+   "link_count": 0,
+   "link_to": "PEPL Heat Number Trace",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "CSM Balance by Order",
+   "link_count": 0,
+   "link_to": "PEPL CSM Balance by Order",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Cycle Count Variance Log",
+   "link_count": 0,
+   "link_to": "PEPL Cycle Count Variance Log",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2026-10-01 18:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "PEPL Purchase",
+ "name": "MD Stores Overview",
+ "number_cards": [
+  {
+   "label": "Overdue Deliveries",
+   "number_card_name": "PEPL Overdue Deliveries"
+  },
+  {
+   "label": "POs Due This Week",
+   "number_card_name": "PEPL POs Due This Week"
+  },
+  {
+   "label": "MSME Payments Due (45 Days)",
+   "number_card_name": "PEPL MSME Payments Due"
+  },
+  {
+   "label": "Open PO Value",
+   "number_card_name": "PEPL Open PO Value"
+  },
+  {
+   "label": "Supplier Documents Expiring",
+   "number_card_name": "PEPL Supplier Documents Expiring"
+  },
+  {
+   "label": "Scrap Stock Value",
+   "number_card_name": "PEPL Scrap Stock Value"
+  }
+ ],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "restrict_to_domain": "",
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "PEPL CEO"
+  },
+  {
+   "role": "Stock Manager"
+  }
+ ],
+ "sequence_id": 41.0,
+ "shortcuts": [],
+ "title": "MD Stores Overview",
+ "type": "Workspace"
+}

@@ -1,0 +1,32 @@
+{
+ "app": "pepl_os",
+ "creation": "2026-10-01 18:00:00.000000",
+ "docstatus": 0,
+ "doctype": "Desktop Icon",
+ "hidden": 0,
+ "icon": "buying",
+ "icon_type": "Link",
+ "idx": 50,
+ "label": "MD Stores Overview",
+ "link_to": "MD Stores Overview",
+ "link_type": "Workspace Sidebar",
+ "modified": "2026-10-01 18:00:00.000000",
+ "modified_by": "Administrator",
+ "name": "MD Stores Overview",
+ "owner": "Administrator",
+ "parent_icon": "",
+ "restrict_removal": 0,
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "PEPL CEO"
+  },
+  {
+   "role": "Stock Manager"
+  }
+ ],
+ "standard": 1,
+ "sidebar": "MD Stores Overview"
+}
