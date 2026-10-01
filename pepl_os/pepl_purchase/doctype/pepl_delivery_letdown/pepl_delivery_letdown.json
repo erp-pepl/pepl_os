@@ -1,0 +1,233 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-09-29 13:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "supplier",
+  "supplier_name",
+  "purchase_order",
+  "po_item",
+  "item_code",
+  "letdown_type",
+  "column_break_dates",
+  "promised_date",
+  "receipt_date",
+  "days_late",
+  "ordered_qty",
+  "qty_short",
+  "purchase_receipt",
+  "pr_item",
+  "section_excuse",
+  "excused",
+  "excuse_reason",
+  "excused_by",
+  "excused_on"
+ ],
+ "fields": [
+  {
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "label": "Supplier",
+   "options": "Supplier",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "supplier_name",
+   "fieldtype": "Data",
+   "label": "Supplier Name",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "purchase_order",
+   "fieldtype": "Link",
+   "label": "Purchase Order",
+   "options": "Purchase Order",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "po_item",
+   "fieldtype": "Data",
+   "label": "PO Line",
+   "hidden": 1,
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "label": "Item",
+   "options": "Item",
+   "in_list_view": 1,
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "letdown_type",
+   "fieldtype": "Select",
+   "label": "Type",
+   "options": "Late\nShort\nLate + Short",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "column_break_dates",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "promised_date",
+   "fieldtype": "Date",
+   "label": "Promised Date",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "receipt_date",
+   "fieldtype": "Date",
+   "label": "Receipt / Close Date",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "days_late",
+   "fieldtype": "Int",
+   "label": "Days Late",
+   "in_list_view": 1,
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "ordered_qty",
+   "fieldtype": "Float",
+   "label": "Ordered Qty",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "qty_short",
+   "fieldtype": "Float",
+   "label": "Qty Short",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "purchase_receipt",
+   "fieldtype": "Link",
+   "label": "Purchase Receipt",
+   "options": "Purchase Receipt",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "pr_item",
+   "fieldtype": "Data",
+   "label": "Receipt Line",
+   "hidden": 1,
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "section_excuse",
+   "fieldtype": "Section Break",
+   "label": "Excuse"
+  },
+  {
+   "fieldname": "excused",
+   "fieldtype": "Check",
+   "label": "Excused",
+   "in_standard_filter": 1,
+   "description": "An excused letdown does not count against the supplier's delivery score.",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "excuse_reason",
+   "fieldtype": "Small Text",
+   "label": "Excuse Reason",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "excused_by",
+   "fieldtype": "Link",
+   "label": "Excused By",
+   "options": "User",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "excused_on",
+   "fieldtype": "Datetime",
+   "label": "Excused On",
+   "read_only": 1,
+   "no_copy": 1
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-09-29 13:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "PEPL Purchase",
+ "name": "PEPL Delivery Letdown",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "Purchase Manager",
+   "read": 1,
+   "print": 1,
+   "export": 1,
+   "report": 1
+  },
+  {
+   "role": "Purchase User",
+   "read": 1,
+   "print": 1,
+   "export": 1,
+   "report": 1
+  },
+  {
+   "role": "Stock User",
+   "read": 1,
+   "print": 1,
+   "export": 1,
+   "report": 1
+  },
+  {
+   "role": "Accounts User",
+   "read": 1,
+   "print": 1,
+   "export": 1,
+   "report": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1,
+ "autoname": "LTD-.YYYY.-.#####",
+ "naming_rule": "Expression (old style)",
+ "title_field": "supplier_name",
+ "search_fields": "supplier,purchase_order,letdown_type"
+}

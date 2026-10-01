@@ -48,6 +48,7 @@ CSM_SEGREGATION = "pepl_os.pepl_stores.stock_tree.validate_csm_segregation"
 SUPPLIER_GATE = "pepl_os.pepl_purchase.supplier_approval.before_submit_gate"
 PO_APPROVAL = "pepl_os.pepl_purchase.po_approval"
 TRACKER = "pepl_os.pepl_purchase.tracker"
+LETDOWN = "pepl_os.pepl_purchase.letdown"
 
 doc_events = {
 	"PEPL System Parameters": {
@@ -67,9 +68,12 @@ doc_events = {
 	"Purchase Receipt": {
 		"validate": CSM_SEGREGATION,
 		# C2-12: a receipt recomputes the trackers of its Purchase Orders
-		"on_submit": f"{TRACKER}.on_receipt_change",
-		"on_cancel": f"{TRACKER}.on_receipt_change",
+		# C2-14: a late receipt line is logged as a letdown; cancelling the receipt removes it
+		"on_submit": [f"{TRACKER}.on_receipt_change", f"{LETDOWN}.on_receipt_submit"],
+		"on_cancel": [f"{TRACKER}.on_receipt_change", f"{LETDOWN}.on_receipt_cancel"],
 	},
+	# C2-14: a PO closed short logs a Short letdown; re-opened, it is removed
+	"PEPL Purchase Tracker": {"on_update": f"{LETDOWN}.sync_short_letdowns"},
 	"Delivery Note": {"validate": CSM_SEGREGATION},
 	# C2-07: draft the Material Request for bought-out and short raw material
 	"Sales Order": {"on_submit": "pepl_os.pepl_purchase.material_request.on_sales_order_submit"},
@@ -99,6 +103,8 @@ scheduler_events = {
 		"pepl_os.pepl_purchase.supplier_approval.daily_supplier_approvals",
 		# C2-12: every open Purchase Tracker, so days overdue move on each morning
 		"pepl_os.pepl_purchase.tracker.refresh_open_purchase_trackers",
+		# C2-14: each supplier's on-time delivery score
+		"pepl_os.pepl_purchase.letdown.daily_delivery_scores",
 	],
 }
 

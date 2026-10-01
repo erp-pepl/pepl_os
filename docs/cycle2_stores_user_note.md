@@ -96,3 +96,15 @@ shows the letter first. Every morning the Purchase owner gets one ToDo per overd
 closes itself when the PO is no longer overdue. **PEPL Open PO Ageing** (report) shows each
 supplier's open PO value by age since the PO date and by days overdue since the promised
 date, worked out live.
+
+## Delivery letdowns and the vendor delivery score
+
+Every late or short delivery is logged in **PEPL Delivery Letdown**: a receipt line received
+after the promised date (plus the grace days) is logged as **Late** with the days late; a PO
+closed with more than the Short Receipt Tolerance still missing is logged as **Short** (or
+**Late + Short**). Cancelling the receipt, or re-opening the PO, removes the letdown again.
+The Purchase Manager can **Excuse** a letdown with a reason (recorded in the Audit Trail); an
+excused letdown does not count against the supplier. Every morning each supplier's
+**Delivery Score** is worked out: PO lines received complete by their promised date, as a %
+of the lines that fell due in the Vendor Score Period. It is shown on the Supplier, the
+Purchase Tracker, the RFQ dialog and the Quotation Comparison.

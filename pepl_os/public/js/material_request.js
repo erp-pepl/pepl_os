@@ -49,7 +49,7 @@ pepl.rfq_by_rm_group = async function (frm) {
 		frappe.msgprint(skipped.join("<br>") || __("No lines to send."), __("Nothing to send"));
 		return;
 	}
-	const score = (v) => (v ? `${Math.round(v)}%` : __("no score yet"));
+	const score = (v) => (v === null || v === undefined ? __("no score yet") : `${Math.round(v)}%`);
 	const fields = [];
 	if (skipped.length) {
 		fields.push({ fieldtype: "HTML", fieldname: "skipped", options: `<p class="text-muted">${skipped.join("<br>")}</p>` });

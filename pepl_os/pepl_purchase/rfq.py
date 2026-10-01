@@ -59,6 +59,7 @@ def supplier_card(supplier):
 			"email_id",
 			"custom_approval_state",
 			"custom_delivery_score",
+			"custom_delivery_scored_lines",
 			"custom_quality_score",
 		],
 		as_dict=True,
@@ -67,8 +68,8 @@ def supplier_card(supplier):
 		"supplier": s.name,
 		"supplier_name": s.supplier_name,
 		"state": s.custom_approval_state or "Not Approved",
-		"delivery_score": s.custom_delivery_score,
-		"quality_score": s.custom_quality_score,
+		"delivery_score": s.custom_delivery_score if s.custom_delivery_scored_lines else None,
+		"quality_score": s.custom_quality_score or None,  # quality scoring arrives with the Quality cycle
 		"has_email": bool(s.email_id),
 	}
 

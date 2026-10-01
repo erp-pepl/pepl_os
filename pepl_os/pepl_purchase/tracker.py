@@ -287,9 +287,12 @@ def panel_rows(doc):
 		if doc.last_chased_on
 		else _("Not chased yet")
 	)
+	scored = (
+		frappe.db.get_value("Supplier", doc.supplier, "custom_delivery_scored_lines") if doc.supplier else 0
+	)
 	score = (
-		_("supplier delivery score {0}%").format(round(flt(doc.delivery_score)))
-		if doc.delivery_score
+		_("supplier delivery score {0}% over {1} line(s)").format(round(flt(doc.delivery_score)), scored)
+		if scored
 		else _("no delivery score yet")
 	)
 	rows.append({"text": f"{chase}; {score}", "colour": "blue"})

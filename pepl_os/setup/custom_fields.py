@@ -367,6 +367,16 @@ CUSTOM_FIELDS["Supplier"] = _chain(
 			"fieldtype": "Percent",
 			"read_only": 1,
 			"no_copy": 1,
+			"description": "PO lines received complete by their promised date, as a % of the lines that fell due "
+			"in the Vendor Score Period. Updated every morning (C2-14).",
+		},
+		{
+			"fieldname": "custom_delivery_scored_lines",
+			"label": "Lines Scored",
+			"fieldtype": "Int",
+			"read_only": 1,
+			"no_copy": 1,
+			"description": "How many PO lines the delivery score is based on. 0 means no score yet.",
 		},
 		{
 			"fieldname": "custom_quality_score",
