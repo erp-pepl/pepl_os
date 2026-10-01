@@ -22,6 +22,7 @@ from io import BytesIO
 
 import frappe
 from frappe import _
+from frappe.utils import cint
 
 LETTERHEAD_APP = "pepl_sales"
 LETTERHEAD_FILE = "PEPL_Letterhead_Plain.pdf"
@@ -207,15 +208,25 @@ def swap_print_attachment(doc, attachments):
 	return out
 
 
+DEFAULTS_FLAG = "pepl_print_defaults_set"
+
+
 def ensure_default_print_formats():
-	"""Install / migrate: make the PEPL format the default where none has been chosen yet."""
+	"""Install / migrate: make the PEPL formats the defaults.
+
+	The first time, they replace ERPNext's own defaults (e.g. "Purchase Order with Item Image").
+	After that a DocType is only given its PEPL default when it has none, so a format the
+	Purchase Manager picks later in Customize Form stays.
+	"""
 	from frappe.custom.doctype.property_setter.property_setter import make_property_setter
 
+	first_time = not cint(frappe.db.get_default(DEFAULTS_FLAG))
 	changed = []
 	for doctype, print_format in DEFAULT_FORMATS.items():
 		if not (frappe.db.exists("DocType", doctype) and frappe.db.exists("Print Format", print_format)):
 			continue
-		if frappe.get_meta(doctype).default_print_format:
+		current = frappe.get_meta(doctype).default_print_format
+		if current == print_format or (current and not first_time):
 			continue
 		make_property_setter(doctype, None, "default_print_format", print_format, "Data", for_doctype=True)
 		frappe.clear_cache(doctype=doctype)
@@ -228,6 +239,7 @@ def ensure_default_print_formats():
 		make_property_setter(rfq, "send_document_print", "default", "1", "Text")
 		frappe.clear_cache(doctype=rfq)
 		changed.append(f"{rfq}.send_document_print")
+	frappe.db.set_default(DEFAULTS_FLAG, 1)
 	return changed
 
 
@@ -237,9 +249,9 @@ def ensure_default_print_formats():
 def pepl_rfq_letter(doc):
 	"""For the RFQ Cover Letter: who it is addressed to and the message, rendered.
 
-	ERPNext sets doc.vendor to the supplier chosen in "Download PDF for Supplier" and to each
-	supplier as it is e-mailed. Otherwise an RFQ with one supplier is addressed to that supplier,
-	and one with several to "Dear Supplier".
+	ERPNext sets doc.vendor to the supplier chosen in "Download PDF for Supplier", to each
+	supplier as it is e-mailed, and (ERPNext's before_print) to the first supplier for a plain
+	print. Without any supplier the letter goes to "Our approved suppliers".
 	"""
 	rows = doc.get("suppliers") or []
 	supplier = doc.get("vendor")
@@ -278,14 +290,20 @@ def pepl_rfq_letter(doc):
 
 
 @frappe.whitelist()
-def inspect_pdf(doctype, name, print_format=None):
-	"""For the System Console check and for support: make the letterhead PDF and say what is in it."""
+def inspect_pdf(doctype, name, print_format=None, supplier=None):
+	"""For the System Console check and for support: make the letterhead PDF and say what is in it.
+
+	`supplier` (RFQ only) does what "Download PDF for Supplier" does."""
 	import os
 
 	from pypdf import PdfReader
 
 	frappe.only_for("System Manager")
-	pdf = render(doctype, name, print_format)
+	doc = None
+	if supplier and doctype == "Request for Quotation":
+		doc = frappe.get_doc(doctype, name)
+		doc.update_supplier_part_no(supplier)
+	pdf = render(doctype, name, print_format, doc=doc)
 	texts = [" ".join((p.extract_text() or "").split()) for p in PdfReader(BytesIO(pdf)).pages]
 	overrides = frappe.get_hooks("override_whitelisted_methods") or {}
 	return {

@@ -119,8 +119,14 @@ class TestPrintFormats(PEPLTestCase):
 				self.assertFalse(pf.disabled)
 				self.assertIn("margin-top: 60mm; margin-bottom: 34mm", pf.html)
 				self.assertIn("@media print { .print-format { margin: 0 !important", pf.html)
+				self.assertIn(
+					'<style class="hidden-pdf">', pf.html
+				)  # the screen preview is left out of the PDF
+				self.assertNotIn("<!DOCTYPE", pf.html)  # a template, not a rendered page
+				self.assertTrue("{{ doc." in pf.html or "pepl_chase_lines" in pf.html)
 
 	def test_po_and_rfq_formats_are_default(self):
+		frappe.db.set_default(lh.DEFAULTS_FLAG, 0)  # as on the first migrate after v0.21.1
 		lh.ensure_default_print_formats()
 		self.assertEqual(frappe.get_meta("Purchase Order").default_print_format, "PEPL Purchase Order")
 		self.assertEqual(
