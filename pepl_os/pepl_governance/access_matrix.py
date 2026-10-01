@@ -40,6 +40,8 @@ MATRIX_DOCTYPES = (
 	("Purchase", "PEPL Delivery Letdown", "Delivery Letdown"),
 	("Purchase", "Purchase Invoice", "Purchase Invoice (bill)"),
 	("Stores", "Purchase Receipt", "Purchase Receipt (GRN)"),
+	("Stores", "PEPL Receipt Log", "Receipt Log"),
+	("Stores", "Batch", "Batch (heat number)"),
 	("Stores", "Stock Entry", "Stock Entry (issue / transfer)"),
 	("Stores", "Stock Reconciliation", "Stock count correction"),
 	("Stores", "PEPL Capital Equipment", "Capital Equipment Register"),

@@ -466,6 +466,45 @@ CUSTOM_FIELDS["Item"] = [
 		"insert_after": "item_group",
 		"description": "Set from the Item Group. One of the PEPL stock classes.",
 	},
+	{
+		# C2-15
+		"fieldname": "custom_heat_tracked",
+		"label": "Heat Number Tracked",
+		"fieldtype": "Check",
+		"insert_after": "custom_stock_class",
+		"description": "Receipts and issues must name the heat number (and receipts the test certificate). "
+		"On for new raw material. Without stock history the heat is kept as the Batch.",
+	},
+]
+
+# C2-15 - Heat numbers and test certificates.
+HEAT_NUMBER = {
+	"fieldname": "custom_heat_number",
+	"label": "Heat Number",
+	"fieldtype": "Data",
+	"in_list_view": 1,
+	"in_standard_filter": 1,
+}
+TEST_CERTIFICATE = {
+	"fieldname": "custom_test_certificate",
+	"label": "Test Certificate (MTC)",
+	"fieldtype": "Attach",
+}
+CUSTOM_FIELDS["Batch"] = [
+	{**HEAT_NUMBER, "insert_after": "item_name", "description": "Mandatory for heat-tracked items."},
+	{**TEST_CERTIFICATE, "insert_after": "custom_heat_number", "in_list_view": 0},
+]
+CUSTOM_FIELDS["Purchase Receipt Item"] = [
+	{**HEAT_NUMBER, "insert_after": "batch_no", "columns": 1},
+	{**TEST_CERTIFICATE, "insert_after": "custom_heat_number"},
+]
+CUSTOM_FIELDS["Stock Entry Detail"] = [
+	{
+		**HEAT_NUMBER,
+		"insert_after": "batch_no",
+		"columns": 1,
+		"description": "Filled from the Batch for heat-batch items; type it for other heat-tracked items.",
+	},
 ]
 
 

@@ -339,6 +339,11 @@ def validate_item(doc, method=None):
 			title=_("Stock class"),
 		)
 
+	# C2-15: new raw material is heat-tracked, and gets Batch = heat when it has no stock history.
+	from pepl_os.pepl_stores.heat import apply_item_heat_defaults
+
+	apply_item_heat_defaults(doc, stock_class, RAW_MATERIAL)
+
 	if doc.is_stock_item and not stock_class:
 		if frappe.flags.pepl_allow_items_outside_tree:
 			return  # only while ERPNext builds its standard test data (tests/bootstrap.py)

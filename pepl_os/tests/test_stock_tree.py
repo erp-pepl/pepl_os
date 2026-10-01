@@ -124,9 +124,7 @@ class TestStockTree(PEPLTestCase):
 				}
 			).insert()
 		for store in ("RM Stores", "Bought-Out Stores", "CSM Stores", "WIP Main Workshop"):
-			self.assertTrue(
-				frappe.db.exists("Warehouse", {"company": name, "warehouse_name": store}), store
-			)
+			self.assertTrue(frappe.db.exists("Warehouse", {"company": name, "warehouse_name": store}), store)
 		bought_out = frappe.get_doc("Item Group", st.BOUGHT_OUT)
 		self.assertTrue(any(d.company == name for d in bought_out.item_group_defaults))
 
@@ -172,7 +170,7 @@ class TestStockTree(PEPLTestCase):
 		self.assertIn("customer-supplied", str(ctx.exception))
 
 	def test_pepl_item_blocked_from_csm_warehouse(self):
-		make_item("PEPL-T-RM-1", st.RAW_MATERIAL, valuation_rate=10)
+		make_item("PEPL-T-RM-1", st.RAW_MATERIAL, heat_tracked=False, valuation_rate=10)
 		with self.assertRaises(frappe.ValidationError) as ctx:
 			self._receipt("PEPL-T-RM-1", "CSM Stores", 10).insert(ignore_permissions=True)
 		self.assertIn("PEPL material", str(ctx.exception))

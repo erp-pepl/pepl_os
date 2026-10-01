@@ -49,8 +49,8 @@ class TestMaterialRequestFromSalesOrder(PEPLTestCase):
 		make_item("PEPL-T-BO-1", st.BOUGHT_OUT)
 		make_item("PEPL-T-FG-1", st.FINISHED_GOODS)
 		# One raw material per test: stock added in one test stays for the rest of the class.
-		make_item("PEPL-T-RM-SHORT", st.RAW_MATERIAL, valuation_rate=10)
-		make_item("PEPL-T-RM-COVERED", st.RAW_MATERIAL, valuation_rate=10)
+		make_item("PEPL-T-RM-SHORT", st.RAW_MATERIAL, heat_tracked=False, valuation_rate=10)
+		make_item("PEPL-T-RM-COVERED", st.RAW_MATERIAL, heat_tracked=False, valuation_rate=10)
 
 	def test_so_submit_creates_one_draft_mr(self):
 		so = _sales_order([("PEPL-T-BO-1", 4), ("PEPL-T-FG-1", 2)])
@@ -83,7 +83,11 @@ class TestMaterialRequestFromSalesOrder(PEPLTestCase):
 
 	def test_raw_material_covered_by_stock_not_requested(self):
 		make_stock_entry(
-			item_code="PEPL-T-RM-COVERED", qty=20, to_warehouse=_wh("RM Stores"), company=TEST_COMPANY, rate=10
+			item_code="PEPL-T-RM-COVERED",
+			qty=20,
+			to_warehouse=_wh("RM Stores"),
+			company=TEST_COMPANY,
+			rate=10,
 		)
 		so = _sales_order([("PEPL-T-RM-COVERED", 5)])
 		self.assertIsNone(mr.draft_material_request(so))

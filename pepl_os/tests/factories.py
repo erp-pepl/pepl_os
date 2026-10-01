@@ -52,12 +52,16 @@ TEST_COMPANY = "_Test Company"
 TEST_SUPPLIER_GROUP = "_Test Supplier Group"
 
 
-def make_item(item_code, item_group, is_stock_item=1, **fields):
-	"""An Item in the given group (UOM Nos). Returns the existing one if it is already there."""
+def make_item(item_code, item_group, is_stock_item=1, heat_tracked=None, **fields):
+	"""An Item in the given group (UOM Nos). Returns the existing one if it is already there.
+
+	New raw material is heat-tracked with Batch = heat (C2-15). Pass heat_tracked=False
+	for a plain raw-material item in tests that are not about heat numbers.
+	"""
 	ensure_test_masters()
 	if frappe.db.exists("Item", item_code):
 		return frappe.get_doc("Item", item_code)
-	return frappe.get_doc(
+	item = frappe.get_doc(
 		{
 			"doctype": "Item",
 			"item_code": item_code,
@@ -68,6 +72,11 @@ def make_item(item_code, item_group, is_stock_item=1, **fields):
 			**fields,
 		}
 	).insert(ignore_permissions=True)
+	if heat_tracked is False:
+		frappe.db.set_value("Item", item.name, {"custom_heat_tracked": 0, "has_batch_no": 0})
+		frappe.clear_document_cache("Item", item.name)
+		item.reload()
+	return item
 
 
 def make_supplier(name, **fields):

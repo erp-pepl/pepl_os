@@ -31,6 +31,9 @@ doctype_js = {
 	"Request for Quotation": ["public/js/supplier_gate.js", "public/js/request_for_quotation.js"],
 	# C2-11 approval check runs before the C2-08 reason dialog
 	"Purchase Order": ["public/js/purchase_order.js", "public/js/supplier_gate.js"],
+	# C2-15: heat panel, Split by heat, reason dialog when the gate asks for one
+	"Purchase Receipt": "public/js/purchase_receipt.js",
+	"Stock Entry": "public/js/stock_entry.js",
 }
 
 # C2-03: Supplier list coloured by approval state.
@@ -49,6 +52,7 @@ SUPPLIER_GATE = "pepl_os.pepl_purchase.supplier_approval.before_submit_gate"
 PO_APPROVAL = "pepl_os.pepl_purchase.po_approval"
 TRACKER = "pepl_os.pepl_purchase.tracker"
 LETDOWN = "pepl_os.pepl_purchase.letdown"
+HEAT = "pepl_os.pepl_stores.heat"
 
 doc_events = {
 	"PEPL System Parameters": {
@@ -64,14 +68,32 @@ doc_events = {
 	# C2-04: stock class from the Item Group; Capital never stock; CSM customer-provided.
 	"Item": {"validate": "pepl_os.pepl_stores.stock_tree.validate_item"},
 	# C2-04: customer-supplied material and PEPL material never share a store.
-	"Stock Entry": {"validate": CSM_SEGREGATION},
-	"Purchase Receipt": {
+	# C2-15: heat number -> Batch on receipts, Batch -> heat on issues; the heat number gate
+	"Stock Entry": {
+		"before_validate": f"{HEAT}.before_validate_stock_entry",
 		"validate": CSM_SEGREGATION,
+		"before_submit": f"{HEAT}.before_submit_stock_entry",
+	},
+	"Purchase Receipt": {
+		# C2-15: heat number -> Batch, the heat / MTC gate, the Receipt Log
+		"before_validate": f"{HEAT}.before_validate_receipt",
+		"validate": CSM_SEGREGATION,
+		"before_submit": f"{HEAT}.before_submit_receipt",
 		# C2-12: a receipt recomputes the trackers of its Purchase Orders
 		# C2-14: a late receipt line is logged as a letdown; cancelling the receipt removes it
-		"on_submit": [f"{TRACKER}.on_receipt_change", f"{LETDOWN}.on_receipt_submit"],
-		"on_cancel": [f"{TRACKER}.on_receipt_change", f"{LETDOWN}.on_receipt_cancel"],
+		"on_submit": [
+			f"{TRACKER}.on_receipt_change",
+			f"{LETDOWN}.on_receipt_submit",
+			f"{HEAT}.on_submit_receipt",
+		],
+		"on_cancel": [
+			f"{TRACKER}.on_receipt_change",
+			f"{LETDOWN}.on_receipt_cancel",
+			f"{HEAT}.on_cancel_receipt",
+		],
 	},
+	# C2-15: a heat-tracked item's Batch carries its heat number
+	"Batch": {"validate": f"{HEAT}.validate_batch"},
 	# C2-14: a PO closed short logs a Short letdown; re-opened, it is removed
 	"PEPL Purchase Tracker": {"on_update": f"{LETDOWN}.sync_short_letdowns"},
 	"Delivery Note": {"validate": CSM_SEGREGATION},

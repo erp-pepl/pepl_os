@@ -108,3 +108,16 @@ excused letdown does not count against the supplier. Every morning each supplier
 **Delivery Score** is worked out: PO lines received complete by their promised date, as a %
 of the lines that fell due in the Vendor Score Period. It is shown on the Supplier, the
 Purchase Tracker, the RFQ dialog and the Quotation Comparison.
+
+## Heat numbers at the gate, Receipt Log and Heat Number Trace
+
+New raw-material items are **Heat Number Tracked**. On the Purchase Receipt, type the
+**Heat Number** and attach the **Test Certificate (MTC)** on each raw-material line; the
+system makes (or reuses) the Batch for that supplier and heat, so later issues simply pick
+the Batch. A delivery of several heats on one line: **Split by heat** turns it into one line
+per heat (the quantities must add up; rate and PO link are kept). A raw-material receipt
+without a heat number or MTC cannot be submitted (Heat Number Gate = Hard Block) or needs a
+typed reason (Reason Required) - set in PEPL System Parameters. The panel at the top shows
+which lines are complete. Every submitted receipt line is written to the **PEPL Receipt Log**
+(never deleted; a cancelled receipt shows Cancelled). **PEPL Heat Number Trace** (report):
+type a heat number to see its receipt, every issue, the Work Order and the dispatch.
