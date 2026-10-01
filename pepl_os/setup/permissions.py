@@ -146,6 +146,8 @@ EXTRA_GRANTS = (
 	# C2-11: the MD / CEO approves (submits) Purchase Orders above the PO Approval Value.
 	# Write is needed to open the form for submit and to record a reason; never create, cancel or delete.
 	("PEPL CEO", ("Purchase Order",), ("read", "write", "submit")),
+	# C2-17: the Purchase Manager builds the Payment Run from the open bills (read only).
+	("Purchase Manager", ("Purchase Invoice",), CEO_VIEW_RIGHTS),
 )
 
 

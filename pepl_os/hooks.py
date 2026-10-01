@@ -37,6 +37,9 @@ doctype_js = {
 	"Stock Entry": "public/js/stock_entry.js",
 	# C2-16: "CSM Balance" button once the order holds customer-supplied material
 	"Sales Order": "public/js/csm_sales_order.js",
+	# C2-17: payment-priority panel ("Rank #4 this week · MSME due in 6 days")
+	"Purchase Invoice": "public/js/purchase_invoice.js",
+	"Supplier": "public/js/supplier_payments.js",
 }
 
 # C2-03: Supplier list coloured by approval state.
@@ -57,6 +60,7 @@ TRACKER = "pepl_os.pepl_purchase.tracker"
 LETDOWN = "pepl_os.pepl_purchase.letdown"
 HEAT = "pepl_os.pepl_stores.heat"
 CSM = "pepl_os.pepl_stores.csm"
+PAYMENTS = "pepl_os.pepl_purchase.payments"
 
 doc_events = {
 	"PEPL System Parameters": {
@@ -69,6 +73,14 @@ doc_events = {
 	"Company": {"on_update": "pepl_os.pepl_stores.stock_tree.on_company_update"},
 	# C2-03: Udyam number required for MSME suppliers.
 	"Supplier": {"validate": "pepl_os.pepl_purchase.supplier.validate_supplier"},
+	# C2-17: MSME flag and pay-by date on the bill
+	"Purchase Invoice": {"validate": f"{PAYMENTS}.validate_invoice"},
+	# C2-17: one submitted entry per Tally voucher; Payment Run rows and MSME ToDos follow payments
+	"Payment Entry": {
+		"validate": f"{PAYMENTS}.validate_payment_entry",
+		"on_submit": f"{PAYMENTS}.on_payment_entry_change",
+		"on_cancel": f"{PAYMENTS}.on_payment_entry_change",
+	},
 	# C2-04: stock class from the Item Group; Capital never stock; CSM customer-provided.
 	"Item": {"validate": "pepl_os.pepl_stores.stock_tree.validate_item"},
 	# C2-04: customer-supplied material and PEPL material never share a store.
@@ -134,6 +146,8 @@ scheduler_events = {
 		"pepl_os.pepl_purchase.tracker.refresh_open_purchase_trackers",
 		# C2-14: each supplier's on-time delivery score
 		"pepl_os.pepl_purchase.letdown.daily_delivery_scores",
+		# C2-17: MSME days left; ToDo to Accounts at 7 days or fewer (PUR-MSME-DUE)
+		"pepl_os.pepl_purchase.payments.daily_msme_payments",
 	],
 }
 

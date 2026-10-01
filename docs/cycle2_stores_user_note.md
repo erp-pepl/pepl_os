@@ -135,3 +135,25 @@ order holds customer material, the Sales Order shows **CSM Scrap** (Hold / Retur
 Customer / PEPL May Sell, default Hold) and a **View > CSM Balance** button. **PEPL CSM
 Balance by Order** (report) shows, per order and CSM item, what was received, issued,
 scrapped, returned, the balance still held and the scrap on hand.
+
+## Vendor payments: priority worklist, Payment Entries from Tally, MSME 45-day
+
+Payments are still made in Tally; ERPNext decides the order and keeps the record. **PEPL
+Vendor Payment Priority** (report) lists every submitted Purchase Invoice with money still
+owed, in this order: MSME bills by their MSME pay-by date (past it shows **Breach**), then
+bills of Critical vendors that are past due (most overdue first), then everything else by
+due date. The MSME pay-by date is the bill date (or the receipt date, if "MSME Clock Starts
+From" is set to Receipt Date) plus the MSME Payment Days; it is shown on the bill and
+refreshed every morning, and Accounts gets a ToDo once 7 days or fewer are left.
+
+Each week the Purchase Manager creates a **PEPL Payment Run**, presses **Build from
+worklist**, unticks any bill not to be paid this week (an MSME bill needs a reason, kept in
+the Audit Trail) and submits; Accounts gets a ToDo with the list. After paying in Tally,
+Accounts presses **Mark paid** on the bill's row in the priority report and types the date,
+amount, Tally voucher number, UTR / cheque number and any TDS deducted: a Payment Entry is
+submitted against the bill, its outstanding goes down (part payments are fine) and the run
+row shows Paid / Part Paid. A Tally voucher number can be recorded only once. Set the
+Mode of Payment, Bank Account and TDS Payable Account for vendor payments in PEPL System
+Parameters. **PEPL MSME 45-Day Compliance** shows every MSME bill as Paid on time / Paid
+late / Open / Breach. **PEPL Outstanding Vendor Bills** shows what is owed per supplier by
+days overdue; its total equals ERPNext's Accounts Payable report for the same date.

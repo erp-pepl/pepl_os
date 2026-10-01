@@ -154,6 +154,27 @@ PURCHASE_STORES_FIELDS = _chain(
 			"default": "Bill Date",
 			"description": "The date the MSME payment days are counted from.",
 		},
+		{
+			"fieldname": "custom_vendor_payment_mode_of_payment",
+			"label": "Vendor Payment: Mode of Payment",
+			"fieldtype": "Link",
+			"options": "Mode of Payment",
+			"description": "Used on every vendor Payment Entry recorded from a Tally payment.",
+		},
+		{
+			"fieldname": "custom_vendor_payment_bank_account",
+			"label": "Vendor Payment: Bank Account",
+			"fieldtype": "Link",
+			"options": "Account",
+			"description": "The bank ledger (Account Type Bank) vendor payments are made from.",
+		},
+		{
+			"fieldname": "custom_vendor_tds_account",
+			"label": "Vendor Payment: TDS Payable Account",
+			"fieldtype": "Link",
+			"options": "Account",
+			"description": "Credited with the TDS deducted when a vendor is paid.",
+		},
 		{"fieldname": "custom_purchase_column", "fieldtype": "Column Break"},
 		{
 			"fieldname": "custom_delivery_alert_lead_days",
@@ -555,6 +576,70 @@ CUSTOM_FIELDS["Sales Order"] = [
 		"depends_on": "eval:doc.custom_has_csm",
 		"insert_after": "custom_has_csm",
 		"description": "What happens to scrap of the customer's material. Hold until the customer decides.",
+	},
+]
+
+# C2-17 - Vendor payments: MSME 45-day clock on the bill; Tally payments recorded as Payment Entries.
+CUSTOM_FIELDS["Purchase Invoice"] = [
+	{
+		"fieldname": "custom_is_msme",
+		"label": "MSME Supplier",
+		"fieldtype": "Check",
+		"read_only": 1,
+		"fetch_from": "supplier.custom_is_msme",
+		"in_standard_filter": 1,
+		"insert_after": "supplier_name",
+	},
+	{
+		"fieldname": "custom_msme_due_date",
+		"label": "MSME Pay By",
+		"fieldtype": "Date",
+		"read_only": 1,
+		"no_copy": 1,
+		"allow_on_submit": 1,
+		"depends_on": "custom_is_msme",
+		"insert_after": "custom_is_msme",
+		"description": "Bill date (or receipt date, per System Parameters) + MSME Payment Days.",
+	},
+	{
+		"fieldname": "custom_msme_days_left",
+		"label": "MSME Days Left",
+		"fieldtype": "Int",
+		"read_only": 1,
+		"no_copy": 1,
+		"allow_on_submit": 1,
+		"depends_on": "custom_is_msme",
+		"insert_after": "custom_msme_due_date",
+		"description": "Recomputed every morning. Negative = past the MSME deadline.",
+	},
+]
+CUSTOM_FIELDS["Payment Entry"] = [
+	{
+		"fieldname": "custom_tally_voucher_no",
+		"label": "Tally Voucher No",
+		"fieldtype": "Data",
+		"no_copy": 1,
+		"search_index": 1,
+		"in_standard_filter": 1,
+		"insert_after": "reference_date",
+		"description": "The Tally payment voucher this entry mirrors. One submitted entry per voucher.",
+	},
+	{
+		"fieldname": "custom_payment_source",
+		"label": "Payment Source",
+		"fieldtype": "Select",
+		"options": "\nManual Tick\nTally Mirror",
+		"read_only": 1,
+		"no_copy": 1,
+		"insert_after": "custom_tally_voucher_no",
+	},
+	{
+		"fieldname": "custom_payment_run",
+		"label": "Payment Run",
+		"fieldtype": "Link",
+		"options": "PEPL Payment Run",
+		"no_copy": 1,
+		"insert_after": "custom_payment_source",
 	},
 ]
 
