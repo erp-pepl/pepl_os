@@ -343,7 +343,9 @@ def validate_item(doc, method=None):
 	# C2-16: so is new customer-supplied material (the customer's steel carries its heat too).
 	from pepl_os.pepl_stores.heat import apply_item_heat_defaults
 
-	apply_item_heat_defaults(doc, stock_class, (RAW_MATERIAL, CSM))
+	# C2-18: customer-material scrap (Item Group "CSM Scrap") carries no heat number.
+	heat_classes = (RAW_MATERIAL,) if doc.item_group == "CSM Scrap" else (RAW_MATERIAL, CSM)
+	apply_item_heat_defaults(doc, stock_class, heat_classes)
 
 	if doc.is_stock_item and not stock_class:
 		if frappe.flags.pepl_allow_items_outside_tree:

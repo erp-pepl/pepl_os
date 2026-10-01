@@ -157,3 +157,23 @@ Mode of Payment, Bank Account and TDS Payable Account for vendor payments in PEP
 Parameters. **PEPL MSME 45-Day Compliance** shows every MSME bill as Paid on time / Paid
 late / Open / Breach. **PEPL Outstanding Vendor Bills** shows what is owed per supplier by
 days overdue; its total equals ERPNext's Accounts Payable report for the same date.
+
+## Scrap Register by metal
+
+Scrap items sit under **Scrap > Brass / Steel / Copper / Aluminium Scrap** (UOM Kg); the
+first set (Brass Turnings, Brass Solid, Steel Turnings, Copper Scrap, Aluminium Scrap) is
+created for you, and Stores can add more. Customer-material scrap has its own items under
+**CSM Scrap** (e.g. "CSM Brass Turnings"), because it never shares a store with PEPL's.
+**PEPL Scrap Rate** holds the rate per kg from a date. On every **PEPL Scrap Weighment**
+type the gross and tare kg (net is worked out and must be above zero), the source (Process /
+Rejection / CSM) and the item; submit puts the net kg into **Scrap Yard** at the day's
+scrap rate - or, for CSM scrap, into **CSM Scrap** at zero against its Sales Order. A
+**PEPL Scrap Sale** (buyer from the customer group **Scrap Buyers**, vehicle number,
+weighbridge slip, lines of kg and rate) takes the scrap out of stock on submit and prints a
+**Gate Pass**. Customer-material scrap can be sold only when its Sales Order's **CSM Scrap**
+is **PEPL May Sell** - there is no override. To return it, use a Stock Entry of type **CSM
+Return to Customer** and print the **PEPL CSM Return Challan**. **PEPL Scrap Recovery**
+(report) shows per month and metal: kg generated and sold, realised rate against the rate
+master, value realised, closing kg and value, and scrap as a % of raw material issued.
+If scrap is ever invoiced through an ERPNext Sales Invoice, Cycle 1's Payment Tracker hook
+must first be told to skip the Scrap Buyers group.

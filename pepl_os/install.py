@@ -3,6 +3,7 @@
 from pepl_os.pepl_governance.retention import apply_log_retention
 from pepl_os.pepl_stores.csm import ensure_return_type
 from pepl_os.pepl_stores.heat import enable_batches
+from pepl_os.pepl_stores.scrap import ensure_scrap_masters
 from pepl_os.pepl_stores.stock_tree import seed_stock_structure
 from pepl_os.setup.custom_fields import apply_custom_fields
 from pepl_os.setup.permissions import grant_ceo_view, grant_extra_views, restrict_delete
@@ -27,6 +28,7 @@ def ensure_setup():
 	seed_stock_structure()  # C2-04: stock classes, stores, Item Group defaults
 	enable_batches()  # C2-15: Batch = heat number needs batches switched on in Stock Settings
 	ensure_return_type()  # C2-16: Stock Entry Type "CSM Return to Customer"
+	ensure_scrap_masters()  # C2-18: CSM Scrap item group, Scrap Buyers, the default scrap items (once)
 
 
 def before_install():

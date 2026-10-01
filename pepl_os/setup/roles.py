@@ -10,7 +10,7 @@ import frappe
 
 # New PEPL roles created by pepl_os. Later cycles add theirs here
 # (e.g. "PEPL Weighment", "PEPL Kiosk", "PEPL Tally Ingest").
-PEPL_ROLES = ("PEPL CEO",)
+PEPL_ROLES = ("PEPL CEO", "PEPL Weighment")  # C2-18: the weighbridge / scrap weighment operator
 
 # Role Profile -> roles. One profile = one job at PEPL. Names are in PEPL's
 # words, prefixed "PEPL". A user may hold more than one profile; Frappe then
@@ -33,7 +33,7 @@ ROLE_PROFILES = {
 		"Item Manager",
 		"Stock User",
 	),
-	"PEPL Stores": ("Stock User",),
+	"PEPL Stores": ("Stock User", "PEPL Weighment"),
 	"PEPL Production Manager": ("Manufacturing Manager", "Manufacturing User", "Stock User"),
 	"PEPL Foreman": ("Manufacturing User",),
 	"PEPL Quality Manager": ("Quality Manager", "Stock User"),
