@@ -390,6 +390,49 @@ def split_by_heat(purchase_receipt, row_name, splits):
 
 
 @frappe.whitelist()
+def get_receipt_log_panel(name):
+	"""Brief Phase 2 - the Receipt Log heat panel: heat, test certificate, QC and where else the heat was received."""
+	doc = frappe.get_doc(RECEIPT_LOG, name)
+	doc.check_permission("read")
+	tracked, _batched = item_flags(doc.item_code)
+	rows = []
+	if doc.status == "Cancelled":
+		rows.append(
+			{"text": _("Cancelled: receipt {0} was cancelled.").format(doc.purchase_receipt), "colour": "red"}
+		)
+	heat = (doc.heat_number or "").strip()
+	if heat:
+		rows.append({"text": _("Heat number {0}").format(heat), "colour": "green"})
+	elif tracked:
+		rows.append({"text": _("Heat number missing (this item is heat-tracked)"), "colour": "red"})
+	else:
+		rows.append({"text": _("Not a heat-tracked item"), "colour": "gray"})
+	if doc.test_certificate:
+		rows.append({"text": _("Test certificate attached"), "colour": "green"})
+	elif tracked:
+		rows.append({"text": _("Test certificate missing"), "colour": "red"})
+	qc_colour = {"Accepted": "green", "Rejected": "red", "Accepted Under Deviation": "orange"}.get(
+		doc.qc_status, "orange"
+	)
+	rows.append({"text": _("QC: {0}").format(_(doc.qc_status or "Pending")), "colour": qc_colour})
+	if heat:
+		others = frappe.get_all(
+			RECEIPT_LOG,
+			filters={"heat_number": heat, "name": ["!=", doc.name], "status": "Active"},
+			fields=["purchase_receipt"],
+		)
+		if others:
+			receipts = sorted({o.purchase_receipt for o in others})
+			rows.append(
+				{
+					"text": _("Same heat also received on {0}").format(", ".join(receipts[:5])),
+					"colour": "gray",
+				}
+			)
+	return {"rows": rows, "heat_number": heat, "purchase_receipt": doc.purchase_receipt}
+
+
+@frappe.whitelist()
 def get_receipt_panel(purchase_receipt):
 	doc = frappe.get_doc("Purchase Receipt", purchase_receipt)
 	doc.check_permission("read")

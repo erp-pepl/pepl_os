@@ -78,6 +78,23 @@ Admin screens after install:
 | C2-05 Capital Equipment Register | **PEPL Capital Equipment**; daily warranty / AMC alerts |
 | C2-07 Material Request from Sales Order | On SO submit: one draft MR for bought-out lines and raw-material shortfall; MR panel |
 | C2-08 Supplier Approval gate | **PEPL Supplier Document Requirement** (the checklist), **PEPL Supplier Approval** per supplier; reason needed to submit an RFQ / PO to a non-approved supplier; daily expiry job |
+| C2-09 RFQ by RM group | Material Request → **RFQ by RM Group**: one draft RFQ per group, approved suppliers ticked |
+| C2-10 Quotation Comparison | RFQ → **Quotation Comparison**: L1 per line, non-L1 award needs a reason, approval creates one PO per supplier with the comparison attached |
+| C2-11 PO approval by value | PO above the PO Approval Value: only the MD / CEO submits; promised date mandatory on every line |
+| C2-12 Purchase Tracker | One per submitted PO; line-level promised vs received, days to due / overdue, recomputed daily |
+| C2-13 Chase list and letter | **PEPL Chase List**, **Chase vendor** (letter on the letterhead), PUR-CHASE ToDos, **PEPL Open PO Ageing** |
+| C2-14 Letdowns and delivery score | **PEPL Delivery Letdown** for every late / short receipt; supplier delivery score shown in RFQ and comparison |
+| C2-15 Heat numbers | Receipt gate (heat + test certificate), **Split by heat**, Batch = heat, **PEPL Receipt Log**, **PEPL Heat Number Trace** |
+| C2-16 Customer-supplied material | SO **Has CSM** and disposition; CSM receipts at zero value; **PEPL CSM Balance by Order**; return challan |
+| C2-17 Vendor payments | MSME pay-by date, **PEPL Vendor Payment Priority** (MSME, critical overdue, ageing), **PEPL Payment Run**, **Mark paid** from Tally, **PEPL MSME 45-Day Compliance**, **PEPL Outstanding Vendor Bills** |
+| C2-18 Scrap Register | **PEPL Scrap Rate**, **PEPL Scrap Weighment**, **PEPL Scrap Sale** (gate pass), **PEPL Scrap Recovery**; CSM scrap sold only when the SO allows it |
+| C2-19 Reorder engine | **PEPL Reorder Review** (monthly, from consumption and lead time), Item reorder panel, STO-REORDER ToDos |
+| C2-20 Cycle count | ABC class monthly, **PEPL Cycle Count** (blind sheet, reason per variance, HOD above the limit), **PEPL Cycle Count Variance Log** |
+| C2-21 Consumables issued | **PEPL Consumables Issued** per day / week / month and % of sales |
+| C2-22 Form panels | One panel style on every key purchase and stores form, including the Receipt Log heat panel |
+| C2-23 Command Centre | Workspaces **Buyer's Desk** and **MD Stores Overview**, six number cards, **PEPL Procurement Funnel** |
+| C2-24 Print formats | PO, RFQ cover letter, chase letter, weighment slip, gate pass, count sheet, CSM challan on the PEPL letterhead (PDF and Print button) |
+| Cycle 2 health check | PEPL System Health → **Download Cycle 2 health check**: trackers, receipt logs, approvals, overrides, jobs, valuation and vendor-bill reports checked against live records |
 
 ## Tests
 

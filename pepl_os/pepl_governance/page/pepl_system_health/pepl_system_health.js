@@ -13,6 +13,13 @@ frappe.pages["pepl-system-health"].on_page_load = function (wrapper) {
 				"_blank"
 			);
 		});
+		// Cycle 2 health check: is the Cycle 2 automation doing its job on live records?
+		page.add_inner_button(__("Download Cycle 2 health check"), () => {
+			window.open(
+				"/api/method/pepl_os.pepl_stores.health_check.download_health_check?since=2026-07-01",
+				"_blank"
+			);
+		});
 	}
 	render(page);
 };

@@ -335,7 +335,7 @@ def build_audit(since=DEFAULT_SINCE, company=None):
 	return {title: rows for (title, _cols), rows in zip(SHEETS, data, strict=True)}
 
 
-def to_xlsx(audit):
+def to_xlsx(audit, sheets=None):
 	from openpyxl import Workbook
 	from openpyxl.styles import Font, PatternFill
 
@@ -345,7 +345,7 @@ def to_xlsx(audit):
 	summary.append(["Sheet", "Findings"])
 	header_font = Font(bold=True, color="FFFFFF")
 	header_fill = PatternFill("solid", start_color="1F3A5F")
-	for title, columns in SHEETS:
+	for title, columns in sheets or SHEETS:
 		rows = audit.get(title, [])
 		summary.append([title, len(rows)])
 		ws = wb.create_sheet(title[:31])

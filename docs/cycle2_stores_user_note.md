@@ -263,3 +263,19 @@ that same letterhead PDF (a print dialog opens on it). Only the browser's own Ct
 addressed to the chosen supplier, and the RFQ e-mail to each supplier attaches that
 supplier's letter as a PDF (**Send Document Print** is now ticked by default on new RFQs). The vendor chase e-mail attaches the chase letter the same way.
 Draft documents print with a red **DRAFT** mark.
+
+## Receipt Log heat panel
+
+Each **PEPL Receipt Log** row (one per receipt line) now shows at the top: the heat number, whether the
+test certificate is attached, the QC status, and other receipts of the same heat. **Heat Number Trace**
+opens the recall view for that heat; **Purchase Receipt** opens the receipt.
+
+## Cycle 2 health check
+
+On **PEPL System Health**, the System Manager can download the **Cycle 2 health check**: a workbook
+that checks the live records against the Cycle 2 automation - every PO has its Purchase Tracker with the
+same quantities, every receipt line its Receipt Log row with heat number and test certificate, suppliers
+on POs are approved, POs came through a Quotation Comparison and overrides carry reasons, every scheduled
+job runs, customer material and capital equipment carry no stock value, receipt rates reach valuation,
+and the Outstanding Vendor Bills and MSME figures agree with the ledger. Each finding has Owner and Fix
+columns; a healthy system shows zero findings.
