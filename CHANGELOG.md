@@ -2,6 +2,14 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.22.1 — fixes from the first audit run on the demo site
+
+- C2-01 audit: "Stock value by warehouse" printed "<built-in method items>" instead of the item count
+  (SQL alias clashed with dict.items); regression test added.
+- Audit and health-check Summary sheets count only findings, not information rows.
+- Health check: an unapproved supplier whose every PO carries an override reason is shown as
+  information, not as a finding.
+
 ## 0.22.0 — Cycle 2 complete (Purchase & Stores)
 
 - Cycle 2 health check (brief Phase 1 on live data): PO → tracker, receipt → Receipt Log, heat and

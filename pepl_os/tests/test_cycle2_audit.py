@@ -36,6 +36,24 @@ class TestCycle2Audit(PEPLTestCase):
 		self.assertEqual(wb.sheetnames, ["Summary", *[title for title, _cols in audit.SHEETS]])
 		self.assertEqual(wb["2 Suppliers"].cell(1, 4).value, "Owner")
 
+	def test_stock_value_line_counts_items(self):
+		# Regression (found on the demo site): the SQL alias "items" clashed with dict.items(),
+		# so the line read "across <built-in method items ...> item(s)".
+		for row in audit.build_audit("2026-07-01")["4 Stock"]:
+			if row["check"] == "Stock value by warehouse":
+				self.assertNotIn("built-in", row["detail"])
+				self.assertRegex(row["detail"], r"across \d+ item\(s\)")
+
+	def test_summary_counts_only_findings(self):
+		from openpyxl import load_workbook
+
+		data = {title: [] for title, _cols in audit.SHEETS}
+		data["7 Vendor bills"] = [{"check": "Vendor bills in ERPNext", "detail": "info"}]
+		data["2 Suppliers"] = [{"check": "Missing GSTIN", "supplier": "X", "detail": "X"}]
+		summary = load_workbook(BytesIO(audit.to_xlsx(data)))["Summary"]
+		counts = {summary.cell(r, 1).value: summary.cell(r, 2).value for r in range(2, summary.max_row + 1)}
+		self.assertEqual((counts["7 Vendor bills"], counts["2 Suppliers"]), (0, 1))
+
 	def test_audit_writes_nothing(self):
 		before = frappe.db.count("File")
 		audit.to_xlsx(audit.build_audit("2026-07-01"))

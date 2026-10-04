@@ -160,7 +160,7 @@ def _receipt_log(since):
 def _supplier_approval(since):
 	rows = []
 	for s in frappe.db.sql(
-		"""select po.supplier, count(*) as pos, max(s.custom_approval_state) as state
+		"""select po.supplier, count(*) as po_count, max(s.custom_approval_state) as state
 		from `tabPurchase Order` po join `tabSupplier` s on s.name = po.supplier
 		where po.docstatus = 1 and po.transaction_date >= %s
 		group by po.supplier order by po.supplier""",
@@ -181,9 +181,11 @@ def _supplier_approval(since):
 			)
 		rows.append(
 			{
-				"check": "Supplier on submitted POs is not approved",
+				"check": "Supplier not approved, a reason logged on every PO"
+				if s.po_count <= overrides
+				else "Supplier on submitted POs is not approved",
 				"supplier": s.supplier,
-				"detail": f"State {s.state or 'none'}; {s.pos} PO(s) since {since}; {overrides} override reason(s) logged",
+				"detail": f"State {s.state or 'none'}; {s.po_count} PO(s) since {since}; {overrides} override reason(s) logged",
 			}
 		)
 	if _exists(APPROVAL):
@@ -434,7 +436,13 @@ SHEETS = (
 )
 
 # Rows that report a figure rather than a problem; not counted as findings.
-INFO_CHECKS = ("Usage", "Overrides logged", "Stock value by class", "Outstanding Vendor Bills total")
+INFO_CHECKS = (
+	"Usage",
+	"Overrides logged",
+	"Stock value by class",
+	"Outstanding Vendor Bills total",
+	"Supplier not approved, a reason logged on every PO",
+)
 
 
 def build_health_check(since=DEFAULT_SINCE, company=None):
@@ -471,6 +479,6 @@ def download_health_check(since=DEFAULT_SINCE):
 	"""System Manager only. Streams the health-check workbook; writes nothing."""
 	frappe.only_for("System Manager")
 	frappe.response["filename"] = f"PEPL Cycle 2 health check {today()}.xlsx"
-	frappe.response["filecontent"] = audit.to_xlsx(build_health_check(since), SHEETS)
+	frappe.response["filecontent"] = audit.to_xlsx(build_health_check(since), SHEETS, INFO_CHECKS)
 	frappe.response["type"] = "binary"
 	return None

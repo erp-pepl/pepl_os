@@ -180,7 +180,7 @@ def _items(company):
 def _stock():
 	rows = []
 	for w in frappe.db.sql(
-		"""select warehouse, sum(stock_value) as value, count(*) as items
+		"""select warehouse, sum(stock_value) as value, count(*) as item_count
 		from `tabBin` group by warehouse order by value desc""",
 		as_dict=True,
 	):
@@ -189,7 +189,7 @@ def _stock():
 				"check": "Stock value by warehouse",
 				"warehouse": w.warehouse,
 				"item": "",
-				"detail": f"{flt(w.value, 2)} across {w.items} item(s)",
+				"detail": f"{flt(w.value, 2)} across {w.item_count} item(s)",
 			}
 		)
 	for b in frappe.get_all(
@@ -335,7 +335,11 @@ def build_audit(since=DEFAULT_SINCE, company=None):
 	return {title: rows for (title, _cols), rows in zip(SHEETS, data, strict=True)}
 
 
-def to_xlsx(audit, sheets=None):
+# Rows that report a figure rather than a problem: shown, but not counted as findings in the Summary.
+INFO_CHECKS = ("Count", "Stock value by warehouse", "Vendor bills in ERPNext")
+
+
+def to_xlsx(audit, sheets=None, info_checks=INFO_CHECKS):
 	from openpyxl import Workbook
 	from openpyxl.styles import Font, PatternFill
 
@@ -347,7 +351,7 @@ def to_xlsx(audit, sheets=None):
 	header_fill = PatternFill("solid", start_color="1F3A5F")
 	for title, columns in sheets or SHEETS:
 		rows = audit.get(title, [])
-		summary.append([title, len(rows)])
+		summary.append([title, len([r for r in rows if r.get("check") not in info_checks])])
 		ws = wb.create_sheet(title[:31])
 		ws.append([c.replace("_", " ").title() for c in columns] + ["Owner", "Fix"])
 		for row in rows:
