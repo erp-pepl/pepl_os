@@ -53,7 +53,10 @@ def promised_date_of(po_item):
 
 
 def on_receipt_submit(doc, method=None):
-	"""doc_events: Purchase Receipt on_submit. One Late row per receipt line received late."""
+	"""doc_events: Purchase Receipt on_submit. One Late row per PO line received late on this receipt.
+
+	A PO line split over several receipt lines (e.g. Split by heat) is one late delivery, not several.
+	"""
 	grace = trk.grace_days()
 	receipt_date = getdate(doc.posting_date)
 	for row in doc.items:
@@ -65,7 +68,9 @@ def on_receipt_submit(doc, method=None):
 		late_by = date_diff(receipt_date, promised)
 		if late_by <= grace:
 			continue
-		if frappe.db.exists(DOCTYPE, {"pr_item": row.name}):
+		if frappe.db.exists(DOCTYPE, {"pr_item": row.name}) or frappe.db.exists(
+			DOCTYPE, {"purchase_receipt": doc.name, "po_item": row.purchase_order_item, "letdown_type": LATE}
+		):
 			continue
 		frappe.get_doc(
 			{

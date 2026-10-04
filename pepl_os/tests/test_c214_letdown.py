@@ -83,6 +83,21 @@ class TestLetdowns(PEPLTestCase):
 		rows = _letdowns(po)
 		self.assertEqual([(r.letdown_type, r.days_late) for r in rows], [(ld.LATE, 4)])
 
+	def test_po_line_split_over_receipt_lines_is_one_letdown(self):
+		# Regression (Check 22): Split by heat turns one PO line into two receipt lines; it is still
+		# one late delivery, so one Late row.
+		s = _supplier("PEPL T LTD Split")
+		po = _po(s, 10, add_days(today(), -3), add_days(today(), -10))
+		pr = make_purchase_receipt(po.name)
+		first = pr.items[0]
+		first.qty = first.received_qty = 6
+		second = pr.append("items", {k: first.get(k) for k in first.as_dict() if k not in ("name", "idx")})
+		second.qty = second.received_qty = 4
+		pr.insert(ignore_permissions=True)
+		pr.submit()
+		self.assertEqual(len(pr.items), 2)
+		self.assertEqual([(r.letdown_type, r.days_late) for r in _letdowns(po)], [(ld.LATE, 3)])
+
 	def test_on_time_receipt_creates_none(self):
 		s = _supplier("PEPL T LTD OnTime")
 		po = _po(s, 10, add_days(today(), -4), add_days(today(), -10))

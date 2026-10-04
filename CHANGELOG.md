@@ -2,6 +2,11 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.22.2 — from the first end-to-end run (Check 22)
+
+- Delivery Letdown: a PO line split over several receipt lines (Split by heat) is one late delivery,
+  so one Late row, not one per heat; regression test added.
+
 ## 0.22.1 — fixes from the first audit run on the demo site
 
 - C2-01 audit: "Stock value by warehouse" printed "<built-in method items>" instead of the item count
