@@ -75,6 +75,20 @@ jobs:
           bench --site test_site install-app pepl_sales
           bench --site test_site install-app pepl_os
 
+      # PDFs link the print stylesheet and script from the site's own address. A live site answers on
+      # its domain; the CI site has no web server, so wkhtmltopdf failed with HostNotFoundError. A tiny
+      # local web server answers instead, with empty stand-ins for the two files (assets are not built
+      # on CI). A missing file would also stop the PDF ("broken image links"), so both must be there.
+      - name: Give the test site an address for PDFs
+        working-directory: /home/runner/frappe-bench
+        run: |
+          mkdir -p /tmp/pepl_pdf_host
+          touch /tmp/pepl_pdf_host/print.bundle.css /tmp/pepl_pdf_host/print.bundle.js
+          nohup python3 -m http.server 8000 --bind 127.0.0.1 --directory /tmp/pepl_pdf_host > /tmp/pepl_pdf_host.log 2>&1 &
+          sleep 2
+          curl -s -o /dev/null -w "local web server answers: HTTP %{http_code}\n" http://localhost:8000/print.bundle.css
+          bench --site test_site set-config host_name "http://localhost:8000"
+
       - name: Run tests
         working-directory: /home/runner/frappe-bench
         run: |

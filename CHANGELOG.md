@@ -2,6 +2,12 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.22.6 — from CI run #15 (260 tests, 2 errors)
+
+- CI only: the test site gets a local address for PDFs. wkhtmltopdf fetches the print stylesheet from
+  the site's own address; on the CI machine "test_site" is not a real address (HostNotFoundError).
+  A small local web server answers with stand-in files. No change to how the system works.
+
 ## 0.22.5 — from CI run #14
 
 - Tests only: the bare CI site gets a default outgoing e-mail account (nothing is sent in tests), as
