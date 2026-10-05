@@ -2,6 +2,11 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.22.5 — from CI run #14
+
+- Tests only: the bare CI site gets a default outgoing e-mail account (nothing is sent in tests), as
+  the live site has, so the chase e-mail test can run.
+
 ## 0.22.4 — from CI run #13 (a fresh site with no setup wizard)
 
 - Same item on several PO / receipt lines (needed by Split by heat) is switched on once in Buying

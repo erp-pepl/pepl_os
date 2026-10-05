@@ -27,6 +27,7 @@ def before_tests():
 	ensure_setup()
 	seed_stock_structure(TEST_COMPANY)
 	_notification_owner()
+	_outgoing_email_account()
 	frappe.db.commit()
 
 
@@ -39,3 +40,25 @@ def _notification_owner():
 
 	make_user(FALLBACK_OWNER, ["System Manager"])
 	frappe.db.set_single_value(SYSTEM_PARAMETERS, "notification_fallback_owner", FALLBACK_OWNER)
+
+
+TEST_EMAIL_ACCOUNT = "PEPL Test Outgoing"
+
+
+def _outgoing_email_account():
+	"""The chase letter and RFQ e-mails need a default outgoing e-mail account, as on the live site.
+	In tests Frappe skips the SMTP check and sends nothing; the e-mail is only queued."""
+	if frappe.db.exists("Email Account", {"enable_outgoing": 1, "default_outgoing": 1}):
+		return
+	frappe.get_doc(
+		{
+			"doctype": "Email Account",
+			"email_account_name": TEST_EMAIL_ACCOUNT,
+			"email_id": "pepl.test.outgoing@example.com",
+			"enable_outgoing": 1,
+			"default_outgoing": 1,
+			"smtp_server": "localhost",
+			"smtp_port": 25,
+			"no_smtp_authentication": 1,
+		}
+	).insert(ignore_permissions=True)
