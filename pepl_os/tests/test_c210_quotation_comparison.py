@@ -10,7 +10,7 @@ from frappe.utils import add_days, getdate, today
 
 from pepl_os.pepl_purchase import quotation_comparison as qc
 from pepl_os.pepl_stores import stock_tree as st
-from pepl_os.tests.factories import TEST_COMPANY, make_item, make_supplier
+from pepl_os.tests.factories import TEST_COMPANY, blank_pdf, make_item, make_supplier
 from pepl_os.tests.utils import PEPLTestCase, make_user, set_param
 
 ITEM_A = "PEPL-T-QC-A"
@@ -182,7 +182,8 @@ class TestQuotationComparison(PEPLTestCase):
 		with patch.object(qc, "attach_comparison_pdf", return_value=True):
 			_approve(doc)
 		po = frappe.get_all("Purchase Order", filters={qc.PO_LINK: doc.name}, pluck="name")[0]
-		fake = {"fname": f"{doc.name}.pdf", "fcontent": b"%PDF-1.4 test"}
+		# A real PDF: Frappe v16 opens every uploaded PDF to scan it, and refuses a fake one.
+		fake = {"fname": f"{doc.name}.pdf", "fcontent": blank_pdf()}
 		with patch("frappe.attach_print", return_value=fake):
 			self.assertEqual(qc.attach_comparison_pdf(doc, po), "pdf")
 		self.assertTrue(

@@ -2,6 +2,12 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.22.3 — first full CI run
+
+- Tests only (no change to how the system works): the scrap weighment test now checks the receipt's
+  incoming rate instead of the yard's moving-average rate; the comparison-PDF test attaches a real PDF,
+  which Frappe v16 requires.
+
 ## 0.22.2 — from the first end-to-end run (Check 22)
 
 - Delivery Letdown: a PO line split over several receipt lines (Split by heat) is one late delivery,

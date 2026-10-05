@@ -119,10 +119,12 @@ class TestScrapRegister(PEPLTestCase):
 		sle = frappe.get_all(
 			"Stock Ledger Entry",
 			filters={"voucher_no": doc.stock_entry, "is_cancelled": 0},
-			fields=["warehouse", "actual_qty", "valuation_rate"],
+			fields=["warehouse", "actual_qty", "incoming_rate"],
 		)
+		# incoming_rate is this receipt's rate; valuation_rate is the moving average of all the
+		# brass scrap already in the yard (other tests receive some at 400), so it is not 450.
 		self.assertEqual(
-			[(r.warehouse, r.actual_qty, r.valuation_rate) for r in sle], [(_wh("Scrap Yard"), 120, 450)]
+			[(r.warehouse, r.actual_qty, r.incoming_rate) for r in sle], [(_wh("Scrap Yard"), 120, 450)]
 		)
 		doc.cancel()
 		self.assertEqual(frappe.db.get_value("Stock Entry", doc.stock_entry, "docstatus"), 2)
