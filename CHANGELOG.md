@@ -2,6 +2,18 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.22.4 — from CI run #13 (a fresh site with no setup wizard)
+
+- Same item on several PO / receipt lines (needed by Split by heat) is switched on once in Buying
+  Settings; a site set up without ERPNext's wizard had it off.
+- PEPL CEO can select ledger accounts, so a CEO can submit a PO above the approval value.
+- An alert with no owner set in System Parameters no longer stops the user's save; it is logged.
+- An override reason can be logged before the record is first saved.
+- Material Request default store is always a store of the same company.
+- Chase e-mail still goes out (letter as HTML) if the PDF cannot be made; logged.
+- Batch is under the delete restriction like the other core records.
+- Tests: each test now rolls back on its own; CI installs the patched wkhtmltopdf.
+
 ## 0.22.3 — first full CI run
 
 - Tests only (no change to how the system works): the scrap weighment test now checks the receipt's

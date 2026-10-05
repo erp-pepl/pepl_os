@@ -59,6 +59,13 @@ class TestOverrides(PEPLTestCase):
 		with self.assertRaises(frappe.ValidationError):
 			overrides.log_override("TEST-OVR", REF_DOCTYPE, REF_NAME, "msg", "")
 
+	def test_reason_logged_before_the_record_exists(self):
+		# A reason is asked for before the first save, so the record name may not exist yet.
+		name = overrides.log_override(
+			"TEST-OVR", "Purchase Order", "PEPL-T-NOT-SAVED-YET", "msg", "Reason given before the first save"
+		)
+		self.assertTrue(frappe.db.exists("PEPL Override Log", name))
+
 	def test_short_reason_rejected(self):
 		with self.assertRaises(frappe.ValidationError):
 			overrides.log_override("TEST-OVR", REF_DOCTYPE, REF_NAME, "msg", "too short")
@@ -163,6 +170,18 @@ class TestAlerts(PEPLTestCase):
 		closed = alerts.close_resolved(self.RULE, REF_DOCTYPE, active_reference_names=[])
 		self.assertGreaterEqual(closed, 1)
 		self.assertEqual(self._open_todos(), [])
+
+	def test_alert_without_owner_does_not_block(self):
+		from unittest.mock import patch
+
+		set_param("enable_operational_todos", 1)
+
+		def no_owner(*_args, **_kwargs):
+			frappe.throw("No valid notification owner")
+
+		with patch.object(alerts, "get_notification_owner", no_owner):
+			result = alerts.raise_todo(self.RULE, REF_DOCTYPE, REF_NAME, "Text")
+		self.assertEqual(result["action"], "no_owner")
 
 	def test_alerts_respect_master_switch(self):
 		set_param("enable_operational_todos", 0)

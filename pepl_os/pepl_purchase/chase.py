@@ -188,11 +188,15 @@ def chase_vendor(supplier, send_email=True):
 		from pepl_os.common.letterhead import file_name, render
 
 		name = frappe.db.get_value("Supplier", supplier, "supplier_name") or supplier
-		# C2-24: the chase letter goes as a PDF on the official letterhead
-		letter = {
-			"fname": file_name(f"Pending-Deliveries-{supplier}"),
-			"fcontent": render("Supplier", supplier, LETTER_FORMAT),
-		}
+		# C2-24: the chase letter goes as a PDF on the official letterhead. If no PDF can be made (PDF
+		# tool missing or broken on the server), the letter still goes, as a printable page.
+		base = f"Pending-Deliveries-{supplier}"
+		try:
+			letter = {"fname": file_name(base), "fcontent": render("Supplier", supplier, LETTER_FORMAT)}
+		except Exception:
+			frappe.log_error(title=f"PEPL: chase letter PDF not made for {supplier}")
+			html = frappe.get_print("Supplier", supplier, LETTER_FORMAT, no_letterhead=1)
+			letter = {"fname": file_name(base)[:-4] + ".html", "fcontent": html.encode("utf-8")}
 		make(
 			doctype="Supplier",
 			name=supplier,

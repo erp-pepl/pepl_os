@@ -26,4 +26,16 @@ def before_tests():
 
 	ensure_setup()
 	seed_stock_structure(TEST_COMPANY)
+	_notification_owner()
 	frappe.db.commit()
+
+
+FALLBACK_OWNER = "pepl.test.owner@example.com"
+
+
+def _notification_owner():
+	"""A live site names who receives each kind of ToDo; on the bare test site one user takes them all."""
+	from pepl_os.tests.utils import SYSTEM_PARAMETERS, make_user
+
+	make_user(FALLBACK_OWNER, ["System Manager"])
+	frappe.db.set_single_value(SYSTEM_PARAMETERS, "notification_fallback_owner", FALLBACK_OWNER)

@@ -121,3 +121,15 @@ class TestCycle2HealthCheck(PEPLTestCase):
 		self.assertIn("Test certificate attached", texts)
 		self.assertEqual(panel["heat_number"], "H-HC-PANEL")
 		self.assertEqual(panel["purchase_receipt"], pr.name)
+
+
+class TestSameItemLines(PEPLTestCase):
+	def test_switched_on_once_and_left_alone_after(self):
+		frappe.db.set_default(heat.SAME_ITEM_FLAG, 0)
+		frappe.db.set_single_value("Buying Settings", "allow_multiple_items", 0)
+		self.assertTrue(heat.allow_same_item_lines_once())
+		self.assertEqual(frappe.db.get_single_value("Buying Settings", "allow_multiple_items"), 1)
+		# PEPL switches it off on purpose: the next migrate leaves it off.
+		frappe.db.set_single_value("Buying Settings", "allow_multiple_items", 0)
+		self.assertFalse(heat.allow_same_item_lines_once())
+		self.assertEqual(frappe.db.get_single_value("Buying Settings", "allow_multiple_items"), 0)

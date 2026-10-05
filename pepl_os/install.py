@@ -4,7 +4,7 @@ from pepl_os.common.letterhead import ensure_default_print_formats
 from pepl_os.pepl_governance.retention import apply_log_retention
 from pepl_os.pepl_purchase.command_centre import ensure_command_centre_block
 from pepl_os.pepl_stores.csm import ensure_return_type
-from pepl_os.pepl_stores.heat import enable_batches
+from pepl_os.pepl_stores.heat import allow_same_item_lines_once, enable_batches
 from pepl_os.pepl_stores.reorder import switch_off_auto_mr_once
 from pepl_os.pepl_stores.scrap import ensure_scrap_masters
 from pepl_os.pepl_stores.stock_tree import seed_stock_structure
@@ -30,6 +30,7 @@ def ensure_setup():
 	apply_log_retention()  # A5
 	seed_stock_structure()  # C2-04: stock classes, stores, Item Group defaults
 	enable_batches()  # C2-15: Batch = heat number needs batches switched on in Stock Settings
+	allow_same_item_lines_once()  # C2-15: Split by heat puts the same item on several receipt lines
 	ensure_return_type()  # C2-16: Stock Entry Type "CSM Return to Customer"
 	ensure_scrap_masters()  # C2-18: CSM Scrap item group, Scrap Buyers, the default scrap items (once)
 	switch_off_auto_mr_once()  # C2-19: ERPNext's automatic MR stays off until the Stores HOD asks for it

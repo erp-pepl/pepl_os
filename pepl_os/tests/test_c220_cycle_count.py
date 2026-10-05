@@ -6,7 +6,7 @@ from frappe.utils import add_days, today
 from pepl_os.pepl_stores import cycle_count as cc
 from pepl_os.pepl_stores import stock_tree as st
 from pepl_os.tests.factories import TEST_COMPANY, make_item
-from pepl_os.tests.utils import PEPLTestCase, make_user, set_param
+from pepl_os.tests.utils import PEPLTestCase, make_user, reopen, set_param
 
 ITEM = "PEPL-T-CC-OIL"
 FRESH = "PEPL-T-CC-FRESH"
@@ -81,6 +81,7 @@ class TestCycleCount(PEPLTestCase):
 		row.counted_qty = row.system_qty - 5
 		with self.assertRaises(frappe.ValidationError):
 			doc.save()
+		reopen(doc)
 		row.reason = "Damage"
 		doc.save()
 

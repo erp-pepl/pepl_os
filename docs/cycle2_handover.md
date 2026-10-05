@@ -61,7 +61,7 @@ ToDo owners (purchase, accounts, MD approver). Changing a value after sign-off i
 
 ## Checks
 
-- Automated tests: `bench --site <test site> run-tests --app pepl_os` (one file per deliverable,
+- Automated tests: GitHub → Actions → CI → Run workflow (fresh site, one file per deliverable,
   `tests/test_c2*.py`). Acceptance = all green.
 - System Console checks 6 – 22 (one per deliverable; Check 22 runs the whole chain end to end).
 - **Cycle 2 health check** (PEPL System Health): live data against the automation; zero findings

@@ -11,7 +11,7 @@ from frappe.utils import add_days, getdate, today
 from pepl_os.pepl_purchase import quotation_comparison as qc
 from pepl_os.pepl_stores import stock_tree as st
 from pepl_os.tests.factories import TEST_COMPANY, blank_pdf, make_item, make_supplier
-from pepl_os.tests.utils import PEPLTestCase, make_user, set_param
+from pepl_os.tests.utils import PEPLTestCase, make_user, reopen, set_param
 
 ITEM_A = "PEPL-T-QC-A"
 ITEM_B = "PEPL-T-QC-B"
@@ -125,6 +125,7 @@ class TestQuotationComparison(PEPLTestCase):
 		doc.status = "Pending Approval"
 		with self.assertRaises(frappe.ValidationError):
 			doc.save()
+		reopen(doc)
 		_row(doc, ITEM_B, S1).award_reason = REASON
 		doc.save()
 		self.assertEqual(doc.status, "Pending Approval")

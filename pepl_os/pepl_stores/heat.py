@@ -72,6 +72,24 @@ def enable_batches():
 	return True
 
 
+SAME_ITEM_FLAG = "pepl_same_item_lines_allowed"
+
+
+def allow_same_item_lines_once():
+	"""Install / migrate: "Split by heat" turns one receipt line into one line per heat of the same item,
+	and a PO may promise the same item on several dates. ERPNext's setup wizard allows the same item on
+	several lines (Buying Settings); a site set up without the wizard does not. Switched on once; if
+	PEPL later switches it off on purpose, it stays off."""
+	if cint(frappe.db.get_default(SAME_ITEM_FLAG)):
+		return False
+	changed = not cint(frappe.db.get_single_value("Buying Settings", "allow_multiple_items"))
+	if changed:
+		frappe.db.set_single_value("Buying Settings", "allow_multiple_items", 1)
+		frappe.clear_cache(doctype="Buying Settings")
+	frappe.db.set_default(SAME_ITEM_FLAG, 1)
+	return changed
+
+
 # Item -------------------------------------------------------------------------------
 
 

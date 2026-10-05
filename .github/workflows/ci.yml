@@ -44,6 +44,13 @@ jobs:
       - name: Install MariaDB client
         run: sudo apt-get update && sudo apt-get install -y mariadb-client
 
+      # PDFs (letterhead print formats, chase letter, RFQ) need the patched-Qt wkhtmltopdf.
+      - name: Install wkhtmltopdf (patched Qt)
+        run: |
+          wget -q https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_amd64.deb
+          sudo apt-get install -y ./wkhtmltox_0.12.6.1-2.jammy_amd64.deb
+          wkhtmltopdf --version
+
       - name: Init bench on Frappe v16
         run: |
           pip install frappe-bench

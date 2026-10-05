@@ -6,7 +6,7 @@ from frappe.utils import add_days, getdate, today
 from pepl_os.common.overrides import log_override
 from pepl_os.pepl_purchase import supplier_approval as sa
 from pepl_os.tests.factories import make_file, make_rm_group, make_supplier
-from pepl_os.tests.utils import PEPLTestCase, make_user, set_param
+from pepl_os.tests.utils import PEPLTestCase, make_user, reopen, set_param
 
 REQS = (
 	# code, name, mandatory, expires, sequence
@@ -131,6 +131,7 @@ class TestSupplierApproval(PEPLTestCase):
 		doc.state = "Conditionally Approved"
 		with self.assertRaises(frappe.ValidationError):
 			doc.save(ignore_permissions=True)
+		reopen(doc)
 		doc.remarks = "ISO audit booked for next month, MD agreed"
 		doc.next_review_date = add_days(today(), 30)
 		doc.save(ignore_permissions=True)

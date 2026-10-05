@@ -7,6 +7,7 @@ Rule codes use the Cycle 1 style: upper case with hyphens, prefixed by module,
 e.g. "PUR-CHASE", "SUP-DOC-EXPIRY", "STO-REORDER", "QA-CAL-DUE".
 """
 
+import frappe
 from pepl_sales.operational_notifications import (
 	close_resolved_rule_todos,
 	get_notification_owner,
@@ -41,7 +42,18 @@ def raise_todo(
 		return {"action": "disabled", "name": None}
 
 	if not allocated_to:
-		allocated_to = get_notification_owner(owner_field or "notification_fallback_owner")
+		try:
+			allocated_to = get_notification_owner(owner_field or "notification_fallback_owner")
+		except frappe.ValidationError:
+			# Nobody to give it to yet (owners not set in System Parameters). An alert must never stop
+			# the user's own work, so log it for the System Manager and carry on.
+			frappe.clear_last_message()
+			frappe.log_error(
+				title=f"PEPL alert {rule_code} not raised: no owner",
+				message=f"{reference_doctype} {reference_name}: set {owner_field or 'notification_fallback_owner'} "
+				"(or Notification Fallback Owner) in PEPL System Parameters.",
+			)
+			return {"action": "no_owner", "name": None}
 
 	return upsert_operational_todo(
 		rule_code=rule_code,

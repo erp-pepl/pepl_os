@@ -50,6 +50,8 @@ def log_override(rule_code, reference_doctype, reference_name, message, reason, 
 			"user": frappe.session.user,
 		}
 	)
+	# The reason is logged before the record is saved, so the record may not exist yet.
+	doc.flags.ignore_links = True
 	doc.insert(ignore_permissions=True)
 	return doc.name
 
