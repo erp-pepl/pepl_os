@@ -28,6 +28,20 @@ class TestCommandCentre(PEPLTestCase):
 				self.assertGreaterEqual(res["value"], 0)
 				self.assertTrue(res["route"])
 
+	def test_count_cards_carry_no_currency(self):
+		# Found on the demo site: a card with a currency is always shown as money ("Rs 0.00"),
+		# even when its method returns a count.
+		for method in CARDS:
+			with self.subTest(method=method):
+				card = frappe.get_all(
+					"Number Card", filters={"method": f"{cc.__name__}.{method}"}, pluck="name"
+				)[0]
+				currency = frappe.db.get_value("Number Card", card, "currency")
+				if getattr(cc, method)()["fieldtype"] == "Int":
+					self.assertFalse(currency, card)
+				else:
+					self.assertEqual(currency, "INR", card)
+
 	def test_msme_card_equals_open_msme_bills(self):
 		want = frappe.db.sql(
 			"""select ifnull(sum(outstanding_amount), 0) from `tabPurchase Invoice`

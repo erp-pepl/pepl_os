@@ -2,6 +2,11 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.22.8 — demo site, second look
+
+- Number cards Overdue Deliveries, POs Due This Week and Supplier Documents Expiring are counts and now
+  show "0", not "Rs 0.00" (a currency on the card made Frappe show every value as money).
+
 ## 0.22.7 — from the first run on the demo site
 
 - Command Centre: the six number cards and the "Purchase Tracker last refreshed" line now show on
