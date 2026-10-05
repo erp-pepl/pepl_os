@@ -1,7 +1,7 @@
 {
  "app": "pepl_os",
  "charts": [],
- "content": "[{\"id\": \"hdr\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>MD Stores Overview</b></span>\", \"col\": 12}}, {\"id\": \"card0\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"PEPL Overdue Deliveries\", \"col\": 4}}, {\"id\": \"card1\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"PEPL POs Due This Week\", \"col\": 4}}, {\"id\": \"card2\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"PEPL MSME Payments Due\", \"col\": 4}}, {\"id\": \"card3\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"PEPL Open PO Value\", \"col\": 4}}, {\"id\": \"card4\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"PEPL Supplier Documents Expiring\", \"col\": 4}}, {\"id\": \"card5\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"PEPL Scrap Stock Value\", \"col\": 4}}, {\"id\": \"refreshed\", \"type\": \"custom_block\", \"data\": {\"custom_block_name\": \"PEPL Tracker Refreshed\", \"col\": 12}}, {\"id\": \"spacer\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"card_links0\", \"type\": \"card\", \"data\": {\"card_name\": \"Purchase\", \"col\": 4}}, {\"id\": \"card_links1\", \"type\": \"card\", \"data\": {\"card_name\": \"Payables\", \"col\": 4}}, {\"id\": \"card_links2\", \"type\": \"card\", \"data\": {\"card_name\": \"Stores\", \"col\": 4}}]",
+ "content": "[{\"id\": \"hdr\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>MD Stores Overview</b></span>\", \"col\": 12}}, {\"id\": \"card0\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Overdue Deliveries\", \"col\": 4}}, {\"id\": \"card1\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"POs Due This Week\", \"col\": 4}}, {\"id\": \"card2\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"MSME Payments Due (45 Days)\", \"col\": 4}}, {\"id\": \"card3\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Open PO Value\", \"col\": 4}}, {\"id\": \"card4\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Supplier Documents Expiring\", \"col\": 4}}, {\"id\": \"card5\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Scrap Stock Value\", \"col\": 4}}, {\"id\": \"refreshed\", \"type\": \"custom_block\", \"data\": {\"custom_block_name\": \"Purchase Tracker last refreshed\", \"col\": 12}}, {\"id\": \"spacer\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"card_links0\", \"type\": \"card\", \"data\": {\"card_name\": \"Purchase\", \"col\": 4}}, {\"id\": \"card_links1\", \"type\": \"card\", \"data\": {\"card_name\": \"Payables\", \"col\": 4}}, {\"id\": \"card_links2\", \"type\": \"card\", \"data\": {\"card_name\": \"Stores\", \"col\": 4}}]",
  "creation": "2026-10-01 18:00:00.000000",
  "custom_blocks": [
   {
@@ -165,7 +165,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-10-01 18:00:00.000000",
+ "modified": "2026-10-05 18:30:00.000000",
  "modified_by": "Administrator",
  "module": "PEPL Purchase",
  "name": "MD Stores Overview",

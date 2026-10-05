@@ -2,6 +2,17 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.22.7 — from the first run on the demo site
+
+- Command Centre: the six number cards and the "Purchase Tracker last refreshed" line now show on
+  both workspaces. Frappe draws a workspace block only when its name equals the label of its row; the
+  blocks named the Number Card itself, so they stayed blank. Test now checks Frappe's rule.
+- Buyers Desk opens from the desk icon. The apostrophe in "Buyer's Desk" made the address
+  "buyer's-desk", which Frappe could not find ("Page not found"). Name, title, sidebar and icon are
+  now "Buyers Desk" (the heading on the page still reads Buyer's Desk).
+- PEPL System Health: a new monthly job shows "Waiting for First Run" (blue, healthy) until its first
+  1st of the month, instead of "Never Run"; the health check lists it as information.
+
 ## 0.22.6 — from CI run #15 (260 tests, 2 errors)
 
 - CI only: the test site gets a local address for PDFs. wkhtmltopdf fetches the print stylesheet from

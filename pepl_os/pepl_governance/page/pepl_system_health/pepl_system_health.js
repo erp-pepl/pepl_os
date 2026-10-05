@@ -26,6 +26,7 @@ frappe.pages["pepl-system-health"].on_page_load = function (wrapper) {
 
 const PEPL_HEALTH_COLOURS = {
 	OK: "green",
+	"Waiting for First Run": "blue",
 	Stale: "orange",
 	"Never Run": "orange",
 	"Last Run Failed": "red",

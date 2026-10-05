@@ -1,7 +1,7 @@
 {
  "app": "pepl_os",
  "charts": [],
- "content": "[{\"id\": \"hdr\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Buyer's Desk</b></span>\", \"col\": 12}}, {\"id\": \"card0\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"PEPL Overdue Deliveries\", \"col\": 4}}, {\"id\": \"card1\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"PEPL POs Due This Week\", \"col\": 4}}, {\"id\": \"card2\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"PEPL Open PO Value\", \"col\": 4}}, {\"id\": \"refreshed\", \"type\": \"custom_block\", \"data\": {\"custom_block_name\": \"PEPL Tracker Refreshed\", \"col\": 12}}, {\"id\": \"sc_hdr\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h5\\\"><b>Today's work</b></span>\", \"col\": 12}}, {\"id\": \"sc0\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Material Requests to review\", \"col\": 4}}, {\"id\": \"sc1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"RFQs awaiting quotes\", \"col\": 4}}, {\"id\": \"sc2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Comparisons awaiting approval\", \"col\": 4}}, {\"id\": \"sc3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Chase List\", \"col\": 4}}, {\"id\": \"sc4\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Trackers overdue\", \"col\": 4}}, {\"id\": \"sc5\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Vendor Payment Priority\", \"col\": 4}}, {\"id\": \"spacer\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"card_links0\", \"type\": \"card\", \"data\": {\"card_name\": \"Purchase\", \"col\": 4}}, {\"id\": \"card_links1\", \"type\": \"card\", \"data\": {\"card_name\": \"Suppliers\", \"col\": 4}}, {\"id\": \"card_links2\", \"type\": \"card\", \"data\": {\"card_name\": \"Reports\", \"col\": 4}}]",
+ "content": "[{\"id\": \"hdr\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Buyer's Desk</b></span>\", \"col\": 12}}, {\"id\": \"card0\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Overdue Deliveries\", \"col\": 4}}, {\"id\": \"card1\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"POs Due This Week\", \"col\": 4}}, {\"id\": \"card2\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Open PO Value\", \"col\": 4}}, {\"id\": \"refreshed\", \"type\": \"custom_block\", \"data\": {\"custom_block_name\": \"Purchase Tracker last refreshed\", \"col\": 12}}, {\"id\": \"sc_hdr\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h5\\\"><b>Today's work</b></span>\", \"col\": 12}}, {\"id\": \"sc0\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Material Requests to review\", \"col\": 4}}, {\"id\": \"sc1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"RFQs awaiting quotes\", \"col\": 4}}, {\"id\": \"sc2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Comparisons awaiting approval\", \"col\": 4}}, {\"id\": \"sc3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Chase List\", \"col\": 4}}, {\"id\": \"sc4\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Trackers overdue\", \"col\": 4}}, {\"id\": \"sc5\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Vendor Payment Priority\", \"col\": 4}}, {\"id\": \"spacer\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"card_links0\", \"type\": \"card\", \"data\": {\"card_name\": \"Purchase\", \"col\": 4}}, {\"id\": \"card_links1\", \"type\": \"card\", \"data\": {\"card_name\": \"Suppliers\", \"col\": 4}}, {\"id\": \"card_links2\", \"type\": \"card\", \"data\": {\"card_name\": \"Reports\", \"col\": 4}}]",
  "creation": "2026-10-01 18:00:00.000000",
  "custom_blocks": [
   {
@@ -165,7 +165,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-10-01 18:00:00.000000",
+ "modified": "2026-10-05 18:30:00.000000",
  "modified_by": "Administrator",
  "module": "PEPL Purchase",
  "name": "Buyers Desk",
@@ -256,6 +256,6 @@
    "stats_filter": ""
   }
  ],
- "title": "Buyer's Desk",
+ "title": "Buyers Desk",
  "type": "Workspace"
 }

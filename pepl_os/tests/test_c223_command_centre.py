@@ -55,6 +55,9 @@ class TestCommandCentre(PEPLTestCase):
 		for name in WORKSPACES:
 			with self.subTest(workspace=name):
 				self.assertTrue(frappe.db.exists("Workspace", name))
+				# No apostrophe: Frappe makes the address from the name and title ("buyer's-desk" is not found).
+				ws_title = frappe.db.get_value("Workspace", name, "title")
+				self.assertNotIn("'", ws_title, "workspace title")
 				ws = frappe.get_doc("Workspace", name)
 				for link in ws.links:
 					if link.type == "Link":
@@ -67,8 +70,16 @@ class TestCommandCentre(PEPLTestCase):
 					self.assertTrue(
 						frappe.db.exists("Number Card", card.number_card_name), card.number_card_name
 					)
+				# Frappe draws a block only when its name equals the LABEL of a row in the matching
+				# table (workspace/blocks/block.js). A block naming the Number Card itself is left
+				# blank on the screen: the v0.22.7 fix, found on the demo site.
+				tables = {
+					"number_card": ("number_card_name", ws.number_cards),
+					"custom_block": ("custom_block_name", ws.custom_blocks),
+					"shortcut": ("shortcut_name", ws.shortcuts),
+					"card": ("card_name", [x for x in ws.links if x.type == "Card Break"]),
+				}
 				for block in json.loads(ws.content):
-					if block["type"] == "number_card":
-						self.assertTrue(frappe.db.exists("Number Card", block["data"]["number_card_name"]))
-					if block["type"] == "shortcut":
-						self.assertIn(block["data"]["shortcut_name"], [s.label for s in ws.shortcuts])
+					if block["type"] in tables:
+						key, rows = tables[block["type"]]
+						self.assertIn(block["data"][key], [r.label for r in rows], f"{name}: {block['type']}")

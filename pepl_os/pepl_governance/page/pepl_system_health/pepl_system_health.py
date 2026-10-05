@@ -6,6 +6,11 @@ from frappe.utils import add_to_date, get_datetime, now_datetime
 
 APP_PREFIX = "pepl_os."
 
+# Healthy states. "Waiting for First Run": a new job whose first due time has not come yet
+# (a monthly job installed after the 1st first runs on the next 1st).
+WAITING = "Waiting for First Run"
+OK_STATES = ("OK", WAITING)
+
 # A job is "Stale" when its last success is older than this many hours.
 STALE_AFTER_HOURS = {
 	"all": 1,
@@ -45,6 +50,17 @@ def _last_run(method, status):
 	)
 
 
+def _first_run_not_due(scheduled_job, now):
+	"""True when the scheduler has not yet reached this job's first due time."""
+	doc = frappe.get_doc("Scheduled Job Type", scheduled_job)
+	if doc.last_execution:
+		return False
+	try:
+		return get_datetime(doc.get_next_execution()) > now
+	except Exception:
+		return False
+
+
 def job_health(frequency, method, now=None):
 	now = get_datetime(now or now_datetime())
 	scheduled = frappe.db.get_value(
@@ -57,6 +73,8 @@ def job_health(frequency, method, now=None):
 		status = "Not Scheduled"
 	elif scheduled.stopped:
 		status = "Stopped"
+	elif not success and not failure and _first_run_not_due(scheduled.name, now):
+		status = WAITING
 	elif not success:
 		status = "Never Run"
 	elif get_datetime(success.finished_at) < add_to_date(now, hours=-STALE_AFTER_HOURS.get(frequency, 26)):
@@ -107,5 +125,5 @@ def get_health():
 		"scheduler_enabled": _scheduler_enabled(),
 		"apps": _app_versions(),
 		"jobs": jobs,
-		"all_ok": all(j["status"] == "OK" for j in jobs),
+		"all_ok": all(j["status"] in OK_STATES for j in jobs),
 	}

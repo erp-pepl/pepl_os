@@ -130,6 +130,23 @@ class TestSystemHealth(PEPLTestCase):
 		future = add_days(now_datetime(), 3)
 		self.assertEqual(health.job_health("daily", HEARTBEAT, now=future)["status"], "Stale")
 
+	def test_new_monthly_job_waits_for_its_first_run(self):
+		# Found on the demo site: a monthly job installed after the 1st showed "Never Run" in orange.
+		job = "pepl_os.pepl_stores.reorder.monthly_reorder_review"
+		frappe.db.delete("PEPL Job Run", {"method": job})
+		sjt = frappe.db.get_value("Scheduled Job Type", {"method": job}, "name")
+		frappe.db.set_value(
+			"Scheduled Job Type",
+			sjt,
+			{"last_execution": None, "creation": now_datetime()},
+			update_modified=False,
+		)
+		self.assertEqual(health.job_health("monthly", job)["status"], health.WAITING)
+		# Past the next 1st with still no run: that is a real "Never Run".
+		self.assertEqual(
+			health.job_health("monthly", job, now=add_days(now_datetime(), 40))["status"], "Never Run"
+		)
+
 
 class TestSystemParameters(PEPLTestCase):
 	def test_all_pepl_os_fields_exist(self):

@@ -274,6 +274,7 @@ def _jobs():
 		h = job_health(frequency, method)
 		if h["status"] == "OK":
 			continue
+		# A new monthly job before its first 1st of the month is information, not a finding.
 		rows.append(
 			{
 				"check": f"Job {h['status']}",
@@ -442,6 +443,7 @@ INFO_CHECKS = (
 	"Stock value by class",
 	"Outstanding Vendor Bills total",
 	"Supplier not approved, a reason logged on every PO",
+	"Job Waiting for First Run",
 )
 
 
