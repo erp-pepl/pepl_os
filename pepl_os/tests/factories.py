@@ -113,3 +113,73 @@ def make_file(file_name, content=None):
 		.insert(ignore_permissions=True)
 		.file_url
 	)
+
+
+# Cycle 3a ------------------------------------------------------------------
+
+
+def make_workstation_type(name):
+	"""A machine group (ERPNext Workstation Type)."""
+	if not frappe.db.exists("Workstation Type", name):
+		frappe.get_doc({"doctype": "Workstation Type", "workstation_type": name}).insert(
+			ignore_permissions=True
+		)
+	return name
+
+
+def make_workstation(name, workstation_type=None, **fields):
+	"""A machine (ERPNext Workstation), optionally in a machine group."""
+	if frappe.db.exists("Workstation", name):
+		return frappe.get_doc("Workstation", name)
+	if workstation_type:
+		make_workstation_type(workstation_type)
+	return frappe.get_doc(
+		{"doctype": "Workstation", "workstation_name": name, "workstation_type": workstation_type, **fields}
+	).insert(ignore_permissions=True)
+
+
+def make_shift(name, start="08:00:00", end="16:30:00", break_minutes=30):
+	if frappe.db.exists("PEPL Shift", name):
+		return frappe.get_doc("PEPL Shift", name)
+	return frappe.get_doc(
+		{
+			"doctype": "PEPL Shift",
+			"shift_name": name,
+			"start_time": start,
+			"end_time": end,
+			"break_minutes": break_minutes,
+		}
+	).insert(ignore_permissions=True)
+
+
+def make_downtime_category(name, stop_type="Unplanned", is_breakdown=0):
+	if frappe.db.exists("PEPL Downtime Category", name):
+		return frappe.get_doc("PEPL Downtime Category", name)
+	return frappe.get_doc(
+		{
+			"doctype": "PEPL Downtime Category",
+			"category_name": name,
+			"stop_type": stop_type,
+			"is_breakdown": is_breakdown,
+		}
+	).insert(ignore_permissions=True)
+
+
+def make_operator(code, name=None, pin="1234", skills=(), **fields):
+	"""A shop-floor operator. skills: [(machine group, level), ...] or dicts for full rows."""
+	if frappe.db.exists("PEPL Operator", code):
+		return frappe.get_doc("PEPL Operator", code)
+	doc = frappe.get_doc(
+		{
+			"doctype": "PEPL Operator",
+			"employee_code": code,
+			"operator_name": name or f"Operator {code}",
+			"pin": pin,
+			**fields,
+		}
+	)
+	for skill in skills:
+		row = skill if isinstance(skill, dict) else {"workstation_type": skill[0], "level": skill[1]}
+		make_workstation_type(row["workstation_type"])
+		doc.append("skills", row)
+	return doc.insert(ignore_permissions=True)

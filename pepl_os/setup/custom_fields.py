@@ -324,6 +324,25 @@ PURCHASE_STORES_FIELDS = _chain(
 
 CUSTOM_FIELDS[SYSTEM_PARAMETERS] += PURCHASE_STORES_FIELDS
 
+# Cycle 3a - Production rulebook (one tab). Each deliverable adds its rules here.
+PRODUCTION_FIELDS = _chain(
+	[
+		{"fieldname": "custom_production_tab", "label": "Production", "fieldtype": "Tab Break"},
+		# C3a-X2 - shop-floor masters
+		{"fieldname": "custom_shop_floor_section", "label": "Shop Floor", "fieldtype": "Section Break"},
+		{
+			"fieldname": "custom_operator_pin_digits",
+			"label": "Operator PIN Digits",
+			"fieldtype": "Int",
+			"default": "4",
+			"description": "How many digits each operator's kiosk PIN has (4 to 6).",
+		},
+	],
+	after="custom_overhead_percent",
+)
+
+CUSTOM_FIELDS[SYSTEM_PARAMETERS] += PRODUCTION_FIELDS
+
 # C2-03 - Supplier: criticality, MSME and the RM groups supplied.
 APPROVAL_STATES = "\nDraft\nUnder Review\nApproved\nConditionally Approved\nSuspended\nExpired\nRejected"
 CUSTOM_FIELDS["Supplier"] = _chain(

@@ -2,6 +2,22 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.23.0 — Cycle 3a starts: shop-floor masters (C3a-X2)
+
+- **PEPL Shift**: start, end and breaks; planned production minutes worked out (a shift ending before it
+  starts runs past midnight). Same start and end, negative breaks or breaks as long as the shift are refused.
+- **PEPL Downtime Category**: Unplanned / Planned / PM-Calibration, and "Machine Breakdown" (counts for
+  MTBF / MTTR; only for unplanned stops). Each category says in plain words what it does to OEE.
+  16 starting categories are created once; PEPL may rename, disable or remove them.
+- **PEPL Operator**: employee code, name, status, usual shift, optional ERPNext login (one login per
+  operator), kiosk **PIN** (digits only, length from System Parameters, stored encrypted, never shown) and
+  **machine skills** per machine group with level 1–4 and validity. Panel shows PIN state and every skill,
+  red when expired. PINs are checked per operator (code + PIN), so two people may have the same PIN.
+- System Parameters → new **Production** tab: Operator PIN Digits (4, allowed 4–6).
+- Production Manager creates and edits these masters; Foreman reads them; only the System Manager deletes.
+  Changes tracked; listed in the Role Access Matrix.
+- System Console Check 23.
+
 ## 0.22.8 — demo site, second look
 
 - Number cards Overdue Deliveries, POs Due This Week and Supplier Documents Expiring are counts and now

@@ -1,0 +1,118 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-10-15 16:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "category_name",
+  "stop_type",
+  "column_break_breakdown",
+  "is_breakdown",
+  "is_active",
+  "section_break_effect",
+  "effect",
+  "description"
+ ],
+ "fields": [
+  {
+   "fieldname": "category_name",
+   "fieldtype": "Data",
+   "label": "Category",
+   "reqd": 1,
+   "unique": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "stop_type",
+   "fieldtype": "Select",
+   "label": "Stop Type",
+   "options": "Unplanned\nPlanned\nPM / Calibration",
+   "default": "Unplanned",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "description": "Unplanned stops lower machine availability (OEE). Planned stops are taken out of planned time."
+  },
+  {
+   "fieldname": "column_break_breakdown",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "is_breakdown",
+   "fieldtype": "Check",
+   "label": "Machine Breakdown",
+   "in_list_view": 1,
+   "depends_on": "eval:doc.stop_type=='Unplanned'",
+   "description": "Tick for a machine failure. Each such stop counts for MTBF and MTTR."
+  },
+  {
+   "fieldname": "is_active",
+   "fieldtype": "Check",
+   "label": "Active",
+   "default": "1",
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "section_break_effect",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "effect",
+   "fieldtype": "Small Text",
+   "label": "What This Stop Does",
+   "read_only": 1
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description",
+   "description": "When operators should choose this category."
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-10-15 16:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "PEPL Production",
+ "name": "PEPL Downtime Category",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "Manufacturing Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "Manufacturing User",
+   "read": 1,
+   "print": 1,
+   "export": 1,
+   "report": 1
+  }
+ ],
+ "sort_field": "category_name",
+ "sort_order": "ASC",
+ "states": [],
+ "track_changes": 1,
+ "autoname": "field:category_name",
+ "naming_rule": "By fieldname"
+}

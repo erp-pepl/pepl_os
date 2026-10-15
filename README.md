@@ -37,7 +37,7 @@ and programme extensions.
   running them on a fresh install.
 - Thresholds live only in PEPL System Parameters.
 - Every scheduled job uses `@tracked_job`.
-- Every change arrives by pull request, and CI must be green before merging.
+- Every change goes straight to `main`; CI (Actions → CI → Run workflow) must be green before any deploy.
 
 ## Installation
 
@@ -95,6 +95,12 @@ Admin screens after install:
 | C2-23 Command Centre | Workspaces **Buyer's Desk** and **MD Stores Overview**, six number cards, **PEPL Procurement Funnel** |
 | C2-24 Print formats | PO, RFQ cover letter, chase letter, weighment slip, gate pass, count sheet, CSM challan on the PEPL letterhead (PDF and Print button) |
 | Cycle 2 health check | PEPL System Health → **Download Cycle 2 health check**: trackers, receipt logs, approvals, overrides, jobs, valuation and vendor-bill reports checked against live records |
+
+## Cycle 3a · Production
+
+| Deliverable | Where it is in PEPL OS |
+| --- | --- |
+| C3a-X2 Shop-floor masters | **PEPL Shift** (planned minutes, past-midnight shifts), **PEPL Downtime Category** (planned / unplanned / PM, breakdown flag; 16 defaults seeded once), **PEPL Operator** (kiosk PIN, machine-group skills with level and validity); System Parameters → **Production** tab |
 
 ## Tests
 

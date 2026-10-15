@@ -1,0 +1,173 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-10-15 16:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "employee_code",
+  "operator_name",
+  "status",
+  "column_break_user",
+  "default_shift",
+  "joining_date",
+  "user",
+  "section_break_pin",
+  "pin",
+  "column_break_pin",
+  "pin_set",
+  "pin_changed_on",
+  "section_break_skills",
+  "skills",
+  "section_break_remarks",
+  "remarks"
+ ],
+ "fields": [
+  {
+   "fieldname": "employee_code",
+   "fieldtype": "Data",
+   "label": "Employee Code",
+   "reqd": 1,
+   "unique": 1,
+   "in_list_view": 1,
+   "description": "PEPL's own code for the person, e.g. OP-014. The operator types it on the kiosk with the PIN."
+  },
+  {
+   "fieldname": "operator_name",
+   "fieldtype": "Data",
+   "label": "Operator Name",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Active\nInactive",
+   "default": "Active",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "column_break_user",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "default_shift",
+   "fieldtype": "Link",
+   "label": "Usual Shift",
+   "options": "PEPL Shift",
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "joining_date",
+   "fieldtype": "Date",
+   "label": "Joining Date"
+  },
+  {
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "label": "ERPNext Login",
+   "options": "User",
+   "description": "Only if this person also logs in to ERPNext (e.g. a foreman). Shop-floor entries use the PIN."
+  },
+  {
+   "fieldname": "section_break_pin",
+   "fieldtype": "Section Break",
+   "label": "Kiosk PIN"
+  },
+  {
+   "fieldname": "pin",
+   "fieldtype": "Password",
+   "label": "PIN",
+   "description": "Digits only, length set in System Parameters (default 4). Nobody can read it back: type a new PIN to change it."
+  },
+  {
+   "fieldname": "column_break_pin",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "pin_set",
+   "fieldtype": "Check",
+   "label": "PIN Set",
+   "read_only": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "pin_changed_on",
+   "fieldtype": "Date",
+   "label": "PIN Changed On",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_skills",
+   "fieldtype": "Section Break",
+   "label": "Machine Skills"
+  },
+  {
+   "fieldname": "skills",
+   "fieldtype": "Table",
+   "label": "Skills",
+   "options": "PEPL Operator Skill",
+   "description": "One row per machine group the person may run, with the level. The skill check on shift entry reads this."
+  },
+  {
+   "fieldname": "section_break_remarks",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-10-15 16:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "PEPL Production",
+ "name": "PEPL Operator",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "Manufacturing Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "Manufacturing User",
+   "read": 1,
+   "print": 1,
+   "export": 1,
+   "report": 1
+  }
+ ],
+ "sort_field": "employee_code",
+ "sort_order": "ASC",
+ "states": [],
+ "track_changes": 1,
+ "autoname": "field:employee_code",
+ "naming_rule": "By fieldname",
+ "title_field": "operator_name",
+ "show_title_field_in_link": 1,
+ "search_fields": "operator_name,status"
+}

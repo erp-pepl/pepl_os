@@ -67,7 +67,11 @@ PAYMENTS = "pepl_os.pepl_purchase.payments"
 doc_events = {
 	"PEPL System Parameters": {
 		# C2-02: no negative days, percentages 0-100, class A + B below 100.
-		"validate": "pepl_os.pepl_purchase.params.validate_purchase_params",
+		# C3a-X2: operator PIN length 4-6.
+		"validate": [
+			"pepl_os.pepl_purchase.params.validate_purchase_params",
+			"pepl_os.pepl_production.params.validate_production_params",
+		],
 		# A5: a changed audit-log retention applies immediately.
 		"on_update": "pepl_os.pepl_governance.retention.on_parameters_update",
 	},

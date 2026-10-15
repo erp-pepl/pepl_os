@@ -1,0 +1,131 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-10-15 16:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "shift_name",
+  "start_time",
+  "end_time",
+  "column_break_minutes",
+  "break_minutes",
+  "planned_minutes",
+  "crosses_midnight",
+  "is_active",
+  "section_break_remarks",
+  "remarks"
+ ],
+ "fields": [
+  {
+   "fieldname": "shift_name",
+   "fieldtype": "Data",
+   "label": "Shift Name",
+   "reqd": 1,
+   "unique": 1,
+   "in_list_view": 1,
+   "description": "As PEPL calls it, e.g. A Shift, B Shift, General."
+  },
+  {
+   "fieldname": "start_time",
+   "fieldtype": "Time",
+   "label": "Start Time",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "end_time",
+   "fieldtype": "Time",
+   "label": "End Time",
+   "reqd": 1,
+   "in_list_view": 1,
+   "description": "An end time earlier than the start time means the shift runs past midnight."
+  },
+  {
+   "fieldname": "column_break_minutes",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "break_minutes",
+   "fieldtype": "Int",
+   "label": "Break Minutes",
+   "default": "0",
+   "description": "Lunch and tea breaks in the shift. Not counted as planned production time."
+  },
+  {
+   "fieldname": "planned_minutes",
+   "fieldtype": "Int",
+   "label": "Planned Production Minutes",
+   "read_only": 1,
+   "in_list_view": 1,
+   "description": "Shift length minus breaks. OEE starts from this."
+  },
+  {
+   "fieldname": "crosses_midnight",
+   "fieldtype": "Check",
+   "label": "Runs Past Midnight",
+   "read_only": 1
+  },
+  {
+   "fieldname": "is_active",
+   "fieldtype": "Check",
+   "label": "Active",
+   "default": "1",
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "section_break_remarks",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-10-15 16:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "PEPL Production",
+ "name": "PEPL Shift",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "Manufacturing Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "Manufacturing User",
+   "read": 1,
+   "print": 1,
+   "export": 1,
+   "report": 1
+  }
+ ],
+ "sort_field": "start_time",
+ "sort_order": "ASC",
+ "states": [],
+ "track_changes": 1,
+ "autoname": "field:shift_name",
+ "naming_rule": "By fieldname"
+}
