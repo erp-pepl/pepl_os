@@ -2,6 +2,19 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.25.0 — Operator skill check (C3a-X7)
+
+- Shift Production Entry checks the operator against the machine: the operator's level on the machine's group
+  (valid on the shift date) must reach **Minimum Skill Level to Run a Machine** (System Parameters →
+  Production, default "3 - Runs independently"). The entry shows the level found and **Skill Check**:
+  Qualified / Not qualified / Not checked (machine without a group – never blocked).
+- What happens when the operator falls short follows **Operator Skill Check Mode** (System Parameters, first
+  tab): **Advisory** – a warning; **Soft Block** – the entry saves, and submitting it asks for a reason, written
+  to the Override Log as PRD-SKILL (warning only when "Enforce Override Reason" is off); **Hard Block** – the
+  entry is refused.
+- The panel shows the operator's skill line (green qualified, orange not qualified with the mode).
+- Check 25; Check 24 rev 3 (its operators are skilled on the VMC group, so it passes in any mode).
+
 ## 0.24.1 — from CI run #19 (325 tests, 2 errors)
 
 - Tests only (no change to how the system works): the two tests that check a System Parameter's stored

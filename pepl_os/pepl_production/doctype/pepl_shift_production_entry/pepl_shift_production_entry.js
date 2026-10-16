@@ -30,6 +30,18 @@ frappe.ui.form.on("PEPL Shift Production Entry", {
 			.call({ method: "pepl_os.pepl_production.spr.get_spr_panel", args: { name: frm.doc.name } })
 			.then((r) => pepl.panel(frm, { title: __("Shift"), rows: (r.message || {}).rows || [] }));
 	},
+	async before_submit(frm) {
+		// C3a-X7: Soft Block - an operator below the minimum skill level needs a reason, logged with the user's name.
+		const r = await frappe.call("pepl_os.pepl_production.skill.skill_gate_check", { name: frm.doc.name });
+		if (r.message) {
+			try {
+				await pepl.override(frm, r.message.rule_code, r.message.message);
+			} catch (e) {
+				frappe.validated = false;
+				throw e;
+			}
+		}
+	},
 	workstation(frm) {
 		// Job Cards belong to one machine: rows picked for another machine would be refused on save.
 		(frm.doc.production || []).forEach((row) => {

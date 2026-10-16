@@ -1,4 +1,4 @@
-# PEPL OS v0.24.0 - Check 24 (rev 2): C3a-X1 Shift Production Entry - times, overlaps, submit rules, Job Card time logs,
+# PEPL OS v0.24.0 - Check 24 (rev 3): C3a-X1 Shift Production Entry - times, overlaps, submit rules, Job Card time logs,
 # consumables issue, cancel, permissions. Runs on 0.24.0 or later.
 # System Console, Type = Python. Leave "Commit" UNTICKED: every record below (machines, items, BOM, Job Order,
 # Job Card, stock, entries) is undone at the end. Every name carries this run's time, so runs never clash.
@@ -76,8 +76,10 @@ frappe.get_doc({"doctype": "PEPL Shift", "shift_name": NIGHT, "start_time": "22:
 frappe.get_doc({"doctype": "Workstation Type", "workstation_type": VMC_TYPE}).insert()
 frappe.get_doc({"doctype": "Workstation", "workstation_name": VMC, "workstation_type": VMC_TYPE}).insert()
 frappe.get_doc({"doctype": "Workstation", "workstation_name": LATHE}).insert()
+# Both operators are fully skilled on the VMC group, so the skill check (X7, any mode) never interferes here.
 for code in (OP1, OP2):
-    frappe.get_doc({"doctype": "PEPL Operator", "employee_code": code, "operator_name": "Check " + code, "pin": pin}).insert()
+    frappe.get_doc({"doctype": "PEPL Operator", "employee_code": code, "operator_name": "Check " + code, "pin": pin,
+                    "skills": [{"workstation_type": VMC_TYPE, "level": "4 - Sets up and trains others"}]}).insert()
 frappe.get_doc({"doctype": "PEPL Downtime Category", "category_name": NO_LOAD, "stop_type": "Planned", "is_breakdown": 0}).insert()
 frappe.get_doc({"doctype": "PEPL Downtime Category", "category_name": SPINDLE, "stop_type": "Unplanned", "is_breakdown": 1}).insert()
 

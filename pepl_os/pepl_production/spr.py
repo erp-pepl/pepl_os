@@ -19,6 +19,7 @@ from frappe import _
 from frappe.utils import cint, flt, get_datetime, getdate, strip_html, to_timedelta, today
 
 from pepl_os.common import params
+from pepl_os.pepl_production import skill
 from pepl_os.pepl_production.masters import DOWNTIME, OPERATOR, SHIFT
 from pepl_os.pepl_stores import stock_tree
 
@@ -88,6 +89,7 @@ def grace_minutes():
 def validate_entry(doc):
 	_set_defaults(doc)
 	shift = _check_header(doc)
+	skill.check_on_save(doc)  # C3a-X7
 	grace = grace_minutes()
 	window = shift_window(doc.posting_date, shift)
 	intervals = []
@@ -416,6 +418,7 @@ def before_submit(doc):
 					", ".join(str(i) for i in rows)
 				)
 			)
+	skill.check_on_submit(doc)  # C3a-X7: Soft Block needs a reason
 
 
 def on_submit(doc):
@@ -557,6 +560,7 @@ def get_spr_panel(name):
 		)
 	else:
 		rows.append({"text": explained + " · " + _("every minute explained"), "colour": "green"})
+	rows.append(skill.panel_row(doc))  # C3a-X7
 
 	made = flt(doc.total_good_qty) + flt(doc.total_rejected_qty)
 	if made:

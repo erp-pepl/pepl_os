@@ -69,6 +69,7 @@ class SPRBase(PEPLTestCase):
 		set_param("custom_spr_shift_grace_minutes", 30)
 		set_param("custom_spr_max_unaccounted_minutes", 15)
 		set_param("custom_spr_tool_photo_required", 1)
+		set_param("skill_check_mode", "Advisory")  # these tests are not about skills (see test_c3a_x07)
 
 
 class TestSPRTimes(SPRBase):

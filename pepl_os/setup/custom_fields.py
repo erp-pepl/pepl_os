@@ -337,6 +337,16 @@ PRODUCTION_FIELDS = _chain(
 			"default": "4",
 			"description": "How many digits each operator's kiosk PIN has (4 to 6).",
 		},
+		# C3a-X7 - skill check (the mode itself is "Operator Skill Check Mode" on the first tab)
+		{
+			"fieldname": "custom_skill_min_level",
+			"label": "Minimum Skill Level to Run a Machine",
+			"fieldtype": "Select",
+			"options": "1 - Trainee\n2 - Runs under supervision\n3 - Runs independently\n4 - Sets up and trains others",
+			"default": "3 - Runs independently",
+			"description": "An operator below this level on the machine's group is flagged on the shift entry; "
+			"what happens then follows 'Operator Skill Check Mode' (Advisory / Soft Block / Hard Block).",
+		},
 		# C3a-X1 - Shift Production Entry
 		{"fieldname": "custom_spr_column", "fieldtype": "Column Break"},
 		{

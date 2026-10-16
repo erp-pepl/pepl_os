@@ -102,6 +102,7 @@ Admin screens after install:
 | --- | --- |
 | C3a-X2 Shop-floor masters | **PEPL Shift** (planned minutes, past-midnight shifts), **PEPL Downtime Category** (planned / unplanned / PM, breakdown flag; 16 defaults seeded once), **PEPL Operator** (kiosk PIN, machine-group skills with level and validity); System Parameters → **Production** tab |
 | C3a-X1 Shift Production Entry | **PEPL Shift Production Entry**: production blocks against Job Cards, downtime, tool changes with photo, consumables; submit posts Job Card time logs and a consumables Material Issue |
+| C3a-X7 Skill check | Shift Production Entry compares the operator's level on the machine group with the minimum level; Advisory / Soft Block (reason, PRD-SKILL) / Hard Block from System Parameters |
 
 ## Tests
 

@@ -13,6 +13,8 @@
   "column_break_operator",
   "operator",
   "operator_name",
+  "skill_level",
+  "skill_status",
   "company",
   "section_break_production",
   "production",
@@ -101,6 +103,23 @@
    "fieldtype": "Data",
    "label": "Operator Name",
    "read_only": 1
+  },
+  {
+   "fieldname": "skill_level",
+   "fieldtype": "Data",
+   "label": "Operator Skill on This Machine Group",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "skill_status",
+   "fieldtype": "Select",
+   "label": "Skill Check",
+   "options": "\nQualified\nNot qualified\nNot checked",
+   "read_only": 1,
+   "no_copy": 1,
+   "in_standard_filter": 1,
+   "in_list_view": 1
   },
   {
    "fieldname": "company",
@@ -242,7 +261,7 @@
  ],
  "index_web_pages_for_search": 0,
  "links": [],
- "modified": "2026-10-16 20:30:00.000000",
+ "modified": "2026-10-17 01:00:00.000000",
  "modified_by": "Administrator",
  "module": "PEPL Production",
  "name": "PEPL Shift Production Entry",
