@@ -1,4 +1,4 @@
-# PEPL OS v0.24.0 - Check 24: C3a-X1 Shift Production Entry - times, overlaps, submit rules, Job Card time logs,
+# PEPL OS v0.24.0 - Check 24 (rev 2): C3a-X1 Shift Production Entry - times, overlaps, submit rules, Job Card time logs,
 # consumables issue, cancel, permissions. Runs on 0.24.0 or later.
 # System Console, Type = Python. Leave "Commit" UNTICKED: every record below (machines, items, BOM, Job Order,
 # Job Card, stock, entries) is undone at the end. Every name carries this run's time, so runs never clash.
@@ -128,14 +128,15 @@ check(any("not explained" in r["text"] and r["colour"] == "red" for r in panel),
 check(any("breakdown" in r["text"] and r["colour"] == "red" for r in panel), "3. panel shows the breakdown stop")
 
 # ---------------- 4. Job Card: a real Job Order on its own machine ----------------
+# Test items are not sales items, so India Compliance does not ask them for an HSN/SAC code.
 MILL = "CHK24 MILL-01 " + RUN
 frappe.get_doc({"doctype": "Workstation", "workstation_name": MILL}).insert()
 settings = frappe.get_doc("Manufacturing Settings")
 settings.disable_capacity_planning = 1
 settings.overproduction_percentage_for_work_order = 0
 settings.save()
-fg = frappe.get_doc({"doctype": "Item", "item_code": "CHK24-FG-" + RUN, "item_name": "CHK24 FG " + RUN, "item_group": "Finished Goods", "stock_uom": "Nos", "is_stock_item": 1}).insert()
-rm = frappe.get_doc({"doctype": "Item", "item_code": "CHK24-RM-" + RUN, "item_name": "CHK24 RM " + RUN, "item_group": "Raw Material", "stock_uom": "Nos", "is_stock_item": 1, "valuation_rate": 10}).insert()
+fg = frappe.get_doc({"doctype": "Item", "item_code": "CHK24-FG-" + RUN, "item_name": "CHK24 FG " + RUN, "item_group": "Finished Goods", "stock_uom": "Nos", "is_stock_item": 1, "is_sales_item": 0}).insert()
+rm = frappe.get_doc({"doctype": "Item", "item_code": "CHK24-RM-" + RUN, "item_name": "CHK24 RM " + RUN, "item_group": "Raw Material", "stock_uom": "Nos", "is_stock_item": 1, "is_sales_item": 0, "valuation_rate": 10}).insert()
 frappe.get_doc({"doctype": "Operation", "name": "CHK24 Milling " + RUN, "workstation": MILL}).insert()
 bom = frappe.get_doc({
     "doctype": "BOM", "item": fg.name, "company": company, "quantity": 1, "is_active": 1, "is_default": 1, "with_operations": 1,
@@ -186,7 +187,7 @@ card.reload()
 check(len([t for t in card.time_logs if t.custom_pepl_spr == job.name]) == 0 and card.total_completed_qty == 0, "4. cancel took the time logs back off the Job Card")
 
 # ---------------- 5. consumables ----------------
-oil = frappe.get_doc({"doctype": "Item", "item_code": "CHK24-COOLANT-" + RUN, "item_name": "CHK24 Coolant " + RUN, "item_group": "Consumables", "stock_uom": "Nos", "is_stock_item": 1, "valuation_rate": 10}).insert()
+oil = frappe.get_doc({"doctype": "Item", "item_code": "CHK24-COOLANT-" + RUN, "item_name": "CHK24 Coolant " + RUN, "item_group": "Consumables", "stock_uom": "Nos", "is_stock_item": 1, "is_sales_item": 0, "valuation_rate": 10}).insert()
 receipt = frappe.get_doc({
     "doctype": "Stock Entry", "stock_entry_type": "Material Receipt", "purpose": "Material Receipt", "company": company,
     "set_posting_time": 1, "posting_date": frappe.utils.add_days(today, -5),

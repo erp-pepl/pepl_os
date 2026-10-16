@@ -2,6 +2,14 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.24.1 — from CI run #19 (325 tests, 2 errors)
+
+- Tests only (no change to how the system works): the two tests that check a System Parameter's stored
+  default read it straight from the Singles table. `frappe.db.get_value("Singles", …)` now sorts by a
+  `creation` column that table does not have. New test helper `stored_single`.
+- Check 24 rev 2 in `docs/checks/`: its test items are not sales items, so India Compliance (installed on the
+  bench and demo, not on CI) does not ask for an HSN/SAC code.
+
 ## 0.24.0 — Shift Production Entry (C3a-X1)
 
 - **PEPL Shift Production Entry (SPR)**: one entry per machine, shift, day and operator, with four tables:

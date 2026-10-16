@@ -57,6 +57,18 @@ def set_single(doctype, fieldname, value):
 		cache.clear()
 
 
+def stored_single(doctype, fieldname):
+	"""The value stored for a Single's field, or None when nothing is stored yet.
+
+	Read straight from tabSingles: frappe.db.get_value("Singles", {...}) adds ORDER BY creation in v16,
+	and tabSingles has no creation column.
+	"""
+	rows = frappe.db.sql(
+		"select value from `tabSingles` where doctype = %s and field = %s limit 1", (doctype, fieldname)
+	)
+	return rows[0][0] if rows else None
+
+
 def set_param(fieldname, value):
 	"""Set a System Parameter in a test and make sure the next read sees it."""
 	set_single(SYSTEM_PARAMETERS, fieldname, value)

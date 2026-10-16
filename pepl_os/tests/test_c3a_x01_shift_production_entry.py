@@ -26,7 +26,7 @@ from pepl_os.tests.factories import (
 	make_workstation,
 	test_warehouse,
 )
-from pepl_os.tests.utils import PEPLTestCase, make_user, set_param, set_single
+from pepl_os.tests.utils import PEPLTestCase, make_user, set_param, set_single, stored_single
 
 DAY = "T-SPR Day"  # 08:00-16:30, 30 min break = 480 planned minutes
 NIGHT = "T-SPR Night"  # 22:00-06:00, 30 min break = 450 planned minutes
@@ -363,9 +363,7 @@ class TestSPRSetup(SPRBase):
 			("custom_spr_max_unaccounted_minutes", "15"),
 			("custom_spr_tool_photo_required", "1"),
 		):
-			stored = frappe.db.get_value(
-				"Singles", {"doctype": "PEPL System Parameters", "field": field}, "value"
-			)
+			stored = stored_single("PEPL System Parameters", field)
 			self.assertEqual(str(stored), value, field)
 		doc = frappe.get_doc("PEPL System Parameters")
 		doc.custom_operator_pin_digits = 4

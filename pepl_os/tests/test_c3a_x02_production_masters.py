@@ -13,7 +13,7 @@ from pepl_os.tests.factories import (
 	make_workstation,
 	make_workstation_type,
 )
-from pepl_os.tests.utils import PEPLTestCase, make_user, set_param
+from pepl_os.tests.utils import PEPLTestCase, make_user, set_param, stored_single
 
 L1, L2, L3, L4 = masters.LEVELS
 FOREMAN = "pepl.test.foreman@example.com"
@@ -187,9 +187,7 @@ class TestMastersSetup(PEPLTestCase):
 		self.assertIn("pepl_os.pepl_production.params.validate_production_params", events)
 
 	def test_pin_digits_default_seeded(self):
-		stored = frappe.db.get_value(
-			"Singles", {"doctype": "PEPL System Parameters", "field": masters.PIN_DIGITS_FIELD}, "value"
-		)
+		stored = stored_single("PEPL System Parameters", masters.PIN_DIGITS_FIELD)
 		self.assertEqual(str(stored), "4")
 
 	def test_changes_tracked(self):
