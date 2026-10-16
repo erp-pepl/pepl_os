@@ -221,25 +221,7 @@ def make_job_card(workstation, prefix, qty=10, minutes_per_piece=6):
 	set_single("Manufacturing Settings", "disable_capacity_planning", 1)
 	fg = make_item(f"{prefix}-FG", st.FINISHED_GOODS).name
 	rm = make_item(f"{prefix}-RM", st.RAW_MATERIAL, heat_tracked=False, valuation_rate=10).name
-	operation = make_operation(f"{prefix} Turning", workstation)
-	currency = frappe.get_cached_value("Company", TEST_COMPANY, "default_currency")
-	bom = frappe.get_doc(
-		{
-			"doctype": "BOM",
-			"item": fg,
-			"company": TEST_COMPANY,
-			"currency": currency,
-			"quantity": 1,
-			"is_active": 1,
-			"is_default": 1,
-			"with_operations": 1,
-			"items": [{"item_code": rm, "qty": 1, "rate": 10}],
-			"operations": [
-				{"operation": operation, "workstation": workstation, "time_in_mins": minutes_per_piece}
-			],
-		}
-	).insert(ignore_permissions=True)
-	bom.submit()
+	bom = make_bom(fg, rm, workstation, f"{prefix} Turning", minutes_per_piece)
 	work_order = frappe.get_doc(
 		{
 			"doctype": "Work Order",
@@ -259,6 +241,65 @@ def make_job_card(workstation, prefix, qty=10, minutes_per_piece=6):
 	work_order.submit()
 	name = frappe.get_all("Job Card", filters={"work_order": work_order.name}, pluck="name")[0]
 	return frappe.get_doc("Job Card", name)
+
+
+def make_bom(fg, rm, workstation=None, operation=None, minutes_per_piece=6):
+	"""A submitted default BOM: 1 x rm per piece, with one operation on `workstation` when given."""
+	values = {
+		"doctype": "BOM",
+		"item": fg,
+		"company": TEST_COMPANY,
+		"currency": frappe.get_cached_value("Company", TEST_COMPANY, "default_currency"),
+		"quantity": 1,
+		"is_active": 1,
+		"is_default": 1,
+		"items": [{"item_code": rm, "qty": 1, "rate": 10}],
+	}
+	if workstation:
+		make_operation(operation or f"{fg} Op", workstation)
+		values["with_operations"] = 1
+		values["operations"] = [
+			{
+				"operation": operation or f"{fg} Op",
+				"workstation": workstation,
+				"time_in_mins": minutes_per_piece,
+			}
+		]
+	bom = frappe.get_doc(values).insert(ignore_permissions=True)
+	bom.submit()
+	return bom
+
+
+TEST_CUSTOMER = "_Test Customer"
+
+
+def make_sales_order(lines, submit=False, delivery_days=10):
+	"""A Sales Order of the test company; lines are (item_code, qty), shipped from FG Stores."""
+	from frappe.utils import add_days, today
+
+	so = frappe.get_doc(
+		{
+			"doctype": "Sales Order",
+			"customer": TEST_CUSTOMER,
+			"company": TEST_COMPANY,
+			"transaction_date": today(),
+			"delivery_date": add_days(today(), delivery_days),
+			"custom_sector": "Private",
+			"items": [
+				{
+					"item_code": code,
+					"qty": qty,
+					"rate": 100,
+					"warehouse": test_warehouse("FG Stores"),
+					"delivery_date": add_days(today(), delivery_days),
+				}
+				for code, qty in lines
+			],
+		}
+	).insert(ignore_permissions=True)
+	if submit:
+		so.submit()
+	return so
 
 
 def make_spr(

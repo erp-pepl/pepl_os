@@ -2,6 +2,21 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.26.0 — Job Orders drafted from the Sales Order (C3a-X5)
+
+- Submitting a Sales Order drafts one **Job Order** (ERPNext Work Order) for each manufactured line (stock
+  class Finished Goods or WIP / Semi-Finished) that has a default BOM: quantity not yet on a Job Order of that
+  line, linked to the Sales Order line and project, finishing into the line's store through WIP Main Workshop,
+  due on the line's delivery date, with the BOM's operations (submitting it makes the Job Cards). Production
+  reviews and submits it. The Job Order shows **Drafted from the Sales Order**.
+- A manufactured line without a default BOM gets no Job Order: a ToDo **PRD-NO-BOM** goes to the Production
+  notification owner. Bought-out and raw material lines keep going to the Material Request (C2-07).
+- Submitting again or a second run never doubles a Job Order. Cancelling the Sales Order deletes its draft Job
+  Orders. If drafting fails the Sales Order is still submitted and Production gets a ToDo
+  **PRD-JO-DRAFT-FAILED** (details in the Error Log).
+- System Parameters → Production → **Draft Job Orders from Sales Orders** (on by default).
+- Check 26.
+
 ## 0.25.0 — Operator skill check (C3a-X7)
 
 - Shift Production Entry checks the operator against the machine: the operator's level on the machine's group

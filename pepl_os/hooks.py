@@ -123,7 +123,14 @@ doc_events = {
 	"PEPL Purchase Tracker": {"on_update": f"{LETDOWN}.sync_short_letdowns"},
 	"Delivery Note": {"validate": CSM_SEGREGATION},
 	# C2-07: draft the Material Request for bought-out and short raw material
-	"Sales Order": {"on_submit": "pepl_os.pepl_purchase.material_request.on_sales_order_submit"},
+	# C2-07 Material Request; C3a-X5 draft Job Orders (deleted again on cancel)
+	"Sales Order": {
+		"on_submit": [
+			"pepl_os.pepl_purchase.material_request.on_sales_order_submit",
+			"pepl_os.pepl_production.job_orders.on_sales_order_submit",
+		],
+		"on_cancel": "pepl_os.pepl_production.job_orders.on_sales_order_cancel",
+	},
 	# C2-08: the supplier approval gate
 	"Request for Quotation": {"before_submit": SUPPLIER_GATE},
 	# C2-08 supplier gate; C2-11 approval by value (MD above) and promised dates

@@ -372,6 +372,16 @@ PRODUCTION_FIELDS = _chain(
 			"default": "1",
 			"description": "When on, every tool change needs a photo of the removed tool before submit.",
 		},
+		# C3a-X5 - Job Orders from Sales Orders
+		{"fieldname": "custom_job_orders_section", "label": "Job Orders", "fieldtype": "Section Break"},
+		{
+			"fieldname": "custom_job_order_from_sales_order",
+			"label": "Draft Job Orders from Sales Orders",
+			"fieldtype": "Check",
+			"default": "1",
+			"description": "When on, submitting a Sales Order drafts one Job Order for each manufactured line "
+			"that has a default BOM; a line without a BOM is flagged to the Production notification owner.",
+		},
 	],
 	after="custom_overhead_percent",
 )
@@ -644,6 +654,20 @@ CUSTOM_FIELDS["Stock Entry"] = [
 		"read_only": 1,
 		"search_index": 1,
 		"depends_on": "eval:doc.custom_shift_production_entry",
+	},
+]
+
+# C3a-X5 - Job Orders drafted by a submitted Sales Order
+CUSTOM_FIELDS["Work Order"] = [
+	{
+		"fieldname": "custom_auto_from_sales_order",
+		"label": "Drafted from the Sales Order",
+		"fieldtype": "Check",
+		"insert_after": "sales_order",
+		"read_only": 1,
+		"default": "0",
+		"description": "Set when PEPL OS drafted this Job Order on submit of the Sales Order; cancelling the "
+		"Sales Order deletes it while it is still a draft.",
 	},
 ]
 
