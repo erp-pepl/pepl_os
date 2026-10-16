@@ -48,13 +48,18 @@ def reopen(doc):
 SYSTEM_PARAMETERS = "PEPL System Parameters"
 
 
-def set_param(fieldname, value):
-	"""Set a System Parameter in a test and make sure the next read sees it."""
-	frappe.db.set_single_value(SYSTEM_PARAMETERS, fieldname, value)
-	frappe.clear_document_cache(SYSTEM_PARAMETERS, SYSTEM_PARAMETERS)
+def set_single(doctype, fieldname, value):
+	"""Set a value of any Single (e.g. Manufacturing Settings) in a test; the next read sees it."""
+	frappe.db.set_single_value(doctype, fieldname, value)
+	frappe.clear_document_cache(doctype, doctype)
 	cache = getattr(frappe.db, "value_cache", None)
 	if isinstance(cache, dict):
 		cache.clear()
+
+
+def set_param(fieldname, value):
+	"""Set a System Parameter in a test and make sure the next read sees it."""
+	set_single(SYSTEM_PARAMETERS, fieldname, value)
 
 
 def make_user(email, roles=None):

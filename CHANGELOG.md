@@ -2,6 +2,31 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.24.0 — Shift Production Entry (C3a-X1)
+
+- **PEPL Shift Production Entry (SPR)**: one entry per machine, shift, day and operator, with four tables:
+  **Production** (time blocks against open Job Cards of that machine, good and rejected quantity, a reason
+  for every rejection), **Downtime** (every stop by Downtime Category; stop type and breakdown copied in),
+  **Tool Changes** (time, tool, reason, photo) and **Consumables** (item, quantity, store).
+- Times are clock times inside the shift; in a night shift the early-morning times belong to the next day.
+  Rows may start / end a little outside the shift (System Parameters). Refused: a row outside that window,
+  To before From, two rows of one entry overlapping, an overlap with another entry on the same machine (any
+  operator), a second entry for the same machine / shift / day / operator, a future date, an inactive shift,
+  operator, machine or downtime category, a Job Card of another machine, more good quantity than the Job
+  Card is for (ERPNext's over-production % allowed), a consumable that is not a Consumables stock item.
+- **Submit** only when no more than the allowed minutes of the shift are unexplained, and every tool change
+  has a photo (both in System Parameters). Submit adds the production blocks to the Job Cards as time logs
+  (good quantity as completed quantity) and issues the consumables as one Material Issue against the machine
+  group, so the C2-21 consumables report counts them. **Cancel** takes both back; refused once a Job Card is
+  submitted.
+- Panel: planned minutes, production / downtime minutes and what is not explained, good / rejected and
+  rejection %, breakdown stops, missing photos, and after submit the Job Cards and the Stock Entry.
+- System Parameters → Production: minutes allowed before / after the shift (30), minutes allowed
+  unexplained (15), tool change needs a photo (on).
+- Foreman (Manufacturing User) creates and submits; Production Manager also cancels and amends; only the
+  System Manager deletes. In the Role Access Matrix.
+- System Console Check 24; Check 23 rev 2 (console-safe) in `docs/checks/`.
+
 ## 0.23.0 — Cycle 3a starts: shop-floor masters (C3a-X2)
 
 - **PEPL Shift**: start, end and breaks; planned production minutes worked out (a shift ending before it

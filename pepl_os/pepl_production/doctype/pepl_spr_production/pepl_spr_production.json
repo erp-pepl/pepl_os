@@ -1,0 +1,142 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-10-16 20:30:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "job_card",
+  "from_time",
+  "to_time",
+  "minutes",
+  "from_datetime",
+  "to_datetime",
+  "good_qty",
+  "rejected_qty",
+  "rejection_reason",
+  "column_break_job",
+  "work_order",
+  "production_item",
+  "operation",
+  "remarks"
+ ],
+ "fields": [
+  {
+   "fieldname": "job_card",
+   "fieldtype": "Link",
+   "label": "Job Card",
+   "options": "Job Card",
+   "reqd": 1,
+   "in_list_view": 1,
+   "columns": 2,
+   "description": "An open Job Card of this machine."
+  },
+  {
+   "fieldname": "from_time",
+   "fieldtype": "Time",
+   "label": "From",
+   "reqd": 1,
+   "in_list_view": 1,
+   "columns": 1
+  },
+  {
+   "fieldname": "to_time",
+   "fieldtype": "Time",
+   "label": "To",
+   "reqd": 1,
+   "in_list_view": 1,
+   "columns": 1
+  },
+  {
+   "fieldname": "minutes",
+   "fieldtype": "Int",
+   "label": "Minutes",
+   "read_only": 1,
+   "in_list_view": 1,
+   "columns": 1
+  },
+  {
+   "fieldname": "from_datetime",
+   "fieldtype": "Datetime",
+   "label": "From (date and time)",
+   "read_only": 1,
+   "hidden": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "to_datetime",
+   "fieldtype": "Datetime",
+   "label": "To (date and time)",
+   "read_only": 1,
+   "hidden": 1
+  },
+  {
+   "fieldname": "good_qty",
+   "fieldtype": "Float",
+   "label": "Good Qty",
+   "in_list_view": 1,
+   "columns": 1,
+   "non_negative": 1
+  },
+  {
+   "fieldname": "rejected_qty",
+   "fieldtype": "Float",
+   "label": "Rejected Qty",
+   "in_list_view": 1,
+   "columns": 1,
+   "non_negative": 1
+  },
+  {
+   "fieldname": "rejection_reason",
+   "fieldtype": "Data",
+   "label": "Rejection Reason",
+   "in_list_view": 1,
+   "columns": 2,
+   "mandatory_depends_on": "eval:doc.rejected_qty > 0"
+  },
+  {
+   "fieldname": "column_break_job",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "work_order",
+   "fieldtype": "Link",
+   "label": "Job Order",
+   "options": "Work Order",
+   "read_only": 1
+  },
+  {
+   "fieldname": "production_item",
+   "fieldtype": "Link",
+   "label": "Item",
+   "options": "Item",
+   "read_only": 1
+  },
+  {
+   "fieldname": "operation",
+   "fieldtype": "Link",
+   "label": "Operation",
+   "options": "Operation",
+   "read_only": 1
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Data",
+   "label": "Remarks"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-10-16 20:30:00.000000",
+ "modified_by": "Administrator",
+ "module": "PEPL Production",
+ "name": "PEPL SPR Production",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 0,
+ "istable": 1,
+ "editable_grid": 1
+}

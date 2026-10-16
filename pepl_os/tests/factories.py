@@ -104,6 +104,15 @@ def blank_pdf():
 	return out.getvalue()
 
 
+def blank_png():
+	"""A real 1 x 1 PNG, for Attach Image fields (e.g. the tool-change photo)."""
+	import base64
+
+	return base64.b64decode(
+		"iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+	)
+
+
 def make_file(file_name, content=None):
 	"""A private File, for Attach fields. Returns its file_url."""
 	return (
@@ -183,3 +192,97 @@ def make_operator(code, name=None, pin="1234", skills=(), **fields):
 		make_workstation_type(row["workstation_type"])
 		doc.append("skills", row)
 	return doc.insert(ignore_permissions=True)
+
+
+def test_warehouse(store, company=TEST_COMPANY):
+	"""A PEPL store of the test company by its short name, e.g. "Consumables Stores"."""
+	return frappe.db.get_value("Warehouse", {"company": company, "warehouse_name": store}, "name")
+
+
+def make_operation(name, workstation):
+	if not frappe.db.exists("Operation", name):
+		frappe.get_doc({"doctype": "Operation", "name": name, "workstation": workstation}).insert(
+			ignore_permissions=True
+		)
+	return name
+
+
+def make_job_card(workstation, prefix, qty=10, minutes_per_piece=6):
+	"""A real ERPNext Job Card on `workstation`: FG + RM items, an operation, a BOM with that operation,
+	and a submitted Work Order (ERPNext creates the Job Card on submit). Returns the Job Card (draft).
+
+	Capacity planning is switched off for the test, so the Job Card has no planned time slots.
+	"""
+	from frappe.utils import now
+
+	from pepl_os.pepl_stores import stock_tree as st
+	from pepl_os.tests.utils import set_single
+
+	set_single("Manufacturing Settings", "disable_capacity_planning", 1)
+	fg = make_item(f"{prefix}-FG", st.FINISHED_GOODS).name
+	rm = make_item(f"{prefix}-RM", st.RAW_MATERIAL, heat_tracked=False, valuation_rate=10).name
+	operation = make_operation(f"{prefix} Turning", workstation)
+	currency = frappe.get_cached_value("Company", TEST_COMPANY, "default_currency")
+	bom = frappe.get_doc(
+		{
+			"doctype": "BOM",
+			"item": fg,
+			"company": TEST_COMPANY,
+			"currency": currency,
+			"quantity": 1,
+			"is_active": 1,
+			"is_default": 1,
+			"with_operations": 1,
+			"items": [{"item_code": rm, "qty": 1, "rate": 10}],
+			"operations": [
+				{"operation": operation, "workstation": workstation, "time_in_mins": minutes_per_piece}
+			],
+		}
+	).insert(ignore_permissions=True)
+	bom.submit()
+	work_order = frappe.get_doc(
+		{
+			"doctype": "Work Order",
+			"production_item": fg,
+			"bom_no": bom.name,
+			"qty": qty,
+			"stock_uom": "Nos",
+			"company": TEST_COMPANY,
+			"skip_transfer": 1,
+			"fg_warehouse": test_warehouse("FG Stores"),
+			"planned_start_date": now(),
+			"transfer_material_against": "Work Order",
+		}
+	)
+	work_order.get_items_and_operations_from_bom()
+	work_order.insert(ignore_permissions=True)
+	work_order.submit()
+	name = frappe.get_all("Job Card", filters={"work_order": work_order.name}, pluck="name")[0]
+	return frappe.get_doc("Job Card", name)
+
+
+def make_spr(
+	workstation, shift, operator, posting_date=None, production=(), downtime=(), tools=(), consumables=()
+):
+	"""An unsaved Shift Production Entry. Rows are dicts in the field names of each table."""
+	from frappe.utils import today
+
+	doc = frappe.get_doc(
+		{
+			"doctype": "PEPL Shift Production Entry",
+			"posting_date": posting_date or today(),
+			"shift": shift,
+			"workstation": workstation,
+			"operator": operator,
+			"company": TEST_COMPANY,
+		}
+	)
+	for table, rows in (
+		("production", production),
+		("downtime", downtime),
+		("tool_changes", tools),
+		("consumables", consumables),
+	):
+		for row in rows:
+			doc.append(table, row)
+	return doc

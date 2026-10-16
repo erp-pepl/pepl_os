@@ -337,6 +337,31 @@ PRODUCTION_FIELDS = _chain(
 			"default": "4",
 			"description": "How many digits each operator's kiosk PIN has (4 to 6).",
 		},
+		# C3a-X1 - Shift Production Entry
+		{"fieldname": "custom_spr_column", "fieldtype": "Column Break"},
+		{
+			"fieldname": "custom_spr_shift_grace_minutes",
+			"label": "Shift Entry: Minutes Allowed Before / After the Shift",
+			"fieldtype": "Int",
+			"default": "30",
+			"description": "Rows may start this many minutes before the shift and end this many after it "
+			"(0 to 120).",
+		},
+		{
+			"fieldname": "custom_spr_max_unaccounted_minutes",
+			"label": "Shift Entry: Minutes Allowed Unexplained",
+			"fieldtype": "Int",
+			"default": "15",
+			"description": "A shift entry can be submitted only when no more than this many of the shift's "
+			"planned minutes are left without a production or downtime row.",
+		},
+		{
+			"fieldname": "custom_spr_tool_photo_required",
+			"label": "Shift Entry: Tool Change Needs a Photo",
+			"fieldtype": "Check",
+			"default": "1",
+			"description": "When on, every tool change needs a photo of the removed tool before submit.",
+		},
 	],
 	after="custom_overhead_percent",
 )
@@ -598,6 +623,38 @@ CUSTOM_FIELDS["Stock Entry"] = [
 		"fetch_from": "custom_sales_order.customer_name",
 		"depends_on": "eval:doc.custom_sales_order",
 		"insert_after": "custom_sales_order",
+	},
+	{
+		# C3a-X1: the consumables issue made by a Shift Production Entry
+		"fieldname": "custom_shift_production_entry",
+		"label": "Shift Production Entry",
+		"fieldtype": "Link",
+		"options": "PEPL Shift Production Entry",
+		"insert_after": "custom_csm_customer",
+		"read_only": 1,
+		"search_index": 1,
+		"depends_on": "eval:doc.custom_shift_production_entry",
+	},
+]
+
+# C3a-X1 - Job Card time logs posted by a Shift Production Entry
+CUSTOM_FIELDS["Job Card Time Log"] = [
+	{
+		"fieldname": "custom_pepl_spr",
+		"label": "Shift Production Entry",
+		"fieldtype": "Link",
+		"options": "PEPL Shift Production Entry",
+		"insert_after": "operation",
+		"read_only": 1,
+		"search_index": 1,
+	},
+	{
+		"fieldname": "custom_pepl_spr_row",
+		"label": "Shift Production Entry Row",
+		"fieldtype": "Data",
+		"insert_after": "custom_pepl_spr",
+		"read_only": 1,
+		"hidden": 1,
 	},
 ]
 CUSTOM_FIELDS["Sales Order"] = [

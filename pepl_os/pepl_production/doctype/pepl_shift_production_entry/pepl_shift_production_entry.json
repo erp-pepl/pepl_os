@@ -1,0 +1,301 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-10-16 20:30:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "title",
+  "posting_date",
+  "shift",
+  "workstation",
+  "workstation_type",
+  "column_break_operator",
+  "operator",
+  "operator_name",
+  "company",
+  "section_break_production",
+  "production",
+  "section_break_downtime",
+  "downtime",
+  "section_break_tools",
+  "tool_changes",
+  "section_break_consumables",
+  "consumables",
+  "consumables_stock_entry",
+  "section_break_summary",
+  "planned_minutes",
+  "production_minutes",
+  "downtime_minutes",
+  "unaccounted_minutes",
+  "column_break_summary",
+  "total_good_qty",
+  "total_rejected_qty",
+  "rejection_percent",
+  "section_break_remarks",
+  "remarks",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "title",
+   "fieldtype": "Data",
+   "label": "Title",
+   "hidden": 1,
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Shift Date",
+   "reqd": 1,
+   "default": "Today",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "search_index": 1,
+   "description": "The day the shift started (a night shift belongs to the day it began)."
+  },
+  {
+   "fieldname": "shift",
+   "fieldtype": "Link",
+   "label": "Shift",
+   "options": "PEPL Shift",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "workstation",
+   "fieldtype": "Link",
+   "label": "Machine",
+   "options": "Workstation",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "workstation_type",
+   "fieldtype": "Link",
+   "label": "Machine Group",
+   "options": "Workstation Type",
+   "read_only": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "column_break_operator",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "operator",
+   "fieldtype": "Link",
+   "label": "Operator",
+   "options": "PEPL Operator",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "operator_name",
+   "fieldtype": "Data",
+   "label": "Operator Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1,
+   "remember_last_selected_value": 1
+  },
+  {
+   "fieldname": "section_break_production",
+   "fieldtype": "Section Break",
+   "label": "Production"
+  },
+  {
+   "fieldname": "production",
+   "fieldtype": "Table",
+   "label": "Production (time blocks)",
+   "options": "PEPL SPR Production",
+   "description": "Each block: the Job Card, from–to, good and rejected quantity."
+  },
+  {
+   "fieldname": "section_break_downtime",
+   "fieldtype": "Section Break",
+   "label": "Downtime"
+  },
+  {
+   "fieldname": "downtime",
+   "fieldtype": "Table",
+   "label": "Downtime",
+   "options": "PEPL SPR Downtime",
+   "description": "Every stop with its reason. Planned stops (no load, meeting) also go here."
+  },
+  {
+   "fieldname": "section_break_tools",
+   "fieldtype": "Section Break",
+   "label": "Tool Changes",
+   "collapsible": 1
+  },
+  {
+   "fieldname": "tool_changes",
+   "fieldtype": "Table",
+   "label": "Tool Changes",
+   "options": "PEPL SPR Tool Change"
+  },
+  {
+   "fieldname": "section_break_consumables",
+   "fieldtype": "Section Break",
+   "label": "Consumables",
+   "collapsible": 1
+  },
+  {
+   "fieldname": "consumables",
+   "fieldtype": "Table",
+   "label": "Consumables Used",
+   "options": "PEPL SPR Consumable",
+   "description": "Issued from stores against this machine group when the entry is submitted."
+  },
+  {
+   "fieldname": "consumables_stock_entry",
+   "fieldtype": "Link",
+   "label": "Consumables Stock Entry",
+   "options": "Stock Entry",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "section_break_summary",
+   "fieldtype": "Section Break",
+   "label": "Shift Summary"
+  },
+  {
+   "fieldname": "planned_minutes",
+   "fieldtype": "Int",
+   "label": "Planned Minutes",
+   "read_only": 1
+  },
+  {
+   "fieldname": "production_minutes",
+   "fieldtype": "Int",
+   "label": "Production Minutes",
+   "read_only": 1
+  },
+  {
+   "fieldname": "downtime_minutes",
+   "fieldtype": "Int",
+   "label": "Downtime Minutes",
+   "read_only": 1
+  },
+  {
+   "fieldname": "unaccounted_minutes",
+   "fieldtype": "Int",
+   "label": "Minutes Not Explained",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "column_break_summary",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total_good_qty",
+   "fieldtype": "Float",
+   "label": "Good Qty",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "total_rejected_qty",
+   "fieldtype": "Float",
+   "label": "Rejected Qty",
+   "read_only": 1
+  },
+  {
+   "fieldname": "rejection_percent",
+   "fieldtype": "Percent",
+   "label": "Rejection %",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_remarks",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "options": "PEPL Shift Production Entry",
+   "read_only": 1,
+   "no_copy": 1,
+   "print_hide": 1,
+   "search_index": 1
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-10-16 20:30:00.000000",
+ "modified_by": "Administrator",
+ "module": "PEPL Production",
+ "name": "PEPL Shift Production Entry",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "submit": 1,
+   "cancel": 1,
+   "amend": 1,
+   "delete": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "Manufacturing Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "submit": 1,
+   "cancel": 1,
+   "amend": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "Manufacturing User",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "submit": 1,
+   "print": 1,
+   "export": 1,
+   "report": 1
+  }
+ ],
+ "sort_field": "posting_date",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1,
+ "is_submittable": 1,
+ "autoname": "SPR-.YYYY.-.#####",
+ "naming_rule": "Expression (old style)",
+ "title_field": "title",
+ "show_title_field_in_link": 0,
+ "search_fields": "workstation,shift,operator,posting_date"
+}

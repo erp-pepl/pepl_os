@@ -1,4 +1,4 @@
-# PEPL OS v0.23.0 - Check 23: C3a-X2 shop-floor masters - Shift, Downtime Category, Operator (PIN and skills).
+# PEPL OS v0.23.0 - Check 23 (rev 3, runs on 0.23.0 or later): C3a-X2 shop-floor masters - Shift, Downtime Category, Operator (PIN and skills).
 # System Console, Type = Python. Leave "Commit" UNTICKED: every test record below is undone at the end.
 VERSION = "0.23.0"
 PANEL = "pepl_os.pepl_production.masters.get_operator_panel"
@@ -46,7 +46,11 @@ remove("User", frappe.get_all("User", filters={"name": ["like", "chk23.%"]}, plu
 
 # ---------------- 1. installed ----------------
 apps = {a.app_name: a.app_version for a in frappe.get_all("Installed Application", fields=["app_name", "app_version"])}
-check(apps.get("pepl_os") == VERSION, "1. pepl_os version is " + VERSION + " (site has " + str(apps.get("pepl_os")) + ")")
+def version_parts(value):
+    return [int(part) for part in str(value or "0").split(".")[:3]]
+
+
+check(version_parts(apps.get("pepl_os")) >= version_parts(VERSION), "1. pepl_os is " + VERSION + " or later (site has " + str(apps.get("pepl_os")) + ")")
 for dt in ("PEPL Shift", "PEPL Downtime Category", "PEPL Operator", "PEPL Operator Skill"):
     check(frappe.db.exists("DocType", dt), "1. DocType " + dt + " exists")
 params_meta = frappe.get_meta("PEPL System Parameters")
@@ -99,8 +103,12 @@ for wt in ("CHK23 VMC", "CHK23 LATHE"):
 frappe.get_doc({"doctype": "Workstation", "workstation_name": "CHK23 VMC-01", "workstation_type": "CHK23 VMC"}).insert()
 
 
-def operator(code, pin, skills=None, **extra):
-    doc = frappe.get_doc(dict({"doctype": "PEPL Operator", "employee_code": code, "operator_name": "Check " + code, "pin": pin}, **extra))
+def operator(code, pin, skills=None, user=None):
+    # No **kwargs here: the System Console sandbox does not allow ** unpacking.
+    values = {"doctype": "PEPL Operator", "employee_code": code, "operator_name": "Check " + code, "pin": pin}
+    if user:
+        values["user"] = user
+    doc = frappe.get_doc(values)
     for row in skills or []:
         doc.append("skills", row)
     return doc.insert()
@@ -162,11 +170,13 @@ def rights(profile):
 foreman = rights("PEPL Foreman")
 manager = rights("PEPL Production Manager")
 check({"PEPL Shift", "PEPL Operator", "PEPL Downtime Category"} <= set(manager), "7. the three masters are in the Role Access Matrix (Production)")
-fo, mo = foreman.get("PEPL Operator", {}), manager.get("PEPL Operator", {})
+fo = foreman.get("PEPL Operator", {})
+mo = manager.get("PEPL Operator", {})
 check(fo.get("read") == "Yes" and not fo.get("create"), "7. Foreman can view operators but not create them")
 check(mo.get("create") == "Yes" and mo.get("write") == "Yes", "7. Production Manager creates and edits operators")
 check(not mo.get("delete") and not fo.get("delete"), "7. neither can delete an operator (System Manager only)")
-fs, ms = foreman.get("PEPL Shift", {}), manager.get("PEPL Shift", {})
+fs = foreman.get("PEPL Shift", {})
+ms = manager.get("PEPL Shift", {})
 check(ms.get("write") == "Yes" and fs.get("read") == "Yes" and not fs.get("write"), "7. Shifts: manager edits, foreman views")
 
 # ---------------- 8. attribution ----------------
