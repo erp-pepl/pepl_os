@@ -170,6 +170,8 @@ scheduler_events = {
 		"pepl_os.pepl_purchase.payments.daily_msme_payments",
 		# C2-19: one ToDo per item below its reorder level (STO-REORDER)
 		"pepl_os.pepl_stores.reorder.daily_reorder_alerts",
+		# C3a-X3: yesterday's OEE for every machine (safety net; entries rebuild their day at once)
+		"pepl_os.pepl_production.oee.daily_oee",
 	],
 	"monthly": [
 		# C2-19: next month's draft Reorder Review for the Stores HOD

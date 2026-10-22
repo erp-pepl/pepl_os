@@ -59,6 +59,7 @@ MATRIX_DOCTYPES = (
 	("Production", "PEPL Operator", "Operator (kiosk PIN, machine skills)"),
 	("Production", "PEPL Downtime Category", "Downtime Category"),
 	("Production", "PEPL Shift Production Entry", "Shift Production Entry (SPR)"),
+	("Production", "PEPL OEE Daily", "Daily OEE (per machine)"),
 	("Quality", "Quality Inspection", "Quality Inspection"),
 	("Accounts", "Payment Entry", "Payment Entry"),
 	("Accounts", "Journal Entry", "Journal Entry"),

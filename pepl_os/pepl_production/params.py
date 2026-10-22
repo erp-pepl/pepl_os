@@ -2,9 +2,9 @@
 
 import frappe
 from frappe import _
-from frappe.utils import cint
+from frappe.utils import cint, flt
 
-from pepl_os.pepl_production import machine_booking
+from pepl_os.pepl_production import machine_booking, oee
 from pepl_os.pepl_production.masters import PIN_DIGITS_FIELD, PIN_DIGITS_RANGE
 from pepl_os.pepl_production.spr import GRACE_FIELD, GRACE_RANGE, UNACCOUNTED_FIELD
 
@@ -25,5 +25,8 @@ def validate_production_params(doc, method=None):
 	booking_mode = doc.get(machine_booking.MODE_FIELD)
 	if booking_mode not in (None, "") and booking_mode not in machine_booking.MODES:
 		errors.append(_("Machine Double-Booking Mode must be Advisory, Soft Block or Hard Block."))
+	aim = doc.get(oee.TARGET_FIELD)
+	if aim not in (None, "") and not 0 < flt(aim) <= 100:
+		errors.append(_("OEE Target % must be more than 0 and at most 100."))
 	if errors:
 		frappe.throw("<br>".join(errors), title=_("Production rules"))

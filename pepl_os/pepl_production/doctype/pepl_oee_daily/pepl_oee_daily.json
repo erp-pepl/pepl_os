@@ -1,0 +1,314 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "autoname": "format:OEE-{oee_date}-{workstation}",
+ "naming_rule": "Expression",
+ "creation": "2026-10-22 18:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "oee_date",
+  "workstation",
+  "workstation_type",
+  "column_break_head",
+  "company",
+  "shifts",
+  "entries",
+  "section_oee",
+  "oee",
+  "target",
+  "below_target",
+  "column_break_apq",
+  "availability",
+  "performance",
+  "quality",
+  "section_time",
+  "planned_minutes",
+  "planned_stop_minutes",
+  "pm_minutes",
+  "planned_production_minutes",
+  "column_break_time",
+  "run_minutes",
+  "unplanned_stop_minutes",
+  "breakdown_count",
+  "breakdown_minutes",
+  "unexplained_minutes",
+  "section_output",
+  "good_qty",
+  "rejected_qty",
+  "column_break_output",
+  "ideal_minutes",
+  "blocks_without_standard",
+  "section_notes",
+  "notes",
+  "computed_on"
+ ],
+ "fields": [
+  {
+   "fieldname": "oee_date",
+   "fieldtype": "Date",
+   "label": "Date",
+   "read_only": 1,
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "workstation",
+   "fieldtype": "Link",
+   "label": "Machine",
+   "read_only": 1,
+   "options": "Workstation",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "workstation_type",
+   "fieldtype": "Link",
+   "label": "Machine Group",
+   "read_only": 1,
+   "options": "Workstation Type",
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "column_break_head",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "read_only": 1,
+   "options": "Company"
+  },
+  {
+   "fieldname": "shifts",
+   "fieldtype": "Data",
+   "label": "Shifts Worked",
+   "read_only": 1
+  },
+  {
+   "fieldname": "entries",
+   "fieldtype": "Int",
+   "label": "Shift Entries",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_oee",
+   "fieldtype": "Section Break",
+   "label": "OEE"
+  },
+  {
+   "fieldname": "oee",
+   "fieldtype": "Percent",
+   "label": "OEE %",
+   "read_only": 1,
+   "in_list_view": 1,
+   "bold": 1
+  },
+  {
+   "fieldname": "target",
+   "fieldtype": "Percent",
+   "label": "OEE Target %",
+   "read_only": 1
+  },
+  {
+   "fieldname": "below_target",
+   "fieldtype": "Check",
+   "label": "Below Target",
+   "read_only": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "column_break_apq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "availability",
+   "fieldtype": "Percent",
+   "label": "Availability %",
+   "read_only": 1,
+   "in_list_view": 1,
+   "description": "Run Time ÷ Planned Production Time."
+  },
+  {
+   "fieldname": "performance",
+   "fieldtype": "Percent",
+   "label": "Performance %",
+   "read_only": 1,
+   "in_list_view": 1,
+   "description": "Standard minutes of the pieces made ÷ Run Time of those blocks."
+  },
+  {
+   "fieldname": "quality",
+   "fieldtype": "Percent",
+   "label": "Quality %",
+   "read_only": 1,
+   "in_list_view": 1,
+   "description": "Good ÷ (good + rejected)."
+  },
+  {
+   "fieldname": "section_time",
+   "fieldtype": "Section Break",
+   "label": "Time (minutes)"
+  },
+  {
+   "fieldname": "planned_minutes",
+   "fieldtype": "Int",
+   "label": "Planned Minutes (shifts)",
+   "read_only": 1,
+   "description": "Planned minutes of each shift worked, counted once per shift."
+  },
+  {
+   "fieldname": "planned_stop_minutes",
+   "fieldtype": "Int",
+   "label": "Planned Stops",
+   "read_only": 1
+  },
+  {
+   "fieldname": "pm_minutes",
+   "fieldtype": "Int",
+   "label": "PM / Calibration Stops",
+   "read_only": 1
+  },
+  {
+   "fieldname": "planned_production_minutes",
+   "fieldtype": "Int",
+   "label": "Planned Production Time",
+   "read_only": 1,
+   "bold": 1
+  },
+  {
+   "fieldname": "column_break_time",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "run_minutes",
+   "fieldtype": "Int",
+   "label": "Run Time",
+   "read_only": 1,
+   "bold": 1
+  },
+  {
+   "fieldname": "unplanned_stop_minutes",
+   "fieldtype": "Int",
+   "label": "Unplanned Stops",
+   "read_only": 1
+  },
+  {
+   "fieldname": "breakdown_count",
+   "fieldtype": "Int",
+   "label": "Breakdowns",
+   "read_only": 1
+  },
+  {
+   "fieldname": "breakdown_minutes",
+   "fieldtype": "Int",
+   "label": "Breakdown Minutes",
+   "read_only": 1
+  },
+  {
+   "fieldname": "unexplained_minutes",
+   "fieldtype": "Int",
+   "label": "Unexplained Minutes",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_output",
+   "fieldtype": "Section Break",
+   "label": "Output"
+  },
+  {
+   "fieldname": "good_qty",
+   "fieldtype": "Float",
+   "label": "Good Qty",
+   "read_only": 1
+  },
+  {
+   "fieldname": "rejected_qty",
+   "fieldtype": "Float",
+   "label": "Rejected Qty",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_output",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "ideal_minutes",
+   "fieldtype": "Float",
+   "label": "Standard Minutes of Pieces Made",
+   "read_only": 1
+  },
+  {
+   "fieldname": "blocks_without_standard",
+   "fieldtype": "Int",
+   "label": "Blocks Without Standard Time",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_notes",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes",
+   "read_only": 1
+  },
+  {
+   "fieldname": "computed_on",
+   "fieldtype": "Datetime",
+   "label": "Last Built On",
+   "read_only": 1
+  }
+ ],
+ "in_create": 1,
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-10-22 18:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "PEPL Production",
+ "name": "PEPL OEE Daily",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "Manufacturing Manager",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "Manufacturing User",
+   "read": 1,
+   "print": 1,
+   "export": 1,
+   "report": 1
+  }
+ ],
+ "sort_field": "oee_date",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "workstation",
+ "show_title_field_in_link": 0,
+ "track_changes": 0
+}

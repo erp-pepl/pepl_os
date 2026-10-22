@@ -3,7 +3,7 @@
 
 from frappe.model.document import Document
 
-from pepl_os.pepl_production import spr
+from pepl_os.pepl_production import oee, spr
 
 
 class PEPLShiftProductionEntry(Document):
@@ -15,9 +15,11 @@ class PEPLShiftProductionEntry(Document):
 
 	def on_submit(self):
 		spr.on_submit(self)
+		oee.on_entry_change(self)  # C3a-X3
 
 	def before_cancel(self):
 		spr.before_cancel(self)
 
 	def on_cancel(self):
 		spr.on_cancel(self)
+		oee.on_entry_change(self)  # C3a-X3

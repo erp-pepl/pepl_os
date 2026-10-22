@@ -393,6 +393,16 @@ PRODUCTION_FIELDS = _chain(
 			"Advisory = warning; Soft Block = submitting needs a reason (Override Log, PRD-DOUBLE-BOOK); "
 			"Hard Block = the plan cannot be submitted until the clash is resolved.",
 		},
+		# C3a-X3 - daily OEE
+		{"fieldname": "custom_oee_section", "label": "OEE", "fieldtype": "Section Break"},
+		{
+			"fieldname": "custom_oee_target_percent",
+			"label": "OEE Target %",
+			"fieldtype": "Percent",
+			"default": "65",
+			"description": "Each machine's daily OEE is compared with this; below it, the day is marked "
+			"'Below Target'. PM / Calibration follows 'OEE: Exclude PM/Calibration from Planned Time'.",
+		},
 	],
 	after="custom_overhead_percent",
 )

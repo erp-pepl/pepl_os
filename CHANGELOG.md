@@ -2,6 +2,24 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.28.0 — Daily OEE per machine (C3a-X3)
+
+- New record **PEPL OEE Daily** (Daily OEE): one per machine and shift date, built by the system from the
+  submitted Shift Production Entries and never typed in. It shows Availability, Performance, Quality and OEE
+  with every minute behind them: planned minutes (each shift worked counted once, even with two operators),
+  planned stops, PM / Calibration, planned production time, run time, unplanned stops, breakdowns (count and
+  minutes, for MTBF / MTTR next), unexplained minutes, good and rejected quantity, standard minutes made.
+- Availability = run time ÷ planned production time; Performance = pieces made × the Job Card's standard
+  minutes a piece ÷ run time; Quality = good ÷ (good + rejected); OEE = A × P × Q. Performance above 100 %
+  (a loose standard time) is shown as it is, used as 100 % in OEE and noted on the record.
+- PM / Calibration follows the existing parameter "OEE: Exclude PM/Calibration from Planned Time" (on: left
+  out of planned time; off: an unplanned stop). New **OEE Target %** (System Parameters → Production, default
+  65): days below it are marked **Below Target**.
+- Built at once when a shift entry is submitted or cancelled (the last entry cancelled removes the day), and
+  every night for yesterday. Production Manager can rebuild a date range (up to 92 days). Building OEE never
+  stops a shift entry; a failure goes to the Error Log.
+- Check 28.
+
 ## 0.27.1 — from CI run #24 (1 error)
 
 - Tests only (no change to how the system works): the Hard Block test logged an override reason of 8
