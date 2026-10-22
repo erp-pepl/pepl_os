@@ -1,8 +1,8 @@
-# PEPL OS v0.28.0 - Check 28: C3a-X3 daily OEE per machine from the submitted Shift Production Entries -
-# availability, performance, quality, OEE, PM rule, target, rebuild, cancel.
-# Runs on 0.28.0 or later. System Console, Type = Python. Leave "Commit" UNTICKED: everything below, including the
+# PEPL OS v0.28.1 - Check 28 rev 2: C3a-X3 daily OEE per machine from the submitted Shift Production Entries -
+# availability, performance, quality, OEE, PM rule, target, rebuild, cancel; two operators sharing a shift (0.28.1).
+# Runs on 0.28.1 or later. System Console, Type = Python. Leave "Commit" UNTICKED: everything below, including the
 # System Parameters and Manufacturing Settings changes this check makes, is undone at the end.
-VERSION = "0.28.0"
+VERSION = "0.28.1"
 PARAMS = "PEPL System Parameters"
 OEE = "PEPL OEE Daily"
 SPR = "PEPL Shift Production Entry"
@@ -75,6 +75,8 @@ frappe.get_doc({"doctype": "Workstation", "workstation_name": MILL}).insert()
 frappe.get_doc({"doctype": "Workstation", "workstation_name": DRILL}).insert()
 OP = "CHK28-OP-" + RUN
 frappe.get_doc({"doctype": "PEPL Operator", "employee_code": OP, "operator_name": "Check " + OP, "pin": pin}).insert()
+OP2 = "CHK28-OP2-" + RUN
+frappe.get_doc({"doctype": "PEPL Operator", "employee_code": OP2, "operator_name": "Check " + OP2, "pin": pin}).insert()
 NO_LOAD = "CHK28 No Load " + RUN
 SPINDLE = "CHK28 Spindle " + RUN
 WAIT = "CHK28 Waiting " + RUN
@@ -104,13 +106,18 @@ card = frappe.get_all("Job Card", filters={"work_order": wo.name}, pluck="name")
 print("INFO  Job Order " + wo.name + " -> Job Card " + card + ": 10 pieces at 6 standard minutes on " + MILL)
 
 
-def entry(machine, production=None, downtime=None):
-    doc = frappe.get_doc({"doctype": SPR, "posting_date": yesterday, "shift": DAY, "workstation": machine, "operator": OP, "company": company})
+def draft(machine, production=None, downtime=None, operator=None):
+    doc = frappe.get_doc({"doctype": SPR, "posting_date": yesterday, "shift": DAY, "workstation": machine, "operator": operator or OP, "company": company})
     for row in production or []:
         doc.append("production", row)
     for row in downtime or []:
         doc.append("downtime", row)
     doc.insert()
+    return doc
+
+
+def entry(machine, production=None, downtime=None):
+    doc = draft(machine, production, downtime)
     doc.submit()
     return doc
 
@@ -165,6 +172,22 @@ e2 = frappe.get_doc(SPR, e2.name)
 e2.cancel()
 check(record(DRILL) is None, "6. cancelling the drill's only entry removed its Daily OEE record")
 check(record(MILL) is not None, "6. the mill's record is untouched")
+
+# ---------------- 7. two operators share one shift on one machine (0.28.1) ----------------
+first = draft(DRILL, downtime=[down(NO_LOAD, "08:00", "12:00")], operator=OP)
+check(first.unaccounted_minutes == 240, "7. operator 1's entry alone (08:00-12:00) leaves 240 minutes of the shift unexplained")
+try:
+    frappe.get_doc(SPR, first.name).submit()
+    check(False, "7. operator 1 cannot submit before the rest of the shift is entered (it was accepted)")
+except Exception as e:
+    check("240 minutes" in frappe.utils.strip_html(str(e)), "7. operator 1 cannot submit before the rest of the shift is entered")
+second = draft(DRILL, downtime=[down(NO_LOAD, "12:00", "16:00")], operator=OP2)
+check(second.unaccounted_minutes == 0, "7. operator 2's entry (12:00-16:00) completes the shift: 0 minutes unexplained")
+frappe.get_doc(SPR, second.name).submit()
+frappe.get_doc(SPR, first.name).submit()
+check(frappe.db.get_value(SPR, first.name, "docstatus") == 1 and frappe.db.get_value(SPR, second.name, "docstatus") == 1, "7. both entries are submitted")
+r3 = record(DRILL)
+check(r3 is not None and r3.entries == 2 and r3.planned_minutes == 480, "7. the drill's day: 2 entries, the shift's 480 planned minutes counted once")
 
 print("")
 print("RESULT: " + str(len(passed)) + " passed, " + str(len(failed)) + " failed")

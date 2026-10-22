@@ -174,6 +174,32 @@ class TestSPRSubmitRules(SPRBase):
 		doc.submit()
 		self.assertEqual(doc.docstatus, 1)
 
+	def test_two_operators_sharing_a_shift_explain_it_together(self):
+		# Regression (CI #26): each operator's entry holds half the shift; together they explain it.
+		first = make_spr(VMC, DAY, OP1, YESTERDAY, downtime=[_down(NO_LOAD, "08:00", "12:00")])
+		first.insert(ignore_permissions=True)
+		self.assertEqual(first.unaccounted_minutes, 240)
+		with self.assertRaisesRegex(frappe.ValidationError, "240 minutes"):
+			first.submit()  # the second half is not entered yet
+		second = make_spr(VMC, DAY, OP2, YESTERDAY, downtime=[_down(NO_LOAD, "12:00", "16:00")])
+		second.insert(ignore_permissions=True)
+		self.assertEqual(second.unaccounted_minutes, 0)
+		second.submit()
+		first = frappe.get_doc(spr.DOCTYPE, first.name)
+		first.submit()
+		self.assertEqual((first.docstatus, first.unaccounted_minutes), (1, 0))
+
+	def test_another_machine_or_shift_does_not_explain_this_one(self):
+		make_spr(LATHE, DAY, OP2, YESTERDAY, downtime=[_down(NO_LOAD, "12:00", "16:00")]).insert(
+			ignore_permissions=True
+		)
+		make_spr(VMC, NIGHT, OP2, YESTERDAY, downtime=[_down(NO_LOAD, "22:00", "02:00")]).insert(
+			ignore_permissions=True
+		)
+		doc = make_spr(VMC, DAY, OP1, YESTERDAY, downtime=[_down(NO_LOAD, "08:00", "12:00")])
+		doc.insert(ignore_permissions=True)
+		self.assertEqual(doc.unaccounted_minutes, 240)
+
 	def test_tool_change_needs_a_photo_at_submit(self):
 		tool = {"change_time": "10:00", "tool_description": "CNMG insert", "reason": "Worn out"}
 		doc = _whole_shift_no_load(tools=[tool]).insert(ignore_permissions=True)

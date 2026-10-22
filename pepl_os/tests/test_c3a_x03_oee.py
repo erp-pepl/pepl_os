@@ -73,6 +73,19 @@ class TestDailyOEE(PEPLTestCase):
 		doc.submit()
 		return doc
 
+	def _shared_shift(self):
+		"""Two operators share the day shift: 08-12 and 12-16, 4 good pieces each. Both entries are saved
+		first, as on the floor, because the shift is explained by the two entries together."""
+		entries = [
+			make_spr(MILL, DAY, operator, YESTERDAY, production=[self._block(start, end, 4)]).insert(
+				ignore_permissions=True
+			)
+			for operator, start, end in ((OP1, "08:00", "12:00"), (OP2, "12:00", "16:00"))
+		]
+		for doc in entries:
+			frappe.get_doc(doc.doctype, doc.name).submit()
+		return entries
+
 	def _standard_day(self):
 		"""240 min run (8 good + 2 rejected), 60 planned stop, 60 breakdown, 120 waiting = 480."""
 		return self._submit(
@@ -127,8 +140,7 @@ class TestDailyOEE(PEPLTestCase):
 		self.assertAlmostEqual(rec.availability, 80.0, places=2)
 
 	def test_two_operators_in_one_shift_count_the_shift_once(self):
-		self._submit(OP1, production=[self._block("08:00", "12:00", 4)])
-		self._submit(OP2, production=[self._block("12:00", "16:00", 4)])
+		self._shared_shift()
 		rec = self._record()
 		self.assertEqual((rec.entries, rec.planned_minutes, rec.run_minutes), (2, 480, 480))
 
@@ -166,9 +178,7 @@ class TestDailyOEE(PEPLTestCase):
 		self.assertIsNone(self._record())
 
 	def test_cancelling_one_of_two_entries_rebuilds_the_day(self):
-		first = self._submit(OP1, production=[self._block("08:00", "12:00", 4)])
-		self._submit(OP2, production=[self._block("12:00", "16:00", 4)])
-		first.reload()
+		first = frappe.get_doc(oee.SPR, self._shared_shift()[0].name)
 		first.cancel()
 		rec = self._record()
 		self.assertEqual((rec.entries, rec.run_minutes), (1, 240))

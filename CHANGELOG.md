@@ -2,6 +2,17 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.28.1 — from CI run #26: two operators sharing a shift (fix to C3a-X1)
+
+- **Fix:** when two operators share one machine in one shift, each Shift Production Entry holds only part of
+  the shift, so each was refused on submit ("240 minutes of the shift are not explained"). The minutes not
+  explained are now counted for the shift as a whole: the production and downtime of the other entries
+  (draft or submitted) of the same machine, shift and day count too. The usual way on the floor: both
+  operators save their entry, then either submits. One entry for half a shift on its own is still refused.
+- Regression tests for the shared shift; the two Daily OEE tests that share a shift now save both entries
+  before submitting, as on the floor.
+- Check 28 rev 2 (adds section 7: two operators share one shift).
+
 ## 0.28.0 — Daily OEE per machine (C3a-X3)
 
 - New record **PEPL OEE Daily** (Daily OEE): one per machine and shift date, built by the system from the

@@ -375,11 +375,31 @@ def _check_consumables(doc):
 			row.warehouse = consumables_store(doc.company, row.item_code, item.item_group)
 
 
+def minutes_in_other_entries(doc):
+	"""Production + downtime minutes of the other entries (draft or submitted) of the same machine, shift and day.
+
+	C3a-X3 fix: when two operators share a machine in one shift, each entry holds only part of the shift; the
+	shift is explained by the entries together. Their rows never overlap (checked above).
+	"""
+	if not (doc.workstation and doc.shift and doc.posting_date):
+		return 0
+	row = frappe.db.sql(
+		f"""select coalesce(sum(production_minutes + downtime_minutes), 0) from `tab{DOCTYPE}`
+		where workstation = %s and shift = %s and posting_date = %s and docstatus < 2 and name != %s""",
+		(doc.workstation, doc.shift, doc.posting_date, doc.name or ""),
+	)
+	return cint(row[0][0]) if row else 0
+
+
 def _set_totals(doc, shift):
 	doc.planned_minutes = cint(shift.planned_minutes)
 	doc.production_minutes = sum(cint(r.minutes) for r in doc.get("production") or [])
 	doc.downtime_minutes = sum(cint(r.minutes) for r in doc.get("downtime") or [])
-	doc.unaccounted_minutes = max(doc.planned_minutes - doc.production_minutes - doc.downtime_minutes, 0)
+	# The shift is explained across all its entries on this machine (two operators may share it).
+	shared = minutes_in_other_entries(doc)
+	doc.unaccounted_minutes = max(
+		doc.planned_minutes - doc.production_minutes - doc.downtime_minutes - shared, 0
+	)
 	doc.total_good_qty = sum(flt(r.good_qty) for r in doc.get("production") or [])
 	doc.total_rejected_qty = sum(flt(r.rejected_qty) for r in doc.get("production") or [])
 	made = doc.total_good_qty + doc.total_rejected_qty
@@ -407,7 +427,9 @@ def before_submit(doc):
 		frappe.throw(
 			_(
 				"{0} minutes of the shift are not explained (allowed: {1}). Add the production or downtime rows "
-				"for that time - for example 'No Plan / No Load' if the machine had no work."
+				"for that time - for example 'No Plan / No Load' if the machine had no work. When two operators "
+				"share the machine in this shift, the other operator's entry for the rest of the shift counts "
+				"once it is saved."
 			).format(doc.unaccounted_minutes, limit)
 		)
 	if tool_photo_required():
