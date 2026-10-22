@@ -2,6 +2,12 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.27.1 — from CI run #24 (1 error)
+
+- Tests only (no change to how the system works): the Hard Block test logged an override reason of 8
+  characters, which the Override Log rightly refuses (at least 10). The test now gives a full reason, so it
+  checks what it is meant to check: that even a valid reason cannot unlock Hard Block.
+
 ## 0.27.0 — Production Plan machine double-booking block (C3a-X6)
 
 - Saving a Production Plan lays out each row the way ERPNext lays out a Job Order: from the row's Planned

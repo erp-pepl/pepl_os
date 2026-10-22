@@ -144,7 +144,9 @@ class TestMachineDoubleBooking(PEPLTestCase):
 		set_param(mb.MODE_FIELD, mb.HARD)
 		plan = make_production_plan([(SHAFT, 1, at("09:00")), (PIN, 1, at("09:30"))])
 		self.assertTrue(frappe.db.exists("Production Plan", plan.name))  # the draft is kept
-		log_override(mb.RULE_CODE, "Production Plan", plan.name, "double-booked", "Please")
+		log_override(
+			mb.RULE_CODE, "Production Plan", plan.name, "double-booked", "Planner insists on this slot"
+		)
 		with self.assertRaises(frappe.ValidationError) as caught:
 			frappe.get_doc("Production Plan", plan.name).submit()
 		self.assertIn("Hard Block", str(caught.exception))
