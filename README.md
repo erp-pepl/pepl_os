@@ -104,6 +104,7 @@ Admin screens after install:
 | C3a-X1 Shift Production Entry | **PEPL Shift Production Entry**: production blocks against Job Cards, downtime, tool changes with photo, consumables; submit posts Job Card time logs and a consumables Material Issue |
 | C3a-X7 Skill check | Shift Production Entry compares the operator's level on the machine group with the minimum level; Advisory / Soft Block (reason, PRD-SKILL) / Hard Block from System Parameters |
 | C3a-X5 Job Orders from Sales Orders | Submitting a Sales Order drafts a Job Order (Work Order, with the BOM's operations) per manufactured line with a default BOM; no BOM → ToDo PRD-NO-BOM; cancel deletes the drafts; on / off in System Parameters → Production |
+| C3a-X6 Machine double-booking | Production Plan rows laid out on their machines and compared with open Job Orders, other open plans and the plan's own rows against the machine's Production Capacity; clashes listed on the plan; Advisory / Soft Block (reason, PRD-DOUBLE-BOOK) / Hard Block on submit from System Parameters → Production |
 
 ## Tests
 

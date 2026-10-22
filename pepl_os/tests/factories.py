@@ -270,6 +270,56 @@ def make_bom(fg, rm, workstation=None, operation=None, minutes_per_piece=6):
 	return bom
 
 
+def make_work_order(item, qty, planned_start, submit=True):
+	"""A Job Order (Work Order) for `item` from its default BOM, starting at `planned_start`."""
+	work_order = frappe.get_doc(
+		{
+			"doctype": "Work Order",
+			"production_item": item,
+			"bom_no": frappe.db.get_value("BOM", {"item": item, "is_default": 1, "docstatus": 1}),
+			"qty": qty,
+			"stock_uom": "Nos",
+			"company": TEST_COMPANY,
+			"skip_transfer": 1,
+			"fg_warehouse": test_warehouse("FG Stores"),
+			"planned_start_date": planned_start,
+			"transfer_material_against": "Work Order",
+		}
+	)
+	work_order.get_items_and_operations_from_bom()
+	work_order.insert(ignore_permissions=True)
+	if submit:
+		work_order.submit()
+	return work_order
+
+
+def make_production_plan(rows, submit=False):
+	"""A Production Plan of the test company; rows are (item_code, qty, planned_start)."""
+	from frappe.utils import today
+
+	plan = frappe.get_doc(
+		{
+			"doctype": "Production Plan",
+			"company": TEST_COMPANY,
+			"posting_date": today(),
+			"po_items": [
+				{
+					"item_code": code,
+					"bom_no": frappe.db.get_value("BOM", {"item": code, "is_default": 1, "docstatus": 1}),
+					"planned_qty": qty,
+					"planned_start_date": start,
+					"stock_uom": "Nos",
+					"warehouse": test_warehouse("FG Stores"),
+				}
+				for code, qty, start in rows
+			],
+		}
+	).insert(ignore_permissions=True)
+	if submit:
+		plan.submit()
+	return plan
+
+
 TEST_CUSTOMER = "_Test Customer"
 
 

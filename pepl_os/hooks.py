@@ -42,6 +42,8 @@ doctype_js = {
 	"Supplier": "public/js/supplier_payments.js",
 	# C2-19: reorder level vs projected stock; "Create Material Request" when below
 	"Item": "public/js/item_reorder.js",
+	# C3a-X6: reason dialog before submitting a plan that double-books a machine (Soft Block)
+	"Production Plan": "public/js/production_plan.js",
 }
 
 # C2-03: Supplier list coloured by approval state.
@@ -130,6 +132,11 @@ doc_events = {
 			"pepl_os.pepl_production.job_orders.on_sales_order_submit",
 		],
 		"on_cancel": "pepl_os.pepl_production.job_orders.on_sales_order_cancel",
+	},
+	# C3a-X6: machine double-booking
+	"Production Plan": {
+		"validate": "pepl_os.pepl_production.machine_booking.check_on_save",
+		"before_submit": "pepl_os.pepl_production.machine_booking.check_on_submit",
 	},
 	# C2-08: the supplier approval gate
 	"Request for Quotation": {"before_submit": SUPPLIER_GATE},

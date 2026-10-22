@@ -2,6 +2,23 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.27.0 — Production Plan machine double-booking block (C3a-X6)
+
+- Saving a Production Plan lays out each row the way ERPNext lays out a Job Order: from the row's Planned
+  Start, the BOM's operations one after another (same sequence number = together), quantity × BOM minutes,
+  plus Manufacturing Settings → Time Between Operations. Each operation books its machine for that time.
+- The bookings are compared with what already holds each machine: the plan's other rows, open Job Orders
+  (submitted, Not Started / In Process; operations not completed; at the planned times ERPNext stored when
+  capacity planning is on, otherwise laid out from the Job Order's Planned Start) and other open Production
+  Plans' rows not yet on a Job Order. A machine is double-booked when more jobs overlap than its
+  **Production Capacity** (Workstation; 1 = one job at a time). Back-to-back jobs do not clash.
+- The clashes are listed on the plan (**Machine Double-Bookings**) and shown on save. A draft is always saved.
+  On submit, **Machine Double-Booking Mode** (System Parameters → Production, default Soft Block) decides:
+  **Advisory** – warning; **Soft Block** – a reason is asked, written to the Override Log as
+  PRD-DOUBLE-BOOK (warning only when "Require a Reason for Every Override" is off); **Hard Block** – the plan
+  cannot be submitted until the clash is resolved.
+- Check 27.
+
 ## 0.26.0 — Job Orders drafted from the Sales Order (C3a-X5)
 
 - Submitting a Sales Order drafts one **Job Order** (ERPNext Work Order) for each manufactured line (stock

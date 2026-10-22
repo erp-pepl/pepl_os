@@ -382,6 +382,17 @@ PRODUCTION_FIELDS = _chain(
 			"description": "When on, submitting a Sales Order drafts one Job Order for each manufactured line "
 			"that has a default BOM; a line without a BOM is flagged to the Production notification owner.",
 		},
+		# C3a-X6 - machine double-booking in Production Plans
+		{
+			"fieldname": "custom_double_booking_mode",
+			"label": "Machine Double-Booking Mode",
+			"fieldtype": "Select",
+			"options": "Advisory\nSoft Block\nHard Block",
+			"default": "Soft Block",
+			"description": "When a Production Plan books a machine for more jobs at the same time than it can run: "
+			"Advisory = warning; Soft Block = submitting needs a reason (Override Log, PRD-DOUBLE-BOOK); "
+			"Hard Block = the plan cannot be submitted until the clash is resolved.",
+		},
 	],
 	after="custom_overhead_percent",
 )
@@ -654,6 +665,21 @@ CUSTOM_FIELDS["Stock Entry"] = [
 		"read_only": 1,
 		"search_index": 1,
 		"depends_on": "eval:doc.custom_shift_production_entry",
+	},
+]
+
+# C3a-X6 - the machine clashes found in a Production Plan
+CUSTOM_FIELDS["Production Plan"] = [
+	{
+		"fieldname": "custom_machine_clashes",
+		"label": "Machine Double-Bookings",
+		"fieldtype": "Small Text",
+		"insert_after": "po_items",
+		"read_only": 1,
+		"no_copy": 1,
+		"depends_on": "eval:doc.custom_machine_clashes",
+		"description": "Machines this plan books for more jobs at the same time than they can run, found when "
+		"the plan is saved (System Parameters → Production → Machine Double-Booking Mode).",
 	},
 ]
 
