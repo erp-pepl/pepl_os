@@ -1,0 +1,115 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-10-22 19:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-10-22 19:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "PEPL Production",
+ "owner": "Administrator",
+ "states": [],
+ "name": "PEPL Machine Week Item",
+ "istable": 1,
+ "editable_grid": 0,
+ "field_order": [
+  "item_code",
+  "good_qty",
+  "rejected_qty",
+  "run_minutes",
+  "material_cost",
+  "machine_cost",
+  "consumables_cost",
+  "overhead_cost",
+  "total_cost",
+  "cost_per_piece"
+ ],
+ "fields": [
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "label": "Item",
+   "read_only": 1,
+   "options": "Item",
+   "in_list_view": 1,
+   "columns": 2
+  },
+  {
+   "fieldname": "good_qty",
+   "fieldtype": "Float",
+   "label": "Good",
+   "read_only": 1,
+   "in_list_view": 1,
+   "columns": 1
+  },
+  {
+   "fieldname": "rejected_qty",
+   "fieldtype": "Float",
+   "label": "Rejected",
+   "read_only": 1,
+   "in_list_view": 1,
+   "columns": 1
+  },
+  {
+   "fieldname": "run_minutes",
+   "fieldtype": "Int",
+   "label": "Run Minutes",
+   "read_only": 1,
+   "in_list_view": 1,
+   "columns": 1
+  },
+  {
+   "fieldname": "material_cost",
+   "fieldtype": "Currency",
+   "label": "Material",
+   "read_only": 1,
+   "in_list_view": 1,
+   "columns": 1
+  },
+  {
+   "fieldname": "machine_cost",
+   "fieldtype": "Currency",
+   "label": "Machine",
+   "read_only": 1,
+   "in_list_view": 1,
+   "columns": 1
+  },
+  {
+   "fieldname": "consumables_cost",
+   "fieldtype": "Currency",
+   "label": "Consumables",
+   "read_only": 1,
+   "columns": 1
+  },
+  {
+   "fieldname": "overhead_cost",
+   "fieldtype": "Currency",
+   "label": "Overhead",
+   "read_only": 1,
+   "columns": 1
+  },
+  {
+   "fieldname": "total_cost",
+   "fieldtype": "Currency",
+   "label": "Total Cost",
+   "read_only": 1,
+   "in_list_view": 1,
+   "columns": 1
+  },
+  {
+   "fieldname": "cost_per_piece",
+   "fieldtype": "Currency",
+   "label": "CPC (per good piece)",
+   "read_only": 1,
+   "in_list_view": 1,
+   "columns": 2,
+   "bold": 1
+  }
+ ],
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 0
+}

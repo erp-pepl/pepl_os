@@ -173,6 +173,10 @@ scheduler_events = {
 		# C3a-X3: yesterday's OEE for every machine (safety net; entries rebuild their day at once)
 		"pepl_os.pepl_production.oee.daily_oee",
 	],
+	"cron": {
+		# C3a-X4: every Monday 02:30, last week's MTBF / MTTR / CPC for every machine
+		"30 2 * * 1": ["pepl_os.pepl_production.machine_week.weekly_machine_figures"],
+	},
 	"monthly": [
 		# C2-19: next month's draft Reorder Review for the Stores HOD
 		"pepl_os.pepl_stores.reorder.monthly_reorder_review",

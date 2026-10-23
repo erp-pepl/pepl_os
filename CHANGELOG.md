@@ -2,6 +2,23 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.29.0 — Weekly MTBF, MTTR and CPC per machine (C3a-X4)
+
+- New record **PEPL Machine Week** (Machine Week): one per machine and week (Monday to Sunday, by shift date),
+  built by the system from the submitted Shift Production Entries and never typed in.
+- **MTBF** = run hours ÷ breakdowns; **MTTR** = breakdown minutes ÷ breakdowns. A breakdown is a downtime row
+  whose category is marked "Machine Breakdown". A week without a breakdown says so (no MTBF / MTTR).
+- **CPC (cost per component)**: machine cost = run hours × the Machine-Hour Rate of the machine's group (System
+  Parameters → Production Costing; else the machine's own Hour Rate; else a note asks for it); consumables =
+  the value of the Material Issues posted by the week's entries; overhead = Overhead (%) on top. The machine's
+  CPC is its conversion cost ÷ good pieces. **Items Made** shows each item: good and rejected pieces, run
+  minutes, material (BOM raw-material cost a piece × pieces made), its share of machine and consumables by run
+  minutes, overhead, total and **CPC per good piece**.
+- Built at once when a shift entry is submitted or cancelled, and every Monday at 02:30 for the week before.
+  Production Manager can rebuild the weeks of a date range (e.g. after a rate change). Never stops a shift
+  entry; a failure goes to the Error Log. Accounts Manager can read the records.
+- Check 29.
+
 ## 0.28.1 — from CI run #26: two operators sharing a shift (fix to C3a-X1)
 
 - **Fix:** when two operators share one machine in one shift, each Shift Production Entry holds only part of

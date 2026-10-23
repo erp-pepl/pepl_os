@@ -1,0 +1,286 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-10-22 19:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-10-22 19:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "PEPL Production",
+ "owner": "Administrator",
+ "states": [],
+ "name": "PEPL Machine Week",
+ "autoname": "format:MW-{week_start}-{workstation}",
+ "naming_rule": "Expression",
+ "in_create": 1,
+ "field_order": [
+  "week_start",
+  "week_end",
+  "workstation",
+  "column_break_head",
+  "workstation_type",
+  "company",
+  "entries",
+  "section_reliability",
+  "mtbf_hours",
+  "mttr_minutes",
+  "column_break_rel",
+  "run_minutes",
+  "breakdown_count",
+  "breakdown_minutes",
+  "section_cost",
+  "cpc",
+  "good_qty",
+  "rejected_qty",
+  "conversion_cost",
+  "column_break_cost",
+  "rate_per_hour",
+  "rate_source",
+  "machine_cost",
+  "consumables_cost",
+  "overhead_percent",
+  "section_items",
+  "items",
+  "section_notes",
+  "notes",
+  "computed_on"
+ ],
+ "fields": [
+  {
+   "fieldname": "week_start",
+   "fieldtype": "Date",
+   "label": "Week Starting (Monday)",
+   "read_only": 1,
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "week_end",
+   "fieldtype": "Date",
+   "label": "Week Ending (Sunday)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "workstation",
+   "fieldtype": "Link",
+   "label": "Machine",
+   "read_only": 1,
+   "options": "Workstation",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "column_break_head",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "workstation_type",
+   "fieldtype": "Link",
+   "label": "Machine Group",
+   "read_only": 1,
+   "options": "Workstation Type",
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "read_only": 1,
+   "options": "Company"
+  },
+  {
+   "fieldname": "entries",
+   "fieldtype": "Int",
+   "label": "Shift Entries",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_reliability",
+   "fieldtype": "Section Break",
+   "label": "Reliability"
+  },
+  {
+   "fieldname": "mtbf_hours",
+   "fieldtype": "Float",
+   "label": "MTBF (hours)",
+   "read_only": 1,
+   "in_list_view": 1,
+   "bold": 1,
+   "description": "Run hours ÷ breakdowns."
+  },
+  {
+   "fieldname": "mttr_minutes",
+   "fieldtype": "Float",
+   "label": "MTTR (minutes)",
+   "read_only": 1,
+   "in_list_view": 1,
+   "bold": 1,
+   "description": "Breakdown minutes ÷ breakdowns."
+  },
+  {
+   "fieldname": "column_break_rel",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "run_minutes",
+   "fieldtype": "Int",
+   "label": "Run Minutes",
+   "read_only": 1
+  },
+  {
+   "fieldname": "breakdown_count",
+   "fieldtype": "Int",
+   "label": "Breakdowns",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "breakdown_minutes",
+   "fieldtype": "Int",
+   "label": "Breakdown Minutes",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_cost",
+   "fieldtype": "Section Break",
+   "label": "Cost per Component"
+  },
+  {
+   "fieldname": "cpc",
+   "fieldtype": "Currency",
+   "label": "Machine CPC (conversion cost per good piece)",
+   "read_only": 1,
+   "in_list_view": 1,
+   "bold": 1,
+   "description": "(Machine + consumables) × (1 + overhead %) ÷ good pieces."
+  },
+  {
+   "fieldname": "good_qty",
+   "fieldtype": "Float",
+   "label": "Good Qty",
+   "read_only": 1
+  },
+  {
+   "fieldname": "rejected_qty",
+   "fieldtype": "Float",
+   "label": "Rejected Qty",
+   "read_only": 1
+  },
+  {
+   "fieldname": "conversion_cost",
+   "fieldtype": "Currency",
+   "label": "Conversion Cost",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_cost",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "rate_per_hour",
+   "fieldtype": "Currency",
+   "label": "Machine-Hour Rate",
+   "read_only": 1
+  },
+  {
+   "fieldname": "rate_source",
+   "fieldtype": "Data",
+   "label": "Rate Taken From",
+   "read_only": 1
+  },
+  {
+   "fieldname": "machine_cost",
+   "fieldtype": "Currency",
+   "label": "Machine Cost",
+   "read_only": 1
+  },
+  {
+   "fieldname": "consumables_cost",
+   "fieldtype": "Currency",
+   "label": "Consumables Cost",
+   "read_only": 1,
+   "description": "Material Issues posted by the week's shift entries."
+  },
+  {
+   "fieldname": "overhead_percent",
+   "fieldtype": "Percent",
+   "label": "Overhead %",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_items",
+   "fieldtype": "Section Break",
+   "label": "Items Made"
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "label": "Items",
+   "read_only": 1,
+   "options": "PEPL Machine Week Item"
+  },
+  {
+   "fieldname": "section_notes",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes",
+   "read_only": 1
+  },
+  {
+   "fieldname": "computed_on",
+   "fieldtype": "Datetime",
+   "label": "Last Built On",
+   "read_only": 1
+  }
+ ],
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "Manufacturing Manager",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "Manufacturing User",
+   "read": 1,
+   "print": 1,
+   "export": 1,
+   "report": 1
+  },
+  {
+   "role": "Accounts Manager",
+   "read": 1,
+   "print": 1,
+   "export": 1,
+   "report": 1
+  }
+ ],
+ "sort_field": "week_start",
+ "sort_order": "DESC",
+ "title_field": "workstation",
+ "track_changes": 0
+}
