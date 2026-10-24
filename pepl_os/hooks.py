@@ -96,7 +96,12 @@ doc_events = {
 	# C2-16: every customer-supplied line moves against its Sales Order; the order shows its scrap option
 	"Stock Entry": {
 		"before_validate": [f"{CSM}.before_validate_stock_entry", f"{HEAT}.before_validate_stock_entry"],
-		"validate": [CSM_SEGREGATION, f"{CSM}.validate_stock_entry"],
+		# C3a-X8: each job-work movement says what it is
+		"validate": [
+			CSM_SEGREGATION,
+			f"{CSM}.validate_stock_entry",
+			"pepl_os.pepl_production.job_work.validate_stock_entry",
+		],
 		"before_submit": f"{HEAT}.before_submit_stock_entry",
 		"on_submit": f"{CSM}.on_stock_entry_change",
 		"on_cancel": f"{CSM}.on_stock_entry_change",
@@ -172,6 +177,8 @@ scheduler_events = {
 		"pepl_os.pepl_stores.reorder.daily_reorder_alerts",
 		# C3a-X3: yesterday's OEE for every machine (safety net; entries rebuild their day at once)
 		"pepl_os.pepl_production.oee.daily_oee",
+		# C3a-X8: one ToDo per job worker holding overdue material (PRD-JW-OVERDUE)
+		"pepl_os.pepl_production.job_work.daily_job_work_alerts",
 	],
 	"cron": {
 		# C3a-X4: every Monday 02:30, last week's MTBF / MTTR / CPC for every machine

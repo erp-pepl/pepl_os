@@ -403,6 +403,24 @@ PRODUCTION_FIELDS = _chain(
 			"description": "Each machine's daily OEE is compared with this; below it, the day is marked "
 			"'Below Target'. PM / Calibration follows 'OEE: Exclude PM/Calibration from Planned Time'.",
 		},
+		# C3a-X8 - job work
+		{"fieldname": "custom_job_work_section", "label": "Job Work", "fieldtype": "Section Break"},
+		{
+			"fieldname": "custom_job_work_return_days",
+			"label": "Job-Work Return Days",
+			"fieldtype": "Int",
+			"default": "30",
+			"description": "Material at a job worker for longer than this is Overdue; the Production notification "
+			"owner gets a ToDo every morning (PRD-JW-OVERDUE).",
+		},
+		{
+			"fieldname": "custom_job_work_gst_warning_days",
+			"label": "Job-Work GST Warning Days",
+			"fieldtype": "Int",
+			"default": "30",
+			"description": "Inputs sent for job work must come back within one year (CGST section 143). Material "
+			"this many days short of the year is marked 'GST limit near'.",
+		},
 	],
 	after="custom_overhead_percent",
 )
@@ -675,6 +693,28 @@ CUSTOM_FIELDS["Stock Entry"] = [
 		"read_only": 1,
 		"search_index": 1,
 		"depends_on": "eval:doc.custom_shift_production_entry",
+	},
+	{
+		# C3a-X8: what this entry is for the job worker (set automatically when material goes out)
+		"fieldname": "custom_job_work_movement",
+		"label": "Job-Work Movement",
+		"fieldtype": "Select",
+		"options": "\nSent to Job Worker\nReceived after Processing\nReturned Unprocessed",
+		"insert_after": "custom_shift_production_entry",
+		"description": "Material coming back from a job worker's store: processed, or returned as it went.",
+	},
+]
+
+# C3a-X8 - job workers' stores and what each job-work movement is
+CUSTOM_FIELDS["Warehouse"] = [
+	{
+		"fieldname": "custom_job_worker",
+		"label": "Job Worker",
+		"fieldtype": "Link",
+		"options": "Supplier",
+		"insert_after": "parent_warehouse",
+		"description": "Fill in when this store holds PEPL's material at a job worker (plating, heat treatment ...). "
+		"Everything sent here and back is reconciled in PEPL Job-Work Reconciliation.",
 	},
 ]
 

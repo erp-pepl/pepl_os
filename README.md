@@ -107,6 +107,7 @@ Admin screens after install:
 | C3a-X6 Machine double-booking | Production Plan rows laid out on their machines and compared with open Job Orders, other open plans and the plan's own rows against the machine's Production Capacity; clashes listed on the plan; Advisory / Soft Block (reason, PRD-DOUBLE-BOOK) / Hard Block on submit from System Parameters → Production |
 | C3a-X3 Daily OEE | **PEPL OEE Daily** per machine and day from submitted Shift Production Entries: Availability, Performance, Quality, OEE vs OEE Target %; rebuilt on every entry submit / cancel and nightly; Rebuild OEE for a date range |
 | C3a-X4 MTBF / MTTR / CPC | **PEPL Machine Week** per machine and week from submitted Shift Production Entries: MTBF, MTTR, machine-hour cost, consumables, overhead, machine CPC and CPC per item made; rebuilt on entry submit / cancel and every Monday; Rebuild Machine Weeks for a date range |
+| C3a-X8 Job-work reconciliation | Warehouse **Job Worker**; Stock Entry **Job-Work Movement** (Sent / Received after Processing / Returned Unprocessed); report **PEPL Job-Work Reconciliation** (sent, received, returned, balance, FIFO age, Overdue / GST limit); daily ToDo PRD-JW-OVERDUE |
 
 ## Tests
 

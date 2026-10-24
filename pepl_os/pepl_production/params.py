@@ -4,7 +4,7 @@ import frappe
 from frappe import _
 from frappe.utils import cint, flt
 
-from pepl_os.pepl_production import machine_booking, oee
+from pepl_os.pepl_production import job_work, machine_booking, oee
 from pepl_os.pepl_production.masters import PIN_DIGITS_FIELD, PIN_DIGITS_RANGE
 from pepl_os.pepl_production.spr import GRACE_FIELD, GRACE_RANGE, UNACCOUNTED_FIELD
 
@@ -28,5 +28,11 @@ def validate_production_params(doc, method=None):
 	aim = doc.get(oee.TARGET_FIELD)
 	if aim not in (None, "") and not 0 < flt(aim) <= 100:
 		errors.append(_("OEE Target % must be more than 0 and at most 100."))
+	days = doc.get(job_work.RETURN_DAYS_FIELD)
+	if days not in (None, "") and cint(days) < 1:
+		errors.append(_("Job-Work Return Days must be at least 1."))
+	warning = doc.get(job_work.GST_WARNING_FIELD)
+	if warning not in (None, "") and not 0 <= cint(warning) < job_work.GST_LIMIT_DAYS:
+		errors.append(_("Job-Work GST Warning Days must be between 0 and 364."))
 	if errors:
 		frappe.throw("<br>".join(errors), title=_("Production rules"))

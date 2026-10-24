@@ -2,6 +2,24 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.30.0 — Job-work reconciliation (C3a-X8)
+
+- **Job worker's store**: a Warehouse with the new field **Job Worker** (a Supplier) holds PEPL's material at
+  that job worker (plating, heat treatment ...). A "Send to Subcontractor" must go to such a store.
+- **Job-Work Movement** on the Stock Entry: material moved into a job worker's store is marked **Sent to Job
+  Worker** automatically; material coming out of it must say **Received after Processing** or **Returned
+  Unprocessed** (a return entry is Returned Unprocessed by default). Sending and bringing back in one entry
+  is refused. Subcontracting Receipts (ERPNext's own job-work flow) count as received.
+- **PEPL Job-Work Reconciliation** (report): per job worker and item, as on any date - sent, received,
+  returned, adjusted (e.g. a stock count correction at the job worker), balance at the job worker, value,
+  oldest quantity outside (first in, first out), days outside and status: Clear / Outside / Overdue (beyond
+  **Job-Work Return Days**, default 30) / GST limit near (within **Job-Work GST Warning Days**, default 30, of
+  the one-year limit for inputs sent for job work, CGST section 143) / GST limit passed.
+- Every morning one ToDo per job worker holding overdue material goes to the Production notification owner
+  (rule PRD-JW-OVERDUE; High when a GST limit is near); it closes by itself once nothing is overdue. The
+  Production Manager can run the check at any time.
+- Check 30.
+
 ## 0.29.0 — Weekly MTBF, MTTR and CPC per machine (C3a-X4)
 
 - New record **PEPL Machine Week** (Machine Week): one per machine and week (Monday to Sunday, by shift date),
