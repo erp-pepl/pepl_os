@@ -1,4 +1,4 @@
-# PEPL OS v0.30.0 - Check 30: C3a-X8 job-work reconciliation - sent to a job worker, received back processed,
+# PEPL OS v0.30.0 - Check 30 rev 2: C3a-X8 job-work reconciliation - sent to a job worker, received back processed,
 # returned unprocessed, balance, age (first in, first out), Overdue / GST limit near, the morning ToDo.
 # Runs on 0.30.0 or later. System Console, Type = Python. Leave "Commit" UNTICKED: everything below, including the
 # System Parameters changes this check makes, is undone at the end.
@@ -70,12 +70,13 @@ params.custom_production_notification_owner = frappe.session.user
 params.save()
 
 # ---------------- 2. a job worker, its store, material ----------------
-# Test items are not sales items, so India Compliance does not ask them for an HSN/SAC code.
+# Test items are bought-out bushes and pins sent for plating: bought-out material has no heat number (raw material
+# would need one at every receipt, C2-15), and they are not sales items, so India Compliance asks no HSN/SAC code.
 PLATER = frappe.get_doc({"doctype": "Supplier", "supplier_name": "CHK30 Platers " + RUN}).insert().name
-root = frappe.db.get_value("Warehouse", wh("RM Stores"), "parent_warehouse")
+root = frappe.db.get_value("Warehouse", wh("Bought-Out Stores"), "parent_warehouse")
 STORE = frappe.get_doc({"doctype": "Warehouse", "warehouse_name": "CHK30 Platers Store " + RUN, "company": company, "parent_warehouse": root, "custom_job_worker": PLATER}).insert().name
-ROD = frappe.get_doc({"doctype": "Item", "item_code": "CHK30-ROD-" + RUN, "item_name": "CHK30 Rod " + RUN, "item_group": "Raw Material", "stock_uom": "Nos", "is_stock_item": 1, "is_sales_item": 0, "valuation_rate": 10}).insert().name
-PIN = frappe.get_doc({"doctype": "Item", "item_code": "CHK30-PIN-" + RUN, "item_name": "CHK30 Pin " + RUN, "item_group": "Raw Material", "stock_uom": "Nos", "is_stock_item": 1, "is_sales_item": 0, "valuation_rate": 10}).insert().name
+ROD = frappe.get_doc({"doctype": "Item", "item_code": "CHK30-BUSH-" + RUN, "item_name": "CHK30 Bush " + RUN, "item_group": "Bought-Out Components", "stock_uom": "Nos", "is_stock_item": 1, "is_sales_item": 0, "valuation_rate": 10}).insert().name
+PIN = frappe.get_doc({"doctype": "Item", "item_code": "CHK30-PIN-" + RUN, "item_name": "CHK30 Pin " + RUN, "item_group": "Bought-Out Components", "stock_uom": "Nos", "is_stock_item": 1, "is_sales_item": 0, "valuation_rate": 10}).insert().name
 print("INFO  job worker " + PLATER + ", store " + STORE)
 
 
@@ -93,7 +94,7 @@ def entry(rows, days_ago, purpose="Material Transfer", movement=None, submit=Tru
     return doc
 
 
-entry([(ROD, 200, None, wh("RM Stores")), (PIN, 200, None, wh("RM Stores"))], 400, purpose="Material Receipt")
+entry([(ROD, 200, None, wh("Bought-Out Stores")), (PIN, 200, None, wh("Bought-Out Stores"))], 400, purpose="Material Receipt")
 
 
 def line(item):
@@ -103,16 +104,16 @@ def line(item):
 
 
 # ---------------- 3. movements say what they are ----------------
-out = entry([(ROD, 100, wh("RM Stores"), STORE)], 45)
-check(out.custom_job_work_movement == SENT, "3. 100 rods moved to the job worker's store 45 days ago: marked 'Sent to Job Worker'")
-refused("3. material coming back without saying what it is is refused", lambda: entry([(ROD, 10, STORE, wh("RM Stores"))], 10, submit=False), "Job-Work Movement")
-entry([(ROD, 60, STORE, wh("RM Stores"))], 10, movement=RECEIVED)
-entry([(ROD, 15, STORE, wh("RM Stores"))], 8, movement=RETURNED)
+out = entry([(ROD, 100, wh("Bought-Out Stores"), STORE)], 45)
+check(out.custom_job_work_movement == SENT, "3. 100 bushes moved to the job worker's store 45 days ago: marked 'Sent to Job Worker'")
+refused("3. material coming back without saying what it is is refused", lambda: entry([(ROD, 10, STORE, wh("Bought-Out Stores"))], 10, submit=False), "Job-Work Movement")
+entry([(ROD, 60, STORE, wh("Bought-Out Stores"))], 10, movement=RECEIVED)
+entry([(ROD, 15, STORE, wh("Bought-Out Stores"))], 8, movement=RETURNED)
 print("INFO  60 received back processed 10 days ago, 15 returned unprocessed 8 days ago")
 
 # ---------------- 4. reconciliation ----------------
 r = line(ROD)
-check(r is not None, "4. the rod is outside with " + PLATER)
+check(r is not None, "4. the bush is outside with " + PLATER)
 if r:
     print("INFO  sent " + str(r.get("sent")) + ", received " + str(r.get("received")) + ", returned " + str(r.get("returned")) + ", balance " + str(r.get("balance")) + ", " + str(r.get("days_outside")) + " days, " + str(r.get("status")))
     check(r.get("sent") == 100 and r.get("received") == 60 and r.get("returned") == 15, "4. sent 100, received 60, returned 15")
@@ -124,12 +125,12 @@ rows = [x for x in (report.get("result") or []) if isinstance(x, dict) and x.get
 check(len(rows) == 1 and rows[0].get("balance") == 25, "4. the report PEPL Job-Work Reconciliation shows the same line")
 
 # ---------------- 5. age: first in, first out, and the GST limit ----------------
-entry([(PIN, 10, wh("RM Stores"), STORE)], 340)
-entry([(PIN, 10, wh("RM Stores"), STORE)], 5)
-entry([(PIN, 10, STORE, wh("RM Stores"))], 2, movement=RECEIVED)
+entry([(PIN, 10, wh("Bought-Out Stores"), STORE)], 340)
+entry([(PIN, 10, wh("Bought-Out Stores"), STORE)], 5)
+entry([(PIN, 10, STORE, wh("Bought-Out Stores"))], 2, movement=RECEIVED)
 p = line(PIN)
 check(p is not None and p.get("balance") == 10 and p.get("days_outside") == 5, "5. pins: the 340-day lot is back first (FIFO), the 10 still outside were sent 5 days ago")
-entry([(PIN, 5, wh("RM Stores"), STORE)], 340)
+entry([(PIN, 5, wh("Bought-Out Stores"), STORE)], 340)
 p = line(PIN)
 check(p is not None and p.get("status") == "GST limit near", "5. a lot outside for 340 days is within 30 days of the one-year GST limit: GST limit near")
 
@@ -141,8 +142,8 @@ check(len(todos) == 1 and ROD in todos[0].description and PIN in todos[0].descri
 check(len(todos) == 1 and todos[0].allocated_to == frappe.session.user and todos[0].priority == "High", "6. for the Production notification owner, High (a GST limit is near)")
 
 # ---------------- 7. everything back: clear ----------------
-entry([(ROD, 25, STORE, wh("RM Stores"))], 0, movement=RECEIVED)
-entry([(PIN, 15, STORE, wh("RM Stores"))], 0, movement=RETURNED)
+entry([(ROD, 25, STORE, wh("Bought-Out Stores"))], 0, movement=RECEIVED)
+entry([(PIN, 15, STORE, wh("Bought-Out Stores"))], 0, movement=RETURNED)
 check(line(ROD) is None and line(PIN) is None, "7. all back: nothing outside with " + PLATER)
 frappe.call(RUN_NOW)
 check(not frappe.get_all("ToDo", filters={"reference_type": "Supplier", "reference_name": PLATER, "status": "Open"}), "7. the next check closes the ToDo by itself")
