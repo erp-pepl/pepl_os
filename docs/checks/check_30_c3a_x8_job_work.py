@@ -1,4 +1,4 @@
-# PEPL OS v0.30.0 - Check 30 rev 2: C3a-X8 job-work reconciliation - sent to a job worker, received back processed,
+# PEPL OS v0.30.0 - Check 30 rev 3: C3a-X8 job-work reconciliation - sent to a job worker, received back processed,
 # returned unprocessed, balance, age (first in, first out), Overdue / GST limit near, the morning ToDo.
 # Runs on 0.30.0 or later. System Console, Type = Python. Leave "Commit" UNTICKED: everything below, including the
 # System Parameters changes this check makes, is undone at the end.
@@ -59,15 +59,22 @@ check(bool(frappe.get_meta("Warehouse").get_field("custom_job_worker")), "1. War
 check(bool(frappe.get_meta("Stock Entry").get_field("custom_job_work_movement")), "1. Stock Entry has 'Job-Work Movement'")
 check(bool(frappe.get_meta(PARAMS).get_field("custom_job_work_return_days")) and bool(frappe.get_meta(PARAMS).get_field("custom_job_work_gst_warning_days")), "1. System Parameters has Production > Job-Work Return Days and GST Warning Days")
 check(bool(frappe.db.exists("Report", "PEPL Job-Work Reconciliation")), "1. the report PEPL Job-Work Reconciliation exists")
+# Every date this check posts is within the last 60 days, so it needs an active Fiscal Year covering them.
+fy = frappe.get_all("Fiscal Year", filters={"disabled": 0, "year_start_date": ["<=", ago(60)], "year_end_date": [">=", today]}, pluck="name")
+check(bool(fy), "1. an active Fiscal Year covers the last 60 days (" + (", ".join(fy) if fy else "none - add one in Accounting > Fiscal Year") + ")")
 site_days = frappe.db.get_single_value(PARAMS, "custom_job_work_return_days")
 print("INFO  this site: Job-Work Return Days = " + str(site_days))
 
-params = frappe.get_doc(PARAMS)
-params.custom_job_work_return_days = 30
-params.custom_job_work_gst_warning_days = 30
-params.enable_operational_todos = 1
-params.custom_production_notification_owner = frappe.session.user
-params.save()
+def set_days(return_days, gst_warning_days):
+    params = frappe.get_doc(PARAMS)
+    params.custom_job_work_return_days = return_days
+    params.custom_job_work_gst_warning_days = gst_warning_days
+    params.enable_operational_todos = 1
+    params.custom_production_notification_owner = frappe.session.user
+    params.save()
+
+
+set_days(30, 30)
 
 # ---------------- 2. a job worker, its store, material ----------------
 # Test items are bought-out bushes and pins sent for plating: bought-out material has no heat number (raw material
@@ -94,7 +101,7 @@ def entry(rows, days_ago, purpose="Material Transfer", movement=None, submit=Tru
     return doc
 
 
-entry([(ROD, 200, None, wh("Bought-Out Stores")), (PIN, 200, None, wh("Bought-Out Stores"))], 400, purpose="Material Receipt")
+entry([(ROD, 200, None, wh("Bought-Out Stores")), (PIN, 200, None, wh("Bought-Out Stores"))], 60, purpose="Material Receipt")
 
 
 def line(item):
@@ -125,14 +132,19 @@ rows = [x for x in (report.get("result") or []) if isinstance(x, dict) and x.get
 check(len(rows) == 1 and rows[0].get("balance") == 25, "4. the report PEPL Job-Work Reconciliation shows the same line")
 
 # ---------------- 5. age: first in, first out, and the GST limit ----------------
-entry([(PIN, 10, wh("Bought-Out Stores"), STORE)], 340)
+entry([(PIN, 10, wh("Bought-Out Stores"), STORE)], 50)
 entry([(PIN, 10, wh("Bought-Out Stores"), STORE)], 5)
 entry([(PIN, 10, STORE, wh("Bought-Out Stores"))], 2, movement=RECEIVED)
 p = line(PIN)
-check(p is not None and p.get("balance") == 10 and p.get("days_outside") == 5, "5. pins: the 340-day lot is back first (FIFO), the 10 still outside were sent 5 days ago")
-entry([(PIN, 5, wh("Bought-Out Stores"), STORE)], 340)
+check(p is not None and p.get("balance") == 10 and p.get("days_outside") == 5, "5. pins: the 50-day lot is back first (FIFO), the 10 still outside were sent 5 days ago")
+entry([(PIN, 5, wh("Bought-Out Stores"), STORE)], 50)
 p = line(PIN)
-check(p is not None and p.get("status") == "GST limit near", "5. a lot outside for 340 days is within 30 days of the one-year GST limit: GST limit near")
+check(p is not None and p.get("days_outside") == 50 and p.get("status") == "Overdue", "5. 5 more pins dated 50 days ago are now the oldest outside: 50 days, Overdue")
+# A real lot near the one-year limit would be dated about 11 months back (before this bench's books may start), so
+# the warning is widened instead: with GST Warning Days at 320, 365 - 320 = 45 days outside counts as near the limit.
+set_days(30, 320)
+p = line(PIN)
+check(p is not None and p.get("status") == "GST limit near", "5. with GST Warning Days at 320, the 50-day lot is within the warning: GST limit near")
 
 # ---------------- 6. the morning ToDo ----------------
 late = frappe.call(RUN_NOW)

@@ -2,6 +2,23 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.31.0 — CSM consumed by the Delivery Note; Delivery Note material gate (C3a-X9)
+
+- When a Delivery Note delivers parts made from customer-supplied material (CSM), it works out the material
+  they used: for each Sales Order line, CSM per piece from the line's Job Order BOM (else the item's default
+  BOM; multi-level BOMs flattened) × the quantity delivered on all Delivery Notes of the order, less what was
+  already issued to production against the order. The draft shows it (**Customer Material Consumed**).
+- On submit it posts one **Material Issue** per Sales Order from the CSM stores (zero value, linked to the
+  Delivery Note, heat lots first in, first out, so the heat number follows the material). Cancelling the
+  Delivery Note cancels it. CSM Balance by Order shows the material as consumed.
+- **Material gate** (existing parameter "Delivery Note Material Gate Mode"): a delivery needing more customer
+  material than the order still holds is refused at submit (Warn at Validate, Block at Submit - the draft is
+  saved with a warning) or not saved at all (Hard Block); Off lets it go and consumes what there is.
+  Differences within "CSM Reconciliation Tolerance (kg)" are ignored.
+- If posting the issue fails, the delivery still goes and the Stores notification owner gets a ToDo
+  (PRD-CSM-NOT-CONSUMED). Check 30 rev 3 is in this release.
+- Check 31.
+
 ## 0.30.0 — Job-work reconciliation (C3a-X8)
 
 - **Job worker's store**: a Warehouse with the new field **Job Worker** (a Supplier) holds PEPL's material at

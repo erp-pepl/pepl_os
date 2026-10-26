@@ -243,8 +243,8 @@ def make_job_card(workstation, prefix, qty=10, minutes_per_piece=6):
 	return frappe.get_doc("Job Card", name)
 
 
-def make_bom(fg, rm, workstation=None, operation=None, minutes_per_piece=6):
-	"""A submitted default BOM: 1 x rm per piece, with one operation on `workstation` when given."""
+def make_bom(fg, rm, workstation=None, operation=None, minutes_per_piece=6, rm_qty=1):
+	"""A submitted default BOM: rm_qty x rm per piece, with one operation on `workstation` when given."""
 	values = {
 		"doctype": "BOM",
 		"item": fg,
@@ -253,7 +253,7 @@ def make_bom(fg, rm, workstation=None, operation=None, minutes_per_piece=6):
 		"quantity": 1,
 		"is_active": 1,
 		"is_default": 1,
-		"items": [{"item_code": rm, "qty": 1, "rate": 10}],
+		"items": [{"item_code": rm, "qty": rm_qty, "rate": 10}],
 	}
 	if workstation:
 		make_operation(operation or f"{fg} Op", workstation)
@@ -318,6 +318,20 @@ def make_production_plan(rows, submit=False):
 	if submit:
 		plan.submit()
 	return plan
+
+
+def make_delivery_note(sales_order, qty_by_item, submit=False):
+	"""A Delivery Note from a submitted Sales Order (ERPNext's own mapping), for the given quantities."""
+	from erpnext.selling.doctype.sales_order.sales_order import make_delivery_note as map_delivery_note
+
+	dn = map_delivery_note(sales_order)
+	dn.items = [row for row in dn.items if row.item_code in qty_by_item]
+	for row in dn.items:
+		row.qty = qty_by_item[row.item_code]
+	dn.insert(ignore_permissions=True)
+	if submit:
+		dn.submit()
+	return dn
 
 
 TEST_CUSTOMER = "_Test Customer"

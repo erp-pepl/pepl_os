@@ -108,6 +108,7 @@ Admin screens after install:
 | C3a-X3 Daily OEE | **PEPL OEE Daily** per machine and day from submitted Shift Production Entries: Availability, Performance, Quality, OEE vs OEE Target %; rebuilt on every entry submit / cancel and nightly; Rebuild OEE for a date range |
 | C3a-X4 MTBF / MTTR / CPC | **PEPL Machine Week** per machine and week from submitted Shift Production Entries: MTBF, MTTR, machine-hour cost, consumables, overhead, machine CPC and CPC per item made; rebuilt on entry submit / cancel and every Monday; Rebuild Machine Weeks for a date range |
 | C3a-X8 Job-work reconciliation | Warehouse **Job Worker**; Stock Entry **Job-Work Movement** (Sent / Received after Processing / Returned Unprocessed); report **PEPL Job-Work Reconciliation** (sent, received, returned, balance, FIFO age, Overdue / GST limit); daily ToDo PRD-JW-OVERDUE |
+| C3a-X9 CSM on delivery | Delivery Note consumes the customer-supplied material its parts used (BOM × delivered − already issued), one Material Issue per Sales Order on submit (heat FIFO), cancelled with it; Delivery Note Material Gate (Off / Warn at Validate, Block at Submit / Hard Block) with CSM tolerance |
 
 ## Tests
 

@@ -703,6 +703,31 @@ CUSTOM_FIELDS["Stock Entry"] = [
 		"insert_after": "custom_shift_production_entry",
 		"description": "Material coming back from a job worker's store: processed, or returned as it went.",
 	},
+	{
+		# C3a-X9: the customer-supplied material issue posted by a Delivery Note
+		"fieldname": "custom_delivery_note",
+		"label": "Delivery Note (CSM consumed)",
+		"fieldtype": "Link",
+		"options": "Delivery Note",
+		"insert_after": "custom_job_work_movement",
+		"read_only": 1,
+		"search_index": 1,
+		"depends_on": "eval:doc.custom_delivery_note",
+	},
+]
+
+# C3a-X9 - what customer-supplied material a Delivery Note consumes
+CUSTOM_FIELDS["Delivery Note"] = [
+	{
+		"fieldname": "custom_csm_consumption",
+		"label": "Customer Material Consumed",
+		"fieldtype": "Small Text",
+		"insert_after": "items",
+		"read_only": 1,
+		"no_copy": 1,
+		"depends_on": "eval:doc.custom_csm_consumption",
+		"description": "Customer-supplied material this delivery consumes, per Sales Order (issued on submit).",
+	},
 ]
 
 # C3a-X8 - job workers' stores and what each job-work movement is

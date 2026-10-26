@@ -58,6 +58,7 @@ before_tests = "pepl_os.tests.bootstrap.before_tests"
 
 # Document events are added per deliverable.
 CSM_SEGREGATION = "pepl_os.pepl_stores.stock_tree.validate_csm_segregation"
+CSM_USE = "pepl_os.pepl_production.csm_consumption"
 SUPPLIER_GATE = "pepl_os.pepl_purchase.supplier_approval.before_submit_gate"
 PO_APPROVAL = "pepl_os.pepl_purchase.po_approval"
 TRACKER = "pepl_os.pepl_purchase.tracker"
@@ -128,7 +129,13 @@ doc_events = {
 	"Batch": {"validate": f"{HEAT}.validate_batch"},
 	# C2-14: a PO closed short logs a Short letdown; re-opened, it is removed
 	"PEPL Purchase Tracker": {"on_update": f"{LETDOWN}.sync_short_letdowns"},
-	"Delivery Note": {"validate": CSM_SEGREGATION},
+	# C2-16 segregation; C3a-X9 CSM consumed by the delivery and the material gate
+	"Delivery Note": {
+		"validate": [CSM_SEGREGATION, f"{CSM_USE}.validate_delivery_note"],
+		"before_submit": f"{CSM_USE}.before_submit_delivery_note",
+		"on_submit": f"{CSM_USE}.on_submit_delivery_note",
+		"on_cancel": f"{CSM_USE}.on_cancel_delivery_note",
+	},
 	# C2-07: draft the Material Request for bought-out and short raw material
 	# C2-07 Material Request; C3a-X5 draft Job Orders (deleted again on cancel)
 	"Sales Order": {
