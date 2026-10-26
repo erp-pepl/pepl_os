@@ -1,0 +1,243 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "autoname": "format:STANDUP-{standup_date}",
+ "naming_rule": "Expression",
+ "creation": "2026-10-27 02:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "standup_date",
+  "built_on",
+  "cb_head",
+  "emailed_to",
+  "emailed_on",
+  "sb_numbers",
+  "machines_reported",
+  "average_oee",
+  "machines_below_target",
+  "machines_without_entry",
+  "cb_out",
+  "good_qty",
+  "rejected_qty",
+  "rejection_percent",
+  "cb_stops",
+  "downtime_minutes",
+  "top_stop",
+  "breakdowns",
+  "cb_risk",
+  "job_orders_at_risk",
+  "job_orders_overdue",
+  "job_work_overdue",
+  "sb_page",
+  "summary_html",
+  "summary"
+ ],
+ "fields": [
+  {
+   "fieldname": "standup_date",
+   "fieldtype": "Date",
+   "label": "Stand-up for",
+   "read_only": 1,
+   "reqd": 1,
+   "unique": 1,
+   "in_list_view": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "built_on",
+   "fieldtype": "Datetime",
+   "label": "Built On",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_head",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "emailed_to",
+   "fieldtype": "Small Text",
+   "label": "E-mailed To",
+   "read_only": 1
+  },
+  {
+   "fieldname": "emailed_on",
+   "fieldtype": "Datetime",
+   "label": "E-mailed On",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_numbers",
+   "fieldtype": "Section Break",
+   "label": "Headline"
+  },
+  {
+   "fieldname": "machines_reported",
+   "fieldtype": "Int",
+   "label": "Machines Reported",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "average_oee",
+   "fieldtype": "Percent",
+   "label": "Average OEE %",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "machines_below_target",
+   "fieldtype": "Int",
+   "label": "Machines Below OEE Target",
+   "read_only": 1
+  },
+  {
+   "fieldname": "machines_without_entry",
+   "fieldtype": "Int",
+   "label": "Machines Without a Shift Entry",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "cb_out",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "good_qty",
+   "fieldtype": "Float",
+   "label": "Good Qty",
+   "read_only": 1
+  },
+  {
+   "fieldname": "rejected_qty",
+   "fieldtype": "Float",
+   "label": "Rejected Qty",
+   "read_only": 1
+  },
+  {
+   "fieldname": "rejection_percent",
+   "fieldtype": "Percent",
+   "label": "Rejection %",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "cb_stops",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "downtime_minutes",
+   "fieldtype": "Int",
+   "label": "Downtime Minutes",
+   "read_only": 1
+  },
+  {
+   "fieldname": "top_stop",
+   "fieldtype": "Link",
+   "label": "Top Stop",
+   "read_only": 1,
+   "options": "PEPL Downtime Category"
+  },
+  {
+   "fieldname": "breakdowns",
+   "fieldtype": "Int",
+   "label": "Breakdowns",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_risk",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "job_orders_at_risk",
+   "fieldtype": "Int",
+   "label": "Job Orders at Delivery Risk",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "job_orders_overdue",
+   "fieldtype": "Int",
+   "label": "Job Orders Overdue",
+   "read_only": 1
+  },
+  {
+   "fieldname": "job_work_overdue",
+   "fieldtype": "Int",
+   "label": "Job-Work Lines Overdue",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_page",
+   "fieldtype": "Section Break",
+   "label": "Stand-up"
+  },
+  {
+   "fieldname": "summary_html",
+   "fieldtype": "HTML",
+   "label": "Stand-up"
+  },
+  {
+   "fieldname": "summary",
+   "fieldtype": "HTML Editor",
+   "label": "Stand-up (source)",
+   "read_only": 1,
+   "hidden": 1
+  }
+ ],
+ "in_create": 1,
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-10-27 02:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "PEPL Production",
+ "name": "PEPL Daily Standup",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "Manufacturing Manager",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "Manufacturing User",
+   "read": 1,
+   "print": 1,
+   "report": 1
+  },
+  {
+   "role": "Stock Manager",
+   "read": 1,
+   "print": 1,
+   "report": 1
+  },
+  {
+   "role": "PEPL CEO",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "report": 1
+  }
+ ],
+ "sort_field": "standup_date",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "standup_date",
+ "track_changes": 0
+}

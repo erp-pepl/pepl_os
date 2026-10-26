@@ -61,6 +61,7 @@ MATRIX_DOCTYPES = (
 	("Production", "PEPL Shift Production Entry", "Shift Production Entry (SPR)"),
 	("Production", "PEPL OEE Daily", "Daily OEE (per machine)"),
 	("Production", "PEPL Machine Week", "Machine Week (MTBF, MTTR, CPC)"),
+	("Production", "PEPL Daily Standup", "Daily Stand-up"),
 	("Quality", "Quality Inspection", "Quality Inspection"),
 	("Accounts", "Payment Entry", "Payment Entry"),
 	("Accounts", "Journal Entry", "Journal Entry"),

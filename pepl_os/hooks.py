@@ -190,6 +190,8 @@ scheduler_events = {
 	"cron": {
 		# C3a-X4: every Monday 02:30, last week's MTBF / MTTR / CPC for every machine
 		"30 2 * * 1": ["pepl_os.pepl_production.machine_week.weekly_machine_figures"],
+		# C3a-X10: every morning 07:45, yesterday's Daily Stand-up, built and e-mailed
+		"45 7 * * *": ["pepl_os.pepl_production.standup.daily_standup"],
 	},
 	"monthly": [
 		# C2-19: next month's draft Reorder Review for the Stores HOD

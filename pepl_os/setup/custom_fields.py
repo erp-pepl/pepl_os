@@ -421,6 +421,16 @@ PRODUCTION_FIELDS = _chain(
 			"description": "Inputs sent for job work must come back within one year (CGST section 143). Material "
 			"this many days short of the year is marked 'GST limit near'.",
 		},
+		# C3a-X10 - Daily Stand-up (the e-mail group is "Standup Email Group" on the first tab)
+		{"fieldname": "custom_standup_section", "label": "Daily Stand-up", "fieldtype": "Section Break"},
+		{
+			"fieldname": "custom_standup_risk_days",
+			"label": "Stand-up: Days Ahead for Delivery Risk",
+			"fieldtype": "Int",
+			"default": "3",
+			"description": "Open Job Orders due within this many days (or already late) and not finished are listed "
+			"in the morning stand-up, e-mailed at 07:45 to the Standup Email Group.",
+		},
 	],
 	after="custom_overhead_percent",
 )

@@ -4,7 +4,7 @@ import frappe
 from frappe import _
 from frappe.utils import cint, flt
 
-from pepl_os.pepl_production import job_work, machine_booking, oee
+from pepl_os.pepl_production import job_work, machine_booking, oee, standup
 from pepl_os.pepl_production.masters import PIN_DIGITS_FIELD, PIN_DIGITS_RANGE
 from pepl_os.pepl_production.spr import GRACE_FIELD, GRACE_RANGE, UNACCOUNTED_FIELD
 
@@ -34,5 +34,8 @@ def validate_production_params(doc, method=None):
 	warning = doc.get(job_work.GST_WARNING_FIELD)
 	if warning not in (None, "") and not 0 <= cint(warning) < job_work.GST_LIMIT_DAYS:
 		errors.append(_("Job-Work GST Warning Days must be between 0 and 364."))
+	ahead = doc.get(standup.RISK_DAYS_FIELD)
+	if ahead not in (None, "") and cint(ahead) < 0:
+		errors.append(_("Stand-up: Days Ahead for Delivery Risk cannot be negative."))
 	if errors:
 		frappe.throw("<br>".join(errors), title=_("Production rules"))

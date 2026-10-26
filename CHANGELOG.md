@@ -2,6 +2,22 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.32.0 — Daily Stand-up (C3a-X10)
+
+- New record **PEPL Daily Standup** (Daily Stand-up), one per day, built by the system every morning at 07:45
+  for the day before and e-mailed to the members of **Standup Email Group** (System Parameters, first tab).
+- The page: (1) shop floor yesterday - each machine's Daily OEE, A / P / Q, good, rejected, breakdowns,
+  lowest OEE first, below-target marked; (2) top stops by downtime category; (3) machines without a shift
+  entry (worked in the last 30 days, nothing yesterday); (4) Job Orders at delivery risk - open, not finished,
+  due within **Stand-up: Days Ahead for Delivery Risk** (System Parameters → Production, default 3) or late,
+  overdue marked; (5) job work overdue.
+- Headline numbers on the record (machines reported, average OEE, below target, good / rejected / rejection %,
+  downtime minutes, top stop, breakdowns, machines without entry, Job Orders at risk / overdue, job work
+  overdue) for the Command Centre. Building again updates the same day. The form has **Build again** and
+  **E-mail now** for the Production Manager. Without an outgoing e-mail account the record says so and nothing
+  breaks.
+- Check 32.
+
 ## 0.31.0 — CSM consumed by the Delivery Note; Delivery Note material gate (C3a-X9)
 
 - When a Delivery Note delivers parts made from customer-supplied material (CSM), it works out the material
