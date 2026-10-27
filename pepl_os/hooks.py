@@ -36,7 +36,8 @@ doctype_js = {
 	# C2-16: Sales Order (CSM) picked from submitted orders of the company
 	"Stock Entry": "public/js/stock_entry.js",
 	# C2-16: "CSM Balance" button once the order holds customer-supplied material
-	"Sales Order": "public/js/csm_sales_order.js",
+	# C3a-X11: LD terms and today's LD exposure on a submitted order
+	"Sales Order": ["public/js/csm_sales_order.js", "public/js/sales_order_ld.js"],
 	# C2-17: payment-priority panel ("Rank #4 this week · MSME due in 6 days")
 	"Purchase Invoice": "public/js/purchase_invoice.js",
 	"Supplier": "public/js/supplier_payments.js",
@@ -139,6 +140,8 @@ doc_events = {
 	# C2-07: draft the Material Request for bought-out and short raw material
 	# C2-07 Material Request; C3a-X5 draft Job Orders (deleted again on cancel)
 	"Sales Order": {
+		# C3a-X11: the LD clause (sector defaults, sensible values)
+		"validate": "pepl_os.pepl_production.ld.validate_sales_order",
 		"on_submit": [
 			"pepl_os.pepl_purchase.material_request.on_sales_order_submit",
 			"pepl_os.pepl_production.job_orders.on_sales_order_submit",

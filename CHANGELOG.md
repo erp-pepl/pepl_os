@@ -2,6 +2,20 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.33.0 — Contractual LD rate on the Sales Order (C3a-X11)
+
+- New section **Liquidated Damages (LD)** on the Sales Order: LD Applies, LD Rate %, per Week / Day (of delay or
+  part thereof), LD Cap %, Grace Days, Charged On (Value of Late Items / Whole Order Value) and the clause
+  reference. Fixed once the order is submitted (amend to change).
+- A new order of a sector listed in System Parameters → Production → **LD: Sectors with LD by Default**
+  (Railways, Defence) starts with the default clause (**0.5 % per week, cap 10 %**); other orders start without
+  LD. An LD clause with a missing or impossible rate or cap is refused.
+- **LD for late delivery** as on any date: quantity delivered after the delivery date + grace days, and quantity
+  still pending once that date has passed, each at value × rate × weeks (or days) late, capped per line at the
+  cap % of the value delivered late (or, on Whole Order Value, at the cap % of the order). A submitted order with
+  LD shows its terms and today's LD exposure in a panel. This is what the LD-exposure report (B5) builds on.
+- Check 33; Check 32 rev 2 (the e-mail step follows the site's e-mail set-up).
+
 ## 0.32.0 — Daily Stand-up (C3a-X10)
 
 - New record **PEPL Daily Standup** (Daily Stand-up), one per day, built by the system every morning at 07:45

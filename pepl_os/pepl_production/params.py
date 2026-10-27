@@ -4,7 +4,7 @@ import frappe
 from frappe import _
 from frappe.utils import cint, flt
 
-from pepl_os.pepl_production import job_work, machine_booking, oee, standup
+from pepl_os.pepl_production import job_work, ld, machine_booking, oee, standup
 from pepl_os.pepl_production.masters import PIN_DIGITS_FIELD, PIN_DIGITS_RANGE
 from pepl_os.pepl_production.spr import GRACE_FIELD, GRACE_RANGE, UNACCOUNTED_FIELD
 
@@ -37,5 +37,12 @@ def validate_production_params(doc, method=None):
 	ahead = doc.get(standup.RISK_DAYS_FIELD)
 	if ahead not in (None, "") and cint(ahead) < 0:
 		errors.append(_("Stand-up: Days Ahead for Delivery Risk cannot be negative."))
+	for field, label in (
+		(ld.DEFAULT_RATE_FIELD, _("LD: Default Rate %")),
+		(ld.DEFAULT_CAP_FIELD, _("LD: Default Cap %")),
+	):
+		value = doc.get(field)
+		if value not in (None, "") and not 0 < flt(value) <= 100:
+			errors.append(_("{0} must be more than 0 and at most 100.").format(label))
 	if errors:
 		frappe.throw("<br>".join(errors), title=_("Production rules"))

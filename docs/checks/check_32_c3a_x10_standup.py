@@ -1,4 +1,4 @@
-# PEPL OS v0.32.0 - Check 32: C3a-X10 the Daily Stand-up - yesterday's shop floor, top stops, machines without a
+# PEPL OS v0.32.0 - Check 32 rev 2: C3a-X10 the Daily Stand-up - yesterday's shop floor, top stops, machines without a
 # shift entry, Job Orders at delivery risk, job work overdue; built for a day and e-mailed to the Standup Email Group.
 # Runs on 0.32.0 or later. System Console, Type = Python. Leave "Commit" UNTICKED: everything below, including the
 # System Parameters changes this check makes, is undone at the end.
@@ -43,7 +43,7 @@ check(bool(frappe.db.exists("DocType", STANDUP)), "1. the Daily Stand-up record 
 check(bool(frappe.get_meta(PARAMS).get_field("custom_standup_risk_days")) and bool(frappe.get_meta(PARAMS).get_field("standup_email_group")), "1. System Parameters has 'Stand-up: Days Ahead for Delivery Risk' and 'Standup Email Group'")
 site_group = frappe.db.get_single_value(PARAMS, "standup_email_group")
 outgoing = frappe.get_all("Email Account", filters={"enable_outgoing": 1}, pluck="name")
-print("INFO  this site: Standup Email Group = " + str(site_group) + "; outgoing e-mail account: " + (", ".join(outgoing) if outgoing else "none"))
+print("INFO  this site: Standup Email Group = " + str(site_group) + "; outgoing Email Account: " + (", ".join(outgoing) if outgoing else "none (Frappe may still queue mail when the site's e-mails are muted or set in site_config)"))
 
 # ---------------- 2. a shop floor for yesterday ----------------
 # Machines without a machine group: the skill check says "Not checked" and never blocks, whatever this site's mode.
@@ -142,13 +142,17 @@ check("overdue" in risk.split(late.name)[1][:80] if late.name in risk else False
 check(doc.job_orders_overdue >= 1 and doc.job_orders_at_risk >= 2, "3. headline: " + str(doc.job_orders_at_risk) + " Job Orders at risk, " + str(doc.job_orders_overdue) + " overdue")
 
 # ---------------- 4. e-mailed to the Standup Email Group ----------------
+# Whether the mail is queued depends on the site's e-mail set-up, not on PEPL OS: with an outgoing account (or muted
+# e-mails / a mail server in site_config) Frappe queues it; with none at all PEPL OS records "Not e-mailed".
 result = frappe.call(BUILD, day=yesterday, email=1)
 emailed = frappe.db.get_value(STANDUP, result.get("name"), "emailed_to") or ""
-if outgoing:
-    queued = frappe.get_all("Email Queue", filters={"reference_doctype": STANDUP, "reference_name": result.get("name")}, pluck="name")
-    check(len(queued) >= 1 and ("chk32-foreman-" + RUN) in emailed, "4. queued for the group's member (" + emailed + ")")
+queued = frappe.get_all("Email Queue", filters={"reference_doctype": STANDUP, "reference_name": result.get("name")}, fields=["name", "status"])
+if queued:
+    to = frappe.get_all("Email Queue Recipient", filters={"parent": queued[0].name}, pluck="recipient")
+    print("INFO  Email Queue " + queued[0].name + " (" + str(queued[0].status) + ") to " + ", ".join(to))
+    check(("chk32-foreman-" + RUN + "@example.com") in to and ("chk32-foreman-" + RUN) in emailed, "4. queued for the group's member and recorded on the stand-up (" + emailed + ")")
 else:
-    check("Not e-mailed" in emailed, "4. no outgoing e-mail account on this site: the record says '" + emailed + "' and nothing breaks")
+    check("Not e-mailed" in emailed, "4. nothing could be queued on this site: the record says '" + emailed + "' and nothing breaks")
 
 # ---------------- 5. building again updates the same day ----------------
 check(result.get("name") == doc.name and frappe.db.count(STANDUP, {"standup_date": yesterday}) == 1, "5. building again updated " + doc.name + " (one stand-up per day)")

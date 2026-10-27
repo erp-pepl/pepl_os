@@ -431,6 +431,38 @@ PRODUCTION_FIELDS = _chain(
 			"description": "Open Job Orders due within this many days (or already late) and not finished are listed "
 			"in the morning stand-up, e-mailed at 07:45 to the Standup Email Group.",
 		},
+		# C3a-X11 - the standard LD clause for new orders of these sectors
+		{
+			"fieldname": "custom_ld_defaults_section",
+			"label": "Liquidated Damages (LD)",
+			"fieldtype": "Section Break",
+		},
+		{
+			"fieldname": "custom_ld_default_sectors",
+			"label": "LD: Sectors with LD by Default",
+			"fieldtype": "Small Text",
+			"default": "Railways\nDefence",
+			"description": "One sector per line. A new Sales Order of these sectors starts with the LD clause below.",
+		},
+		{
+			"fieldname": "custom_ld_default_rate_percent",
+			"label": "LD: Default Rate %",
+			"fieldtype": "Percent",
+			"default": "0.5",
+		},
+		{
+			"fieldname": "custom_ld_default_period",
+			"label": "LD: Default per",
+			"fieldtype": "Select",
+			"options": "Week\nDay",
+			"default": "Week",
+		},
+		{
+			"fieldname": "custom_ld_default_max_percent",
+			"label": "LD: Default Cap %",
+			"fieldtype": "Percent",
+			"default": "10",
+		},
 	],
 	after="custom_overhead_percent",
 )
@@ -826,6 +858,65 @@ CUSTOM_FIELDS["Sales Order"] = [
 		"description": "What happens to scrap of the customer's material. Hold until the customer decides.",
 	},
 ]
+
+# C3a-X11 - the contractual Liquidated Damages clause (fixed once the order is submitted)
+CUSTOM_FIELDS["Sales Order"] += _chain(
+	[
+		{"fieldname": "custom_ld_section", "label": "Liquidated Damages (LD)", "fieldtype": "Section Break"},
+		{
+			"fieldname": "custom_ld_applicable",
+			"label": "LD Applies",
+			"fieldtype": "Check",
+			"description": "Ticked by default for the sectors in System Parameters → Production → LD.",
+		},
+		{
+			"fieldname": "custom_ld_rate_percent",
+			"label": "LD Rate %",
+			"fieldtype": "Percent",
+			"depends_on": "eval:doc.custom_ld_applicable",
+			"description": "Of the value delivered late, per week (or day) of delay or part thereof.",
+		},
+		{
+			"fieldname": "custom_ld_period",
+			"label": "LD per",
+			"fieldtype": "Select",
+			"options": "Week\nDay",
+			"default": "Week",
+			"depends_on": "eval:doc.custom_ld_applicable",
+		},
+		{
+			"fieldname": "custom_ld_max_percent",
+			"label": "LD Cap %",
+			"fieldtype": "Percent",
+			"depends_on": "eval:doc.custom_ld_applicable",
+			"description": "LD never exceeds this % of the value delivered late (or of the order).",
+		},
+		{"fieldname": "custom_ld_column", "fieldtype": "Column Break"},
+		{
+			"fieldname": "custom_ld_grace_days",
+			"label": "LD Grace Days",
+			"fieldtype": "Int",
+			"default": "0",
+			"depends_on": "eval:doc.custom_ld_applicable",
+			"description": "Days after the delivery date before LD starts.",
+		},
+		{
+			"fieldname": "custom_ld_basis",
+			"label": "LD Charged On",
+			"fieldtype": "Select",
+			"options": "Value of Late Items\nWhole Order Value",
+			"default": "Value of Late Items",
+			"depends_on": "eval:doc.custom_ld_applicable",
+		},
+		{
+			"fieldname": "custom_ld_clause",
+			"label": "LD Clause (contract reference)",
+			"fieldtype": "Small Text",
+			"depends_on": "eval:doc.custom_ld_applicable",
+		},
+	],
+	after="terms",
+)
 
 # C2-17 - Vendor payments: MSME 45-day clock on the bill; Tally payments recorded as Payment Entries.
 CUSTOM_FIELDS["Purchase Invoice"] = [
