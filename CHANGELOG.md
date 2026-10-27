@@ -2,6 +2,16 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.34.0 — Machine-Hour Rates linked to the machine group (C3a-R1)
+
+- System Parameters → Production Costing → **Machine-Hour Rates**: Machine Group is now a link to the machine
+  group (ERPNext Workstation Type) instead of typed text, so a machine's rate is found from its group without
+  spelling mistakes. A rate for a group that does not exist is refused; the same group twice is still refused.
+- One-time move on every existing site (patch): each old row is pointed at the matching machine group in any
+  upper / lower case; a typed group with no machine group yet gets one, so no rate is lost.
+- The weekly machine cost (C3a-X4) finds the rate through the link (else the machine's own Hour Rate).
+- Check 34 (and Check 29 again as the regression check).
+
 ## 0.33.0 — Contractual LD rate on the Sales Order (C3a-X11)
 
 - New section **Liquidated Damages (LD)** on the Sales Order: LD Applies, LD Rate %, per Week / Day (of delay or

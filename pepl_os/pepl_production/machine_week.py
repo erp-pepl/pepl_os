@@ -23,6 +23,7 @@ from frappe import _
 from frappe.utils import add_days, cint, date_diff, flt, getdate, now_datetime, today
 
 from pepl_os.common import params
+from pepl_os.pepl_production import machine_hour_rates
 
 DOCTYPE = "PEPL Machine Week"
 SPR = "PEPL Shift Production Entry"
@@ -42,16 +43,12 @@ def record_name(workstation, monday):
 
 
 def machine_rate(workstation):
-	"""(rate per hour, where it came from) for the machine."""
+	"""(rate per hour, where it came from) for the machine: its group's Machine-Hour Rate (C3a-R1: a link to the
+	machine group), else the machine's own Hour Rate."""
 	group = frappe.db.get_value("Workstation", workstation, "workstation_type")
-	if group:
-		for row in frappe.get_all(
-			"PEPL Machine Hour Rate",
-			filters={"parent": SYSTEM_PARAMETERS, "parentfield": RATES_FIELD},
-			fields=["machine_group", "rate_per_hour"],
-		):
-			if (row.machine_group or "").strip().lower() == group.strip().lower():
-				return flt(row.rate_per_hour), _("Machine-Hour Rates: {0}").format(row.machine_group.strip())
+	rate = machine_hour_rates.rate_for_group(group)
+	if rate is not None:
+		return flt(rate), _("Machine-Hour Rates: {0}").format(group)
 	own = flt(frappe.db.get_value("Workstation", workstation, "hour_rate"))
 	if own:
 		return own, _("Machine's own Hour Rate")

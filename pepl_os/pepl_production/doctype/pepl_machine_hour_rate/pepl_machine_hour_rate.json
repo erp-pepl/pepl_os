@@ -11,11 +11,12 @@
  "fields": [
   {
    "fieldname": "machine_group",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "label": "Machine Group",
    "reqd": 1,
    "in_list_view": 1,
-   "description": "e.g. CNC Turning, VMC, Press, Welding"
+   "description": "The machine group (ERPNext Workstation Type) the machines belong to. Every machine of the group uses this rate.",
+   "options": "Workstation Type"
   },
   {
    "fieldname": "rate_per_hour",
@@ -28,7 +29,7 @@
  ],
  "index_web_pages_for_search": 0,
  "links": [],
- "modified": "2026-09-29 13:00:00.000000",
+ "modified": "2026-10-28 01:30:00.000000",
  "modified_by": "Administrator",
  "module": "PEPL Production",
  "name": "PEPL Machine Hour Rate",
