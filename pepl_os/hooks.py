@@ -46,6 +46,7 @@ doctype_js = {
 	# C3a-P1: Job Order status panel (quantity, routing progress, delivery, LD)
 	"Work Order": "public/js/work_order.js",
 	# C3a-X6: reason dialog before submitting a plan that double-books a machine (Soft Block)
+	# C3a-P2: machine load panel (booked hours against available hours per machine)
 	"Production Plan": "public/js/production_plan.js",
 }
 

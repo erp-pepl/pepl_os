@@ -4,7 +4,7 @@ import frappe
 from frappe import _
 from frappe.utils import cint, flt
 
-from pepl_os.pepl_production import job_work, ld, machine_booking, oee, standup
+from pepl_os.pepl_production import job_work, ld, load_view, machine_booking, oee, standup
 from pepl_os.pepl_production.masters import PIN_DIGITS_FIELD, PIN_DIGITS_RANGE
 from pepl_os.pepl_production.spr import GRACE_FIELD, GRACE_RANGE, UNACCOUNTED_FIELD
 
@@ -25,6 +25,9 @@ def validate_production_params(doc, method=None):
 	booking_mode = doc.get(machine_booking.MODE_FIELD)
 	if booking_mode not in (None, "") and booking_mode not in machine_booking.MODES:
 		errors.append(_("Machine Double-Booking Mode must be Advisory, Soft Block or Hard Block."))
+	load = doc.get(load_view.WARNING_FIELD)
+	if load not in (None, "") and not 0 < flt(load) <= 100:
+		errors.append(_("Load View: Warning at % of Machine Hours must be more than 0 and at most 100."))
 	aim = doc.get(oee.TARGET_FIELD)
 	if aim not in (None, "") and not 0 < flt(aim) <= 100:
 		errors.append(_("OEE Target % must be more than 0 and at most 100."))

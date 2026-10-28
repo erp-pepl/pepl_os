@@ -2,6 +2,20 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.36.0 — Production Plan machine load (C3a-P2)
+
+- A saved **Production Plan** shows a **Machine load** panel: for every machine the plan uses, over the days it
+  uses it, the hours of this plan (rows not yet on a Job Order, laid out as the double-booking check lays them
+  out, plus open Job Orders made from this plan) and the hours already booked on those days (other open Job
+  Orders and other open plans) against the machine's available hours, with the load %.
+- Available hours = hours a day (the machine's ERPNext Working Hours; when none, the planned hours of all active
+  PEPL Shifts) x jobs it runs at once (Production Capacity) x working days (holidays of the machine's Holiday
+  List, else the company's, left out; a half day counts half).
+- Red above 100 %, orange from the new System Parameter **Load View: Warning at % of Machine Hours** (Production
+  → Job Orders, default 85), green below; a machine with no hours anywhere shows its hours in grey. The headline
+  names the busiest machine; double-bookings on the plan are pointed out.
+- Check 36.
+
 ## 0.35.1 — Job Order panel: quantities without ".0" (C3a-P1 fix)
 
 - The Job Order status panel now writes quantities as people do: "Made 0 of 10", "8 good, 2 rejected",

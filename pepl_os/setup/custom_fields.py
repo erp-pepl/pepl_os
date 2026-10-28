@@ -393,6 +393,15 @@ PRODUCTION_FIELDS = _chain(
 			"Advisory = warning; Soft Block = submitting needs a reason (Override Log, PRD-DOUBLE-BOOK); "
 			"Hard Block = the plan cannot be submitted until the clash is resolved.",
 		},
+		# C3a-P2 - Production Plan load view
+		{
+			"fieldname": "custom_load_warning_percent",
+			"label": "Load View: Warning at % of Machine Hours",
+			"fieldtype": "Percent",
+			"default": "85",
+			"description": "The Production Plan's machine load shows a machine orange from this share of its hours "
+			"and red above 100 %. Hours a day come from the machine's Working Hours, else from the active shifts.",
+		},
 		# C3a-X3 - daily OEE
 		{"fieldname": "custom_oee_section", "label": "OEE", "fieldtype": "Section Break"},
 		{
