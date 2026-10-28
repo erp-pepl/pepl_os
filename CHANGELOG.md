@@ -2,6 +2,17 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.35.0 — Job Order status panel (C3a-P1)
+
+- A submitted **Job Order** (Work Order) shows a status panel at the top of the form:
+  - quantity: made of the target (finished goods booked) and what the shop floor reported good / rejected on
+    the Shift Production Entries of this Job Order;
+  - routing: every step in order with its machine, done against the target (from its Job Card, including shift
+    entries not yet submitted on the Job Card) and its state; the step being worked on is marked ▶;
+  - delivery: due date with days left (orange within 3 days) or days late (red);
+  - LD: when the Sales Order carries LD, the LD so far on this Sales Order line.
+- Check 35.
+
 ## 0.34.0 — Machine-Hour Rates linked to the machine group (C3a-R1)
 
 - System Parameters → Production Costing → **Machine-Hour Rates**: Machine Group is now a link to the machine

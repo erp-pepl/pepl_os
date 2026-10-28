@@ -112,6 +112,7 @@ Admin screens after install:
 | C3a-X10 Daily Stand-up | **PEPL Daily Standup** every morning 07:45 for yesterday, e-mailed to the Standup Email Group: shop floor OEE, top stops, machines without entry, Job Orders at delivery risk, job work overdue; Build again / E-mail now |
 | C3a-X11 LD on the Sales Order | Sales Order **Liquidated Damages (LD)** section (rate per week / day, cap, grace, basis, clause), defaults for Railways / Defence from System Parameters, fixed on submit; LD exposure (late deliveries + pending) in a panel and via get_ld_exposure |
 | C3a-R1 Machine-hour rate repair | Machine-Hour Rates' Machine Group is a link to Workstation Type; patch moves old typed rows (case fixed, missing groups created); weekly machine cost reads the rate through the link |
+| C3a-P1 Job Order status panel | Work Order form panel: made vs target, shop-floor good / rejected, every routing step with its machine and progress (next step ▶), due date days left / late, LD so far on the Sales Order line |
 
 ## Tests
 

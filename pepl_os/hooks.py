@@ -43,6 +43,8 @@ doctype_js = {
 	"Supplier": "public/js/supplier_payments.js",
 	# C2-19: reorder level vs projected stock; "Create Material Request" when below
 	"Item": "public/js/item_reorder.js",
+	# C3a-P1: Job Order status panel (quantity, routing progress, delivery, LD)
+	"Work Order": "public/js/work_order.js",
 	# C3a-X6: reason dialog before submitting a plan that double-books a machine (Soft Block)
 	"Production Plan": "public/js/production_plan.js",
 }
