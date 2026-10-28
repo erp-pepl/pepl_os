@@ -2,6 +2,13 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.35.1 — Job Order panel: quantities without ".0" (C3a-P1 fix)
+
+- The Job Order status panel now writes quantities as people do: "Made 0 of 10", "8 good, 2 rejected",
+  "8 of 10" (it showed "0.0 of 10.0"); fractions keep up to three decimals (2.5, 0.125). Found by Check 35 on
+  the bench; regression test added.
+- Check 35 rev 2 (also checks that no quantity shows ".0").
+
 ## 0.35.0 — Job Order status panel (C3a-P1)
 
 - A submitted **Job Order** (Work Order) shows a status panel at the top of the form:

@@ -65,7 +65,8 @@ class TestJobOrderPanel(PEPLTestCase):
 		self._report(card.name, 8, 2)
 		rows = jop.panel_rows(card.work_order)
 		text = _texts(rows)
-		self.assertIn("Made 0 of 10", text)
+		self.assertIn("Made 0 of 10 (0%)", text)
+		self.assertNotIn(".0 ", text)
 		self.assertIn("8 good, 2 rejected", text)
 		step = next(r for r in rows if "Step 1" in r["text"])
 		self.assertIn("8 of 10", step["text"])
@@ -93,6 +94,13 @@ class TestJobOrderPanel(PEPLTestCase):
 			"Sales Order", so.name, {ld.APPLICABLE: 1, ld.RATE: 0.5, ld.CAP: 10, ld.PERIOD: ld.WEEK}
 		)
 		self.assertIn("LD so far", _texts(jop.panel_rows(wo_name)))
+
+	def test_quantities_read_like_people_write_them(self):
+		# Regression (Check 35 on the bench): the panel said "Made 0.0 of 10.0" and "8.0 good, 2.0 rejected".
+		self.assertEqual(
+			[jop.qty_text(v) for v in (0.0, 10.0, 8, 2.5, 0.125, 1234.0, 0.1 + 0.2)],
+			["0", "10", "8", "2.5", "0.125", "1234", "0.3"],
+		)
 
 	def test_form_api(self):
 		card = make_job_card(MILL, "T-P1-JE", qty=10)

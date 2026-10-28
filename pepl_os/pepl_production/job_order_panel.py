@@ -17,6 +17,14 @@ from pepl_os.pepl_production import ld
 SPR = "PEPL Shift Production Entry"
 
 
+def qty_text(value):
+	"""A quantity as people write it: 10, 8, 2.5 or 0.125 (never 10.0)."""
+	value = round(flt(value), 3)
+	if value == int(value):
+		return str(int(value))
+	return f"{value:.3f}".rstrip("0").rstrip(".")
+
+
 def _shop_floor(work_order):
 	row = frappe.db.sql(
 		f"""select coalesce(sum(p.good_qty), 0), coalesce(sum(p.rejected_qty), 0)
@@ -64,9 +72,10 @@ def panel_rows(wo):
 	percent = round(100.0 * made / target) if target else 0
 	rows.append(
 		{
-			"text": _("Made {0} of {1} ({2}%)").format(flt(made, 3), flt(target, 3), percent)
+			"text": _("Made {0} of {1} ({2}%)").format(qty_text(made), qty_text(target), percent)
 			+ (
-				" · " + _("shop floor reported {0} good, {1} rejected").format(flt(good, 3), flt(rejected, 3))
+				" · "
+				+ _("shop floor reported {0} good, {1} rejected").format(qty_text(good), qty_text(rejected))
 				if good or rejected
 				else ""
 			),
@@ -78,7 +87,7 @@ def panel_rows(wo):
 	for s in steps:
 		state = _("done") if s.done >= s.target else (s.card_status or _(s.status or "Pending"))
 		text = _("Step {0}: {1} on {2} - {3} of {4} ({5})").format(
-			s.idx, s.operation, s.workstation or _("no machine"), flt(s.done, 3), flt(s.target, 3), state
+			s.idx, s.operation, s.workstation or _("no machine"), qty_text(s.done), qty_text(s.target), state
 		)
 		if next_step is s:
 			text = "▶ " + text
@@ -107,7 +116,7 @@ def panel_rows(wo):
 				rows.append(
 					{
 						"text": _("LD so far on this Sales Order line: {0} ({1} late)").format(
-							frappe.format(line.amount, {"fieldtype": "Currency"}), flt(line.late_qty, 3)
+							frappe.format(line.amount, {"fieldtype": "Currency"}), qty_text(line.late_qty)
 						),
 						"colour": "red",
 					}

@@ -1,8 +1,8 @@
-# PEPL OS v0.35.0 - Check 35: C3a-P1 the Job Order status panel - quantity against target, routing progress
+# PEPL OS v0.35.1 - Check 35 rev 2: C3a-P1 the Job Order status panel - quantity against target, routing progress
 # (next step marked), delivery days late / left, LD so far on the Sales Order line.
-# Runs on 0.35.0 or later. System Console, Type = Python. Leave "Commit" UNTICKED: everything below is undone at
+# Runs on 0.35.1 or later (0.35.1 writes quantities without ".0"). System Console, Type = Python. Leave "Commit" UNTICKED: everything below is undone at
 # the end. After the check, open any submitted Job Order to see the panel on the form.
-VERSION = "0.35.0"
+VERSION = "0.35.1"
 PARAMS = "PEPL System Parameters"
 SPR = "PEPL Shift Production Entry"
 PANEL = "pepl_os.pepl_production.job_order_panel.get_job_order_panel"
@@ -127,6 +127,7 @@ check(bool(second) and DRILLING in second[0]["text"] and "0 of 10" in second[0][
 
 # ---------------- 4. delivery and LD ----------------
 check(any("10 days late" in r["text"] and r["colour"] == "red" for r in rows), "4. due 10 days ago: '10 days late' in red")
+check(not any(".0 " in r["text"] or ".0)" in r["text"] for r in rows), "4. every quantity on the panel reads like people write it (no '10.0')")
 check(any("LD so far" in r["text"] for r in rows), "4. the Sales Order carries LD: the panel shows the LD so far on this line (1000 x 0.5 % x 2 weeks = 10)")
 
 print("")
