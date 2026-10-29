@@ -20,6 +20,7 @@ from frappe.utils import cint, flt, get_datetime, getdate, strip_html, to_timede
 
 from pepl_os.common import params
 from pepl_os.pepl_production import skill
+from pepl_os.pepl_production.job_order_panel import qty_text
 from pepl_os.pepl_production.masters import DOWNTIME, OPERATOR, SHIFT
 from pepl_os.pepl_stores import stock_tree
 
@@ -589,7 +590,9 @@ def get_spr_panel(name):
 		rows.append(
 			{
 				"text": _("Good {0} · Rejected {1} ({2}%)").format(
-					flt(doc.total_good_qty), flt(doc.total_rejected_qty), flt(doc.rejection_percent)
+					qty_text(doc.total_good_qty),
+					qty_text(doc.total_rejected_qty),
+					qty_text(doc.rejection_percent),
 				),
 				"colour": "orange" if flt(doc.total_rejected_qty) else "green",
 			}

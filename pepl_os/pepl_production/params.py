@@ -4,7 +4,7 @@ import frappe
 from frappe import _
 from frappe.utils import cint, flt
 
-from pepl_os.pepl_production import job_work, ld, load_view, machine_booking, oee, standup
+from pepl_os.pepl_production import job_work, ld, load_view, machine_booking, oee, spr_aids, standup
 from pepl_os.pepl_production.masters import PIN_DIGITS_FIELD, PIN_DIGITS_RANGE
 from pepl_os.pepl_production.spr import GRACE_FIELD, GRACE_RANGE, UNACCOUNTED_FIELD
 
@@ -22,6 +22,9 @@ def validate_production_params(doc, method=None):
 	unexplained = doc.get(UNACCOUNTED_FIELD)
 	if unexplained not in (None, "") and cint(unexplained) < 0:
 		errors.append(_("Shift Entry Minutes Allowed Unexplained cannot be negative."))
+	slow = doc.get(spr_aids.SLOW_FIELD)
+	if slow not in (None, "") and not 0 < flt(slow) <= 100:
+		errors.append(_("Shift Entry: Slow Below % of Standard Speed must be more than 0 and at most 100."))
 	booking_mode = doc.get(machine_booking.MODE_FIELD)
 	if booking_mode not in (None, "") and booking_mode not in machine_booking.MODES:
 		errors.append(_("Machine Double-Booking Mode must be Advisory, Soft Block or Hard Block."))

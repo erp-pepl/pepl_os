@@ -2,6 +2,23 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.39.0 — Entry aids on the Shift Production Entry (C3a-P5)
+
+- A saved **Shift Production Entry** shows a panel **Entry aids** next to the Shift panel:
+  - gaps: each stretch of the shift no row covers (this entry and the other entries of the same machine, shift
+    and day), with the total and the shift's break; orange when more than the break + the minutes allowed
+    unexplained. On a draft, **Add rows for the gaps** adds one downtime row per gap with the times filled in;
+    the operator picks the category and saves;
+  - Job Cards: target, done before (other entries' time logs), this entry's good quantity, what is left; red
+    over the target, green when finished;
+  - speed: per production row, pieces x the Job Card's standard minutes a piece against the minutes taken;
+    below the new System Parameter **Shift Entry: Slow Below % of Standard Speed** (Production → Shop Floor,
+    default 80) the row is orange - "check the time and the quantity";
+  - open Job Cards on the machine that the entry does not use yet.
+- Fix (C3a-X1): the Shift panel writes quantities as people do ("Good 6 · Rejected 1", it said "6.0"); regression
+  test added.
+- Check 39.
+
 ## 0.38.0 — Customer-supplied material panel on the Job Order (C3a-P4)
 
 - A **Job Order** (draft or submitted) whose BOM uses customer-supplied material shows a panel **Customer-supplied

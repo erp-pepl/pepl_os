@@ -1,4 +1,5 @@
 // C3a-X1 - Shift Production Entry: pick lists limited to what fits, and the shift panel.
+// C3a-P5 - Entry aids: gaps (with a button to add downtime rows for them), Job Cards left, speed, open Job Cards.
 frappe.ui.form.on("PEPL Shift Production Entry", {
 	setup(frm) {
 		frm.set_query("shift", () => ({ filters: { is_active: 1 } }));
@@ -29,6 +30,25 @@ frappe.ui.form.on("PEPL Shift Production Entry", {
 		frappe
 			.call({ method: "pepl_os.pepl_production.spr.get_spr_panel", args: { name: frm.doc.name } })
 			.then((r) => pepl.panel(frm, { title: __("Shift"), rows: (r.message || {}).rows || [] }));
+		// C3a-P5: entry aids - gaps in the shift, Job Cards left, speed against standard, open Job Cards
+		frappe.call("pepl_os.pepl_production.spr_aids.get_spr_aids", { name: frm.doc.name }).then((r) => {
+			const data = r.message || {};
+			const actions = [];
+			if (frm.doc.docstatus === 0 && (data.gaps || []).length) {
+				actions.push({
+					label: __("Add rows for the gaps"),
+					handler: () => {
+						data.gaps.forEach((gap) => frm.add_child("downtime", { from_time: gap.from_time, to_time: gap.to_time }));
+						frm.refresh_field("downtime");
+						frappe.show_alert({
+							message: __("{0} downtime row(s) added: pick the category of each, then save.", [data.gaps.length]),
+							indicator: "orange",
+						});
+					},
+				});
+			}
+			pepl.panel(frm, { title: __("Entry aids"), rows: data.rows || [], actions });
+		});
 	},
 	async before_submit(frm) {
 		// C3a-X7: Soft Block - an operator below the minimum skill level needs a reason, logged with the user's name.

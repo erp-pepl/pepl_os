@@ -372,6 +372,15 @@ PRODUCTION_FIELDS = _chain(
 			"default": "1",
 			"description": "When on, every tool change needs a photo of the removed tool before submit.",
 		},
+		# C3a-P5 - entry aids on the Shift Production Entry
+		{
+			"fieldname": "custom_spr_slow_speed_percent",
+			"label": "Shift Entry: Slow Below % of Standard Speed",
+			"fieldtype": "Percent",
+			"default": "80",
+			"description": "A production row whose pieces x standard minutes a piece is less than this share of the "
+			"minutes it took is shown orange on the entry ('check the time and the quantity').",
+		},
 		# C3a-X5 - Job Orders from Sales Orders
 		{"fieldname": "custom_job_orders_section", "label": "Job Orders", "fieldtype": "Section Break"},
 		{
