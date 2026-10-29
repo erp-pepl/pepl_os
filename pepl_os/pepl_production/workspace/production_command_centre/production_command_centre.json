@@ -1,0 +1,334 @@
+{
+ "app": "pepl_os",
+ "charts": [],
+ "content": "[{\"id\": \"hdr\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Production Command Centre</b></span>\", \"col\": 12}}, {\"id\": \"card0\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"OEE Yesterday\", \"col\": 4}}, {\"id\": \"card1\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Jobs at Delivery Risk\", \"col\": 4}}, {\"id\": \"card2\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Open Job-Work Quantity Outside\", \"col\": 4}}, {\"id\": \"card3\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Rejection % (7 days)\", \"col\": 4}}, {\"id\": \"topcause\", \"type\": \"custom_block\", \"data\": {\"custom_block_name\": \"Top Downtime Cause (7 days)\", \"col\": 8}}, {\"id\": \"sc_hdr\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h5\\\"><b>Today's work</b></span>\", \"col\": 12}}, {\"id\": \"sc0\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Shift entries to submit\", \"col\": 4}}, {\"id\": \"sc1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Job Orders to release\", \"col\": 4}}, {\"id\": \"sc2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Job Orders in process\", \"col\": 4}}, {\"id\": \"sc3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Days below OEE target\", \"col\": 4}}, {\"id\": \"sc4\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Production Plans\", \"col\": 4}}, {\"id\": \"sc5\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Job-Work Reconciliation\", \"col\": 4}}, {\"id\": \"spacer\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"card_links0\", \"type\": \"card\", \"data\": {\"card_name\": \"Production\", \"col\": 3}}, {\"id\": \"card_links1\", \"type\": \"card\", \"data\": {\"card_name\": \"Shop Floor\", \"col\": 3}}, {\"id\": \"card_links2\", \"type\": \"card\", \"data\": {\"card_name\": \"Results\", \"col\": 3}}, {\"id\": \"card_links3\", \"type\": \"card\", \"data\": {\"card_name\": \"Reports\", \"col\": 3}}]",
+ "creation": "2026-10-29 19:00:00.000000",
+ "custom_blocks": [
+  {
+   "custom_block_name": "PEPL Top Downtime Cause",
+   "label": "Top Downtime Cause (7 days)"
+  }
+ ],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "factory",
+ "idx": 0,
+ "indicator_color": "green",
+ "is_hidden": 0,
+ "label": "Production Command Centre",
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Production",
+   "link_count": 5,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Job Order",
+   "link_count": 0,
+   "link_to": "Work Order",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Job Card",
+   "link_count": 0,
+   "link_to": "Job Card",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Production Plan",
+   "link_count": 0,
+   "link_to": "Production Plan",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Shift Production Entry",
+   "link_count": 0,
+   "link_to": "PEPL Shift Production Entry",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "BOM",
+   "link_count": 0,
+   "link_to": "BOM",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Shop Floor",
+   "link_count": 4,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Machine",
+   "link_count": 0,
+   "link_to": "Workstation",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Operator",
+   "link_count": 0,
+   "link_to": "PEPL Operator",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Shift",
+   "link_count": 0,
+   "link_to": "PEPL Shift",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Downtime Category",
+   "link_count": 0,
+   "link_to": "PEPL Downtime Category",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Results",
+   "link_count": 3,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Daily OEE",
+   "link_count": 0,
+   "link_to": "PEPL OEE Daily",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Machine Week",
+   "link_count": 0,
+   "link_to": "PEPL Machine Week",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Daily Stand-up",
+   "link_count": 0,
+   "link_to": "PEPL Daily Standup",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Reports",
+   "link_count": 4,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Downtime by Cause",
+   "link_count": 0,
+   "link_to": "PEPL Downtime by Cause",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Job-Work Reconciliation",
+   "link_count": 0,
+   "link_to": "PEPL Job-Work Reconciliation",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Downtime Category Review",
+   "link_count": 0,
+   "link_to": "PEPL Downtime Category Review",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Production Settings",
+   "link_count": 0,
+   "link_to": "PEPL Production Settings",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2026-10-29 19:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "PEPL Production",
+ "name": "Production Command Centre",
+ "number_cards": [
+  {
+   "label": "OEE Yesterday",
+   "number_card_name": "PEPL Yesterdays OEE"
+  },
+  {
+   "label": "Jobs at Delivery Risk",
+   "number_card_name": "PEPL Jobs at Delivery Risk"
+  },
+  {
+   "label": "Open Job-Work Quantity Outside",
+   "number_card_name": "PEPL Job-Work Quantity Outside"
+  },
+  {
+   "label": "Rejection % (7 days)",
+   "number_card_name": "PEPL Rejection Percent 7 Days"
+  }
+ ],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "restrict_to_domain": "",
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Manufacturing Manager"
+  },
+  {
+   "role": "Manufacturing User"
+  },
+  {
+   "role": "PEPL Production Manager"
+  },
+  {
+   "role": "PEPL CEO"
+  }
+ ],
+ "sequence_id": 45.0,
+ "shortcuts": [
+  {
+   "label": "Shift entries to submit",
+   "link_to": "PEPL Shift Production Entry",
+   "type": "DocType",
+   "doc_view": "List",
+   "stats_filter": "[[\"PEPL Shift Production Entry\", \"docstatus\", \"=\", 0]]",
+   "format": "{} to submit",
+   "color": "Orange"
+  },
+  {
+   "label": "Job Orders to release",
+   "link_to": "Work Order",
+   "type": "DocType",
+   "doc_view": "List",
+   "stats_filter": "[[\"Work Order\", \"docstatus\", \"=\", 0]]",
+   "format": "{} drafts",
+   "color": "Orange"
+  },
+  {
+   "label": "Job Orders in process",
+   "link_to": "Work Order",
+   "type": "DocType",
+   "doc_view": "List",
+   "stats_filter": "[[\"Work Order\", \"status\", \"=\", \"In Process\"]]",
+   "format": "{} in process",
+   "color": "Blue"
+  },
+  {
+   "label": "Days below OEE target",
+   "link_to": "PEPL OEE Daily",
+   "type": "DocType",
+   "doc_view": "List",
+   "stats_filter": "[[\"PEPL OEE Daily\", \"below_target\", \"=\", 1]]",
+   "format": "{} below target",
+   "color": "Red"
+  },
+  {
+   "label": "Production Plans",
+   "link_to": "Production Plan",
+   "type": "DocType",
+   "doc_view": "List",
+   "stats_filter": "[[\"Production Plan\", \"docstatus\", \"<\", 2], [\"Production Plan\", \"status\", \"not in\", [\"Completed\", \"Closed\"]]]",
+   "format": "{} open",
+   "color": "Grey"
+  },
+  {
+   "label": "Job-Work Reconciliation",
+   "link_to": "PEPL Job-Work Reconciliation",
+   "type": "Report",
+   "doc_view": "",
+   "format": "",
+   "color": "Grey",
+   "stats_filter": ""
+  }
+ ],
+ "title": "Production Command Centre",
+ "type": "Workspace"
+}

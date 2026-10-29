@@ -2,6 +2,25 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.41.0 — Production Command Centre (C3a-CC)
+
+- New workspace **Production Command Centre** (module PEPL Production, with its sidebar) for the Production Manager,
+  foreman, Manufacturing users and the CEO. Built to the render rule found in Cycle 2: no apostrophe in the title
+  (the address is made from it) and every block named by the label of its row, so Frappe draws it.
+- Five cards:
+  - **OEE Yesterday** - all machines, each Daily OEE weighted by its planned production time; opens yesterday's
+    Daily OEE list;
+  - **Jobs at Delivery Risk** - open, unfinished Job Orders due within "Stand-up: Days Ahead for Delivery Risk"
+    or late (the stand-up's list); opens them;
+  - **Open Job-Work Quantity Outside** - the Job-Work Reconciliation total; opens the report;
+  - **Rejection % (7 days)** - rejected / (good + rejected) on the shift entries of the 7 days before today; opens
+    them;
+  - **Top Downtime Cause (7 days)** - the category with the most stopped minutes, its minutes and share (a name,
+    so a card-sized block, not a number card); opens the new report **PEPL Downtime by Cause**.
+- Today's work: shift entries to submit, Job Orders to release, Job Orders in process, days below OEE target, open
+  Production Plans, Job-Work Reconciliation; link cards Production, Shop Floor, Results, Reports.
+- Check 41.
+
 ## 0.40.0 — Production configuration (C3a-C1)
 
 - Report **PEPL Production Settings**: every Production setting (System Parameters → Production, the pepl_sales

@@ -118,6 +118,7 @@ Admin screens after install:
 | C3a-P4 CSM panel on the Job Order | Work Order form panel (draft and submitted): customer material this Job Order still needs, what the whole Sales Order still needs, what the order holds in CSM stores (enough for n pieces); green / orange / red with short by; no Sales Order → red |
 | C3a-P5 Shift Production Entry aids | SPR form panel: gaps no row covers (other operators' entries counted) with 'Add rows for the gaps', Job Card target / done / left, speed against standard (cycle deviation band), open Job Cards on the machine |
 | C3a-C1 Production configuration | Report PEPL Production Settings (value / default / status of every Production setting); OEE targets per factor named on the Daily OEE; standard-time governance settings (for E2); PEPL Downtime Category Review and Merge into (same kind of stop) with OEE / Machine Week rebuild |
+| C3a-CC Production Command Centre | Workspace with OEE Yesterday (weighted), Jobs at Delivery Risk, Open Job-Work Quantity Outside, Rejection % (7 days) and Top Downtime Cause (7 days, block → report PEPL Downtime by Cause); today's-work shortcuts and link cards |
 
 ## Tests
 
