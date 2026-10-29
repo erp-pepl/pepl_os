@@ -2,6 +2,21 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.37.0 — Job-Work outstanding panel (C3a-P3)
+
+- **Supplier** form of a job worker (a Supplier named as "Job Worker" on a store): panel **Job work outstanding** -
+  one line per item still outside: quantity, since when (first in, first out), and "due back by" (sent + Job-Work
+  Return Days), "n days overdue", "GST one-year limit on …, n days left" or "GST one-year limit passed"; green /
+  orange / red; the worst first. Headline: items outside, their value, how many are overdue or near the GST
+  limit. Button **Job-Work Reconciliation** opens the report for this job worker. Ordinary suppliers get no panel.
+- **Stock Entry** form that sends material to, or brings it back from, a job worker's store: what is outside there
+  now for the items of the entry ("before" / "after this entry"); a draft bringing back more than is outside gets
+  a red line.
+- Built on the job-work reconciliation (C3a-X8), so panel and report always agree.
+- Fix (C3a-X6): the double-booking message now names the end date of a booking that runs past midnight
+  ("08-12-2026 09:00 - 09-12-2026 05:00"; it said "09:00 - 05:00"). Found in Check 36; regression test added.
+- Check 37.
+
 ## 0.36.0 — Production Plan machine load (C3a-P2)
 
 - A saved **Production Plan** shows a **Machine load** panel: for every machine the plan uses, over the days it

@@ -1,5 +1,7 @@
 """C3a-X6 - A Production Plan may not book a machine for more jobs at the same time than it can run."""
 
+from datetime import timedelta
+
 import frappe
 from frappe.utils import add_days, get_datetime, today
 
@@ -66,6 +68,16 @@ class TestMachineDoubleBooking(PEPLTestCase):
 		together = [dict(o, sequence_id=1) for o in ops]
 		rows = mb.layout(start, together, gap=10)
 		self.assertEqual(rows[1]["start"], rows[0]["start"])
+
+	def test_a_booking_past_midnight_names_both_days(self):
+		# Regression (Check 36): the clash message said "08-12-2026 09:00 - 05:00" for a booking ending next day.
+		same = {"start": get_datetime(at("09:00")), "end": get_datetime(at("11:00"))}
+		self.assertTrue(mb._when(same).endswith(" - 11:00"))
+		night = {"start": get_datetime(at("09:00")), "end": get_datetime(at("09:00")) + timedelta(hours=20)}
+		self.assertIn(
+			" - " + (get_datetime(at("09:00")) + timedelta(hours=20)).strftime("%d-%m-%Y") + " 05:00",
+			mb._when(night),
+		)
 
 	# ---- clashes ----
 	def test_two_rows_on_one_machine_at_the_same_time_clash(self):

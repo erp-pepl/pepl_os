@@ -114,6 +114,7 @@ Admin screens after install:
 | C3a-R1 Machine-hour rate repair | Machine-Hour Rates' Machine Group is a link to Workstation Type; patch moves old typed rows (case fixed, missing groups created); weekly machine cost reads the rate through the link |
 | C3a-P1 Job Order status panel | Work Order form panel: made vs target, shop-floor good / rejected, every routing step with its machine and progress (next step ▶), due date days left / late, LD so far on the Sales Order line |
 | C3a-P2 Production Plan machine load | Production Plan form panel: per machine, this plan's hours + hours already booked on those days against available hours (working hours or active shifts x jobs at once x working days less holidays), load % red / orange (warning % in System Parameters) / green |
+| C3a-P3 Job-Work outstanding panel | Supplier (job worker) and Stock Entry form panels: items still outside, since when, due back / overdue / GST one-year limit, value; red line when an entry brings back more than is outside; button to the Job-Work Reconciliation report |
 
 ## Tests
 

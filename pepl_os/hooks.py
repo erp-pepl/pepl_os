@@ -34,12 +34,14 @@ doctype_js = {
 	# C2-15: heat panel, Split by heat, reason dialog when the gate asks for one
 	"Purchase Receipt": "public/js/purchase_receipt.js",
 	# C2-16: Sales Order (CSM) picked from submitted orders of the company
+	# C3a-P3: job work outstanding at the job worker for the items of the entry
 	"Stock Entry": "public/js/stock_entry.js",
 	# C2-16: "CSM Balance" button once the order holds customer-supplied material
 	# C3a-X11: LD terms and today's LD exposure on a submitted order
 	"Sales Order": ["public/js/csm_sales_order.js", "public/js/sales_order_ld.js"],
 	# C2-17: payment-priority panel ("Rank #4 this week · MSME due in 6 days")
 	"Purchase Invoice": "public/js/purchase_invoice.js",
+	# C3a-P3: job work outstanding on a job worker
 	"Supplier": "public/js/supplier_payments.js",
 	# C2-19: reorder level vs projected stock; "Create Material Request" when below
 	"Item": "public/js/item_reorder.js",

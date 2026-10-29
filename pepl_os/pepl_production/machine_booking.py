@@ -242,8 +242,11 @@ def find_clashes(plan):
 
 
 def _when(booking):
+	"""08-12-2026 09:00 - 11:00; a booking ending on another day names that day too."""
 	start = format_datetime(booking["start"], "dd-MM-yyyy HH:mm")
-	return f"{start} - {format_datetime(booking['end'], 'HH:mm')}"
+	same_day = get_datetime(booking["end"]).date() == get_datetime(booking["start"]).date()
+	end = format_datetime(booking["end"], "HH:mm" if same_day else "dd-MM-yyyy HH:mm")
+	return f"{start} - {end}"
 
 
 def describe(clashes):

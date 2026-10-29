@@ -1,10 +1,26 @@
 // C2-08 + C2-17 (C2-22) - Supplier: approval state and expiry, and its open bills in this week's payment order.
+// C3a-P3 - a job worker: what is still outside, overdue or near the GST one-year limit.
 frappe.ui.form.on("Supplier", {
 	refresh(frm) {
 		if (frm.is_new()) return;
 		pepl.supplier_approval_panel(frm);
 		frappe.call("pepl_os.pepl_purchase.payments.get_supplier_panel", { supplier: frm.doc.name }).then((r) => {
 			if (r.message && r.message.length) pepl.panel(frm, { title: __("Payment priority"), rows: r.message });
+		});
+		// C3a-P3: what is still outside with this job worker
+		frappe.call("pepl_os.pepl_production.job_work_panel.get_supplier_job_work_panel", { supplier: frm.doc.name }).then((r) => {
+			const data = r.message || {};
+			if (!data.job_worker) return;
+			pepl.panel(frm, {
+				title: __("Job work outstanding"),
+				rows: data.rows || [],
+				actions: [
+					{
+						label: __("Job-Work Reconciliation"),
+						handler: () => frappe.set_route("query-report", "PEPL Job-Work Reconciliation", { supplier: frm.doc.name }),
+					},
+				],
+			});
 		});
 	},
 });
