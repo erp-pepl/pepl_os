@@ -24,6 +24,7 @@ from frappe import _
 from frappe.utils import add_days, cint, date_diff, flt, getdate, now_datetime, today
 
 from pepl_os.common import params
+from pepl_os.pepl_production import config
 
 DOCTYPE = "PEPL OEE Daily"
 SPR = "PEPL Shift Production Entry"
@@ -142,6 +143,7 @@ def compute(workstation, oee_date):
 		"oee": oee,
 		"target": aim,
 		"below_target": 1 if oee < aim else 0,
+		"factors_below_target": config.factors_below(availability, performance, quality),  # C3a-C1
 		"notes": "\n".join(notes),
 		"computed_on": now_datetime(),
 	}

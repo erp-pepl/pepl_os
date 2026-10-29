@@ -1,12 +1,14 @@
-# PEPL OS v0.39.0 - Check 39: C3a-P5 entry aids on the Shift Production Entry - the gaps no row covers (other
+# PEPL OS v0.40.0 - Check 39 rev 2: C3a-P5 entry aids on the Shift Production Entry - the gaps no row covers (other
 # operators' entries counted, "Add rows for the gaps"), what is left on each Job Card, speed against the standard,
-# open Job Cards on the machine; and the Shift panel's quantities without ".0".
-# Runs on 0.39.0 or later. System Console, Type = Python. Leave "Commit" UNTICKED: everything below, including the
+# open Job Cards on the machine; and the Shift panel's quantities without ".0". Rev 2 (v0.40.0, C3a-C1): slow / fast
+# is judged by the pepl_sales "Cycle Deviation Threshold Low / High" (0.8 / 1.2), the one measure for it.
+# Runs on 0.40.0 or later. System Console, Type = Python. Leave "Commit" UNTICKED: everything below, including the
 # System Parameters change it makes, is undone at the end. After the check, open any Shift Production Entry.
-VERSION = "0.39.0"
+VERSION = "0.40.0"
 PARAMS = "PEPL System Parameters"
 SPR = "PEPL Shift Production Entry"
-SLOW = "custom_spr_slow_speed_percent"
+HIGH = "cycle_deviation_threshold_high"
+LOW = "cycle_deviation_threshold_low"
 AIDS = "pepl_os.pepl_production.spr_aids.get_spr_aids"
 SHIFT_PANEL = "pepl_os.pepl_production.spr.get_spr_panel"
 passed = []
@@ -52,9 +54,10 @@ def find(rows, start):
     return found[0] if found else {"text": "", "colour": ""}
 
 
-def set_slow(value):
+def set_band(low, high):
     params = frappe.get_doc(PARAMS)
-    params.set(SLOW, value)
+    params.set(LOW, low)
+    params.set(HIGH, high)
     params.custom_spr_tool_photo_required = 0
     params.custom_spr_max_unaccounted_minutes = 15
     params.save()
@@ -63,10 +66,10 @@ def set_slow(value):
 # ---------------- 1. installed ----------------
 apps = {a.app_name: a.app_version for a in frappe.get_all("Installed Application", fields=["app_name", "app_version"])}
 check(version_parts(apps.get("pepl_os")) >= version_parts(VERSION), "1. pepl_os is " + VERSION + " or later (site has " + str(apps.get("pepl_os")) + ")")
-check(bool(frappe.get_meta(PARAMS).get_field(SLOW)), "1. System Parameters has Production > 'Shift Entry: Slow Below % of Standard Speed'")
-site_slow = frappe.db.get_single_value(PARAMS, SLOW)
-print("INFO  this site: slow below " + str(site_slow) + " % of standard speed")
-set_slow(80)
+check(not frappe.get_meta(PARAMS).get_field("custom_spr_slow_speed_percent"), "1. the v0.39.0 field 'Shift Entry: Slow Below % of Standard Speed' is gone (one measure: the cycle deviation band)")
+site_band = str(frappe.db.get_single_value(PARAMS, LOW)) + " / " + str(frappe.db.get_single_value(PARAMS, HIGH))
+print("INFO  this site: Cycle Deviation Threshold Low / High = " + site_band)
+set_band(0.8, 1.2)
 settings = frappe.get_doc("Manufacturing Settings")
 settings.disable_capacity_planning = 1
 settings.overproduction_percentage_for_work_order = 0
@@ -134,11 +137,11 @@ check("1 gap(s)" in rows[0]["text"] and "Not covered: 09:00-10:30 (90 min)" in t
 # ---------------- 4. Job Card left, speed ----------------
 check("Job Card " + CARD + ": target 10, done before 0, this entry 6 - 4 left" in texts(rows), "4. Job Card line: target 10, done before 0, this entry 6 - 4 left")
 speed = find(rows, "Row 1:")
-check("7 piece(s) x 6 min standard = 42 min; took 60 min - 70% of standard speed" in speed["text"] and speed["colour"] == "orange", "4. row 1: 7 pieces x 6 min = 42 min in 60 min - 70 %, below 80 %: orange")
-check("check the time and the quantity" in speed["text"], "4. the slow row says 'check the time and the quantity'")
-set_slow(60)
-check(find(aids(a.name)["rows"], "Row 1:")["colour"] == "green", "4. with the slow line at 60 % in System Parameters: the same 70 % row is green")
-set_slow(80)
+check("7 piece(s) x 6 min standard = 42 min; took 60 min - 70% of standard speed" in speed["text"] and speed["colour"] == "orange", "4. row 1: 7 pieces x 6 min = 42 min in 60 min (cycle x 1.43, over x 1.2): orange")
+check("slower than standard x 1.2: check the time and the quantity" in speed["text"], "4. the slow row says 'slower than standard x 1.2: check the time and the quantity'")
+set_band(0.8, 1.5)
+check(find(aids(a.name)["rows"], "Row 1:")["colour"] == "green", "4. with Cycle Deviation Threshold High at 1.5: the same row (x 1.43) is green")
+set_band(0.8, 1.2)
 
 # ---------------- 5. open Job Cards, Shift panel ----------------
 rows = aids(a.name)["rows"]
@@ -156,4 +159,4 @@ check(data["rows"][0]["text"] == "Every minute of the shift is covered by a row"
 
 print("")
 print("RESULT: " + str(len(passed)) + " passed, " + str(len(failed)) + " failed")
-print("Commit was left unticked, so nothing above was saved (the slow line is back to " + str(site_slow) + " %).")
+print("Commit was left unticked, so nothing above was saved (the cycle deviation band is back to " + site_band + ").")

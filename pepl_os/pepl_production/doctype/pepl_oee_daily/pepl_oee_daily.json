@@ -18,6 +18,7 @@
   "oee",
   "target",
   "below_target",
+  "factors_below_target",
   "column_break_apq",
   "availability",
   "performance",
@@ -122,6 +123,13 @@
    "read_only": 1,
    "in_list_view": 1,
    "in_standard_filter": 1
+  },
+  {
+   "fieldname": "factors_below_target",
+   "fieldtype": "Small Text",
+   "label": "Factors Below Target",
+   "read_only": 1,
+   "description": "Availability, Performance or Quality below its own target (System Parameters → Production → OEE)."
   },
   {
    "fieldname": "column_break_apq",
@@ -270,7 +278,7 @@
  "in_create": 1,
  "index_web_pages_for_search": 0,
  "links": [],
- "modified": "2026-10-22 18:00:00.000000",
+ "modified": "2026-10-29 18:30:00.000000",
  "modified_by": "Administrator",
  "module": "PEPL Production",
  "name": "PEPL OEE Daily",

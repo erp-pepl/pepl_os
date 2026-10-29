@@ -4,7 +4,6 @@ import frappe
 from frappe.utils import add_days, today
 
 from pepl_os.pepl_production import spr, spr_aids
-from pepl_os.pepl_production.params import validate_production_params
 from pepl_os.pepl_stores import stock_tree as st
 from pepl_os.tests.factories import (
 	TEST_COMPANY,
@@ -51,7 +50,8 @@ class TestSPREntryAids(PEPLTestCase):
 		set_param("custom_spr_max_unaccounted_minutes", 15)
 		set_param("custom_spr_tool_photo_required", 0)
 		set_param("skill_check_mode", "Advisory")
-		set_param(spr_aids.SLOW_FIELD, 80)
+		set_param(spr_aids.LOW_FIELD, 0.8)
+		set_param(spr_aids.HIGH_FIELD, 1.2)
 		self.card = make_job_card(MILL, "T-P5-JC", qty=10, minutes_per_piece=6).name
 
 	def _entry(self, production=(), downtime=(), operator=OP1, day=YESTERDAY, shift=DAY):
@@ -134,7 +134,16 @@ class TestSPREntryAids(PEPLTestCase):
 		self.assertIn(
 			"Row 1: 7 piece(s) x 6 min standard = 42 min; took 60 min - 70% of standard speed", line["text"]
 		)
-		self.assertIn("check the time and the quantity", line["text"])
+		self.assertIn("slower than standard x 1.2: check the time and the quantity", line["text"])
+		self.assertEqual(line["colour"], "orange")
+		set_param(spr_aids.HIGH_FIELD, 1.5)  # 60 / 42 = 1.43 is inside the wider band
+		line = next(r for r in spr_aids.aid_rows(doc) if r["text"].startswith("Row 1"))
+		self.assertEqual(line["colour"], "green")
+
+	def test_fast_row_is_orange(self):
+		doc = self._entry([self._block("08:00", "08:30", 10)])  # 10 x 6 = 60 min in 30: cycle x 0.5
+		line = next(r for r in spr_aids.aid_rows(doc) if r["text"].startswith("Row 1"))
+		self.assertIn("200% of standard speed - faster than standard x 0.8", line["text"])
 		self.assertEqual(line["colour"], "orange")
 
 	def test_row_at_standard_speed_is_green(self):
@@ -142,9 +151,9 @@ class TestSPREntryAids(PEPLTestCase):
 		line = next(r for r in spr_aids.aid_rows(doc) if r["text"].startswith("Row 1"))
 		self.assertIn("100% of standard speed", line["text"])
 		self.assertEqual(line["colour"], "green")
-		set_param(spr_aids.SLOW_FIELD, 100)
+		set_param(spr_aids.HIGH_FIELD, 1.0)
 		line = next(r for r in spr_aids.aid_rows(doc) if r["text"].startswith("Row 1"))
-		self.assertEqual(line["colour"], "green")  # exactly at the line is not slow
+		self.assertEqual(line["colour"], "green")  # exactly on the line is not slow
 
 	# ---- open Job Cards ----
 	def test_open_job_cards_on_the_machine(self):
@@ -161,10 +170,6 @@ class TestSPREntryAids(PEPLTestCase):
 		self.assertIn("Good 6 · Rejected 1 (14.29%)", _texts(spr.get_spr_panel(doc.name)["rows"]))
 
 	# ---- set-up ----
-	def test_slow_share_validated(self):
-		with self.assertRaises(frappe.ValidationError):
-			validate_production_params(frappe._dict({spr_aids.SLOW_FIELD: 0}))
-
 	def test_panel_hooked_on_the_form(self):
 		path = frappe.get_app_path(
 			"pepl_os",

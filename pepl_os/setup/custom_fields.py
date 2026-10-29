@@ -372,15 +372,6 @@ PRODUCTION_FIELDS = _chain(
 			"default": "1",
 			"description": "When on, every tool change needs a photo of the removed tool before submit.",
 		},
-		# C3a-P5 - entry aids on the Shift Production Entry
-		{
-			"fieldname": "custom_spr_slow_speed_percent",
-			"label": "Shift Entry: Slow Below % of Standard Speed",
-			"fieldtype": "Percent",
-			"default": "80",
-			"description": "A production row whose pieces x standard minutes a piece is less than this share of the "
-			"minutes it took is shown orange on the entry ('check the time and the quantity').",
-		},
 		# C3a-X5 - Job Orders from Sales Orders
 		{"fieldname": "custom_job_orders_section", "label": "Job Orders", "fieldtype": "Section Break"},
 		{
@@ -421,6 +412,29 @@ PRODUCTION_FIELDS = _chain(
 			"description": "Each machine's daily OEE is compared with this; below it, the day is marked "
 			"'Below Target'. PM / Calibration follows 'OEE: Exclude PM/Calibration from Planned Time'.",
 		},
+		# C3a-C1 - OEE thresholds per factor: which of the three let the day down
+		{
+			"fieldname": "custom_oee_availability_target_percent",
+			"label": "OEE: Availability Target %",
+			"fieldtype": "Percent",
+			"default": "90",
+			"description": "Run time against planned production time. A day below it names Availability on its "
+			"Daily OEE.",
+		},
+		{
+			"fieldname": "custom_oee_performance_target_percent",
+			"label": "OEE: Performance Target %",
+			"fieldtype": "Percent",
+			"default": "95",
+			"description": "Pieces x standard minutes against run time. A day below it names Performance.",
+		},
+		{
+			"fieldname": "custom_oee_quality_target_percent",
+			"label": "OEE: Quality Target %",
+			"fieldtype": "Percent",
+			"default": "99",
+			"description": "Good pieces against all pieces made. A day below it names Quality.",
+		},
 		# C3a-X8 - job work
 		{"fieldname": "custom_job_work_section", "label": "Job Work", "fieldtype": "Section Break"},
 		{
@@ -448,6 +462,51 @@ PRODUCTION_FIELDS = _chain(
 			"default": "3",
 			"description": "Open Job Orders due within this many days (or already late) and not finished are listed "
 			"in the morning stand-up, e-mailed at 07:45 to the Standup Email Group.",
+		},
+		# C3a-C1 - standard-time governance (used by the learning-standards workflow, Work Package E2). The band a
+		# run may differ from its standard is pepl_sales "Cycle Deviation Threshold Low / High" (0.8 / 1.2).
+		{
+			"fieldname": "custom_std_time_section",
+			"label": "Standard Times (governance)",
+			"fieldtype": "Section Break",
+		},
+		{
+			"fieldname": "custom_std_time_lookback_days",
+			"label": "Standard Time: Look-back Days",
+			"fieldtype": "Int",
+			"default": "90",
+			"description": "A new standard cycle time is suggested only from the runs of this many past days (7 to 365).",
+		},
+		{
+			"fieldname": "custom_std_time_min_runs",
+			"label": "Standard Time: Minimum Runs Before a Suggestion",
+			"fieldtype": "Int",
+			"default": "5",
+			"description": "Production rows on that operation needed before a new standard time is suggested.",
+		},
+		{
+			"fieldname": "custom_std_time_basis",
+			"label": "Standard Time: Suggest From",
+			"fieldtype": "Select",
+			"options": "Median\nAverage",
+			"default": "Median",
+			"description": "Median ignores the odd very slow or very fast run; Average uses every run equally.",
+		},
+		{"fieldname": "custom_std_time_column", "fieldtype": "Column Break"},
+		{
+			"fieldname": "custom_std_time_max_change_percent",
+			"label": "Standard Time: Largest Change per Approval %",
+			"fieldtype": "Percent",
+			"default": "20",
+			"description": "One approval may move a standard time by at most this share; a bigger move is made in steps.",
+		},
+		{
+			"fieldname": "custom_std_time_approver_role",
+			"label": "Standard Time: Approved By (Role)",
+			"fieldtype": "Link",
+			"options": "Role",
+			"description": "Only this role approves a new standard cycle time (the HOD). Empty = PEPL Production Manager. "
+			"Runs outside 'Cycle Deviation Threshold Low / High' (first tab) are flagged.",
 		},
 		# C3a-X11 - the standard LD clause for new orders of these sectors
 		{

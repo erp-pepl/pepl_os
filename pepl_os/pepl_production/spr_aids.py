@@ -8,8 +8,9 @@ Shown on a saved entry (draft or submitted), next to the X1 "Shift" panel:
 - Job Cards: for each Job Card on the entry, the target, what is already done (submitted time logs of other
   entries), this entry's good quantity and what is left; red when this entry takes it over the target.
 - Speed: for each production row, pieces x the Job Card's standard minutes a piece against the minutes the
-  row took. Below "Shift Entry: Slow Below % of Standard Speed" (System Parameters -> Production, 80) the row
-  is orange, so a wrong time or quantity is caught while the operator still remembers the shift.
+  row took. Outside the pepl_sales "Cycle Deviation Threshold Low / High" (actual cycle under standard x 0.8 =
+  too fast, over standard x 1.2 = slow; C3a-C1 made this the one measure) the row is orange, so a wrong time or
+  quantity is caught while the operator still remembers the shift.
 - Open Job Cards on this machine that the entry does not use yet (the next ones to pick).
 """
 
@@ -22,15 +23,17 @@ from pepl_os.pepl_production import spr
 from pepl_os.pepl_production.job_order_panel import qty_text
 from pepl_os.pepl_production.masters import SHIFT
 
-SLOW_FIELD = "custom_spr_slow_speed_percent"
-DEFAULT_SLOW = 80
+HIGH_FIELD = "cycle_deviation_threshold_high"  # owned by pepl_sales: actual cycle > standard x this = slow
+LOW_FIELD = "cycle_deviation_threshold_low"  # owned by pepl_sales: actual cycle < standard x this = too fast
 MAX_GAPS = 8
 MAX_OPEN_CARDS = 5
 
 
-def slow_percent():
-	value = params.get(SLOW_FIELD, DEFAULT_SLOW)
-	return flt(value) if value not in (None, "") else DEFAULT_SLOW
+def cycle_band():
+	"""(low, high) multipliers of the standard cycle time inside which a run is normal (default 0.8 / 1.2)."""
+	low = flt(params.get(LOW_FIELD, 0.8)) or 0.8
+	high = flt(params.get(HIGH_FIELD, 1.2)) or 1.2
+	return low, high
 
 
 def _shift(doc):
@@ -150,7 +153,7 @@ def aid_rows(doc):
 		)
 		rows.append({"text": text, "colour": "red" if over else ("green" if left <= 1e-9 else "gray")})
 
-	slow = slow_percent()
+	low, high = cycle_band()
 	for r in production:
 		info = standard.get(r.job_card)
 		pieces = flt(r.good_qty) + flt(r.rejected_qty)
@@ -158,6 +161,15 @@ def aid_rows(doc):
 			continue
 		expected = pieces * info.per_piece
 		speed = round(100.0 * expected / cint(r.minutes))
+		ratio = cint(r.minutes) / expected  # actual cycle against the standard cycle
+		if ratio > high + 1e-9:
+			flag = _("slower than standard x {0}: check the time and the quantity").format(qty_text(high))
+		elif ratio < low - 1e-9:
+			flag = _("faster than standard x {0}: check the quantity and the standard time").format(
+				qty_text(low)
+			)
+		else:
+			flag = ""
 		rows.append(
 			{
 				"text": _(
@@ -170,8 +182,8 @@ def aid_rows(doc):
 					cint(r.minutes),
 					speed,
 				)
-				+ (" - " + _("check the time and the quantity") if speed < slow else ""),
-				"colour": "orange" if speed < slow else "green",
+				+ (" - " + flag if flag else ""),
+				"colour": "orange" if flag else "green",
 			}
 		)
 

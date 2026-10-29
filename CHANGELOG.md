@@ -2,6 +2,29 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.40.0 — Production configuration (C3a-C1)
+
+- Report **PEPL Production Settings**: every Production setting (System Parameters → Production, the pepl_sales
+  production parameters on the first tab, the Manufacturing Settings PEPL OS relies on, the active downtime
+  categories) with value, default and status ("Default, to confirm with PEPL" / "Changed from default") - the
+  sheet confirmed with the Production HOD.
+- **OEE thresholds**: new targets per factor - OEE: Availability Target % (90), Performance Target % (95),
+  Quality Target % (99). The Daily OEE names the factors below their target ("Quality 95 % (target 99 %)") in a
+  new field and in its headline.
+- **Standard-time governance** (System Parameters → Production → Standard Times): look-back days (90), minimum
+  runs before a suggestion (5), suggest from Median / Average, largest change per approval (20 %), approving role
+  (empty = PEPL Production Manager). Read by the learning-standards workflow (Work Package E2); the band a run may
+  differ from its standard is the pepl_sales "Cycle Deviation Threshold Low / High" (0.8 / 1.2).
+- **One measure for slow / fast runs**: the shift entry aids (C3a-P5) now flag a row whose actual cycle is over
+  standard x High ("slower than standard") or under standard x Low ("faster than standard: check the quantity");
+  the v0.39.0 field "Shift Entry: Slow Below % of Standard Speed" is removed by a patch.
+- **Downtime category cleanup**: report **PEPL Downtime Category Review** (use in the look-back days, in all, last
+  used; look-alike names, never used, inactive but used); on the category form a "Use and cleanup" panel and, for
+  the Production Manager, **Merge into another category** (same stop type and breakdown flag only): every
+  shift-entry row moves, the old category is switched off with a note, the Daily OEE and Machine Weeks it touched
+  are rebuilt.
+- Check 40; Check 39 rev 2 (slow / fast by the cycle deviation band).
+
 ## 0.39.1 — Tests only: P4 test independent of Selling Settings
 
 - CI #39 (whole suite on 0.36.0–0.39.0): the C3a-P4 test that puts the same part on two Sales Order lines was
