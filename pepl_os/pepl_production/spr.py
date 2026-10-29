@@ -555,7 +555,11 @@ def cancel_consumables(doc):
 def get_spr_panel(name):
 	"""Rows for the SPR form panel: shift minutes, what is explained, output, photos, postings."""
 	frappe.has_permission(DOCTYPE, "read", name, throw=True)
-	doc = frappe.get_doc(DOCTYPE, name)
+	return {"rows": panel_rows(frappe.get_doc(DOCTYPE, name))}
+
+
+def panel_rows(doc):
+	"""The Shift panel rows of an entry (also shown on the kiosk, C3a-B1)."""
 	start = frappe.db.get_value(SHIFT, doc.shift, ["start_time", "end_time"], as_dict=True) or {}
 	rows = []
 	if start:
@@ -626,4 +630,4 @@ def get_spr_panel(name):
 			rows.append(
 				{"text": _("Consumables issued: {0}").format(doc.consumables_stock_entry), "colour": "green"}
 			)
-	return {"rows": rows}
+	return rows

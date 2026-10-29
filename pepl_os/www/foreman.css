@@ -1,0 +1,11 @@
+/* C3a-B1 - foreman view */
+#pepl-foreman { font-size: 16px; }
+.fm-head { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-bottom: 12px; }
+.fm-head h2 { margin: 0 12px 0 0; }
+.fm-head input, .fm-head select { font-size: 16px; padding: 6px 8px; border-radius: 6px; border: 1px solid var(--border-color, #d1d8dd); }
+.fm-summary { font-weight: 600; }
+.fm-table { width: 100%; border-collapse: collapse; }
+.fm-table th, .fm-table td { padding: 8px; border-bottom: 1px solid var(--border-color, #eee); text-align: left; vertical-align: top; }
+.fm-dot::before { content: "●"; margin-right: 6px; }
+.fm-green::before { color: #29a745; } .fm-orange::before { color: #f0a33a; } .fm-red::before { color: #e24c4c; } .fm-blue::before { color: #2490ef; }
+.fm-card { border: 1px solid #e24c4c; border-radius: 10px; padding: 14px; }

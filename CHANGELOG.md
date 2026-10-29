@@ -2,6 +2,24 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.42.0 — Shift-entry kiosk and foreman view (C3a-B1)
+
+- **Kiosk page** `/kiosk?machine=<machine>` (website, not the Desk) for a tablet beside each machine. The tablet is
+  logged in once with a kiosk login (new Role Profile / role **PEPL Kiosk**, no Desk access). An operator signs in
+  with **employee code + PIN**, picks today's or yesterday's shift, and enters his shift: production blocks against
+  the machine's open Job Cards (good / rejected / reason), stops by downtime category, tool changes with a photo
+  taken on the tablet (resized before sending). Save keeps a draft; the page shows the same help as the Desk form
+  (gaps, Job Card left, speed, skill) and the Shift panel; **Submit** submits the same Shift Production Entry. A
+  Soft Block skill shortfall asks the operator for a reason, logged in the Override Log with his code.
+- Safety: wrong PINs lock the code after **Kiosk: Wrong PIN Tries** (5) for **Kiosk: Lock Minutes** (15); the
+  message never says whether the code or the PIN was wrong; a kiosk session ends after **Kiosk: Session Minutes**
+  (30) without saving; an operator sees only his own entry of that machine, shift and day; a submitted entry is
+  read-only on the kiosk. Consumables stay with Stores in the Desk.
+- **Foreman view** `/foreman`: for a day and shift, every machine that runs - Submitted / Draft / Missing,
+  operators, good / rejected, minutes not explained, gaps - refreshing every two minutes; entries open in the Desk.
+- The Shift panel rows are built once (spr.panel_rows) for the form and the kiosk.
+- Check 42.
+
 ## 0.41.0 — Production Command Centre (C3a-CC)
 
 - New workspace **Production Command Centre** (module PEPL Production, with its sidebar) for the Production Manager,

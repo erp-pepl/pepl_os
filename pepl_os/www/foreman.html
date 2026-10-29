@@ -1,0 +1,24 @@
+{% extends "templates/web.html" %}
+
+{% block title %}{{ _("Foreman View") }}{% endblock %}
+
+{% block page_content %}
+<div id="pepl-foreman">
+	{% if not allowed %}
+	<div class="fm-card fm-red">{{ _("This page is for the foreman and the Production Manager.") }}</div>
+	{% else %}
+	<div class="fm-head">
+		<h2>{{ _("Shift entries") }}</h2>
+		<label>{{ _("Day") }} <input type="date" id="f-date"></label>
+		<label>{{ _("Shift") }} <select id="f-shift"></select></label>
+		<span id="f-summary" class="fm-summary"></span>
+	</div>
+	<div id="f-message"></div>
+	<table class="fm-table">
+		<thead><tr><th>{{ _("Machine") }}</th><th>{{ _("Entry") }}</th><th>{{ _("Operator") }}</th><th>{{ _("Good") }}</th><th>{{ _("Rejected") }}</th><th>{{ _("Minutes not explained") }}</th><th>{{ _("Gaps") }}</th></tr></thead>
+		<tbody id="f-rows"></tbody>
+	</table>
+	<p class="text-muted">{{ _("Refreshes every two minutes. Click an entry to open it in the Desk.") }}</p>
+	{% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends "templates/web.html" %}
+
+{% block title %}{{ _("Shift Entry Kiosk") }}{% endblock %}
+
+{% block page_content %}
+<div id="pepl-kiosk" data-machine="{{ machine | e }}">
+	{% if not allowed %}
+	<div class="kiosk-card kiosk-red">{{ _("This page is for the shop-floor kiosk. Sign in with the kiosk login.") }}</div>
+	{% elif not machine %}
+	<h2>{{ _("Which machine is this kiosk beside?") }}</h2>
+	<p class="text-muted">{{ _("Pick it once; bookmark the page that opens so the kiosk always starts there.") }}</p>
+	<div class="kiosk-machines">
+		{% for m in machines %}<a class="kiosk-big-button" href="/kiosk?machine={{ m | urlencode }}">{{ m }}</a>{% endfor %}
+	</div>
+	{% else %}
+	<div class="kiosk-head">
+		<div><div class="kiosk-label">{{ _("Machine") }}</div><div class="kiosk-machine">{{ machine }}</div></div>
+		<div><div class="kiosk-label">{{ _("Day") }}</div><select id="k-date"></select></div>
+		<div><div class="kiosk-label">{{ _("Shift") }}</div><select id="k-shift"></select></div>
+		<div class="kiosk-who" id="k-who"></div>
+	</div>
+	<div id="k-message"></div>
+
+	<div id="k-signin" class="kiosk-card">
+		<h3>{{ _("Sign in") }}</h3>
+		<label>{{ _("Employee code") }}<input id="k-code" autocomplete="off" autocapitalize="characters"></label>
+		<label>{{ _("PIN") }}<input id="k-pin" type="password" inputmode="numeric" autocomplete="off"></label>
+		<button class="kiosk-big-button" id="k-signin-btn">{{ _("Sign in") }}</button>
+	</div>
+
+	<div id="k-entry" style="display: none">
+		<div class="kiosk-card">
+			<h3>{{ _("Production") }} <span class="text-muted kiosk-hint">{{ _("one row per job and time block") }}</span></h3>
+			<table class="kiosk-table"><thead><tr><th>{{ _("Job Card") }}</th><th>{{ _("From") }}</th><th>{{ _("To") }}</th><th>{{ _("Good") }}</th><th>{{ _("Rejected") }}</th><th>{{ _("Reason for rejects") }}</th><th></th></tr></thead><tbody id="k-production"></tbody></table>
+			<button class="kiosk-add" data-table="production">+ {{ _("Production row") }}</button>
+		</div>
+		<div class="kiosk-card">
+			<h3>{{ _("Stops") }} <span class="text-muted kiosk-hint">{{ _("every time the machine was not producing") }}</span></h3>
+			<table class="kiosk-table"><thead><tr><th>{{ _("Why it stopped") }}</th><th>{{ _("From") }}</th><th>{{ _("To") }}</th><th></th></tr></thead><tbody id="k-downtime"></tbody></table>
+			<button class="kiosk-add" data-table="downtime">+ {{ _("Stop") }}</button>
+		</div>
+		<div class="kiosk-card">
+			<h3>{{ _("Tool changes") }}</h3>
+			<table class="kiosk-table"><thead><tr><th>{{ _("Time") }}</th><th>{{ _("Tool") }}</th><th>{{ _("Why") }}</th><th>{{ _("Photo of the old tool") }}</th><th></th></tr></thead><tbody id="k-tools"></tbody></table>
+			<button class="kiosk-add" data-table="tool_changes">+ {{ _("Tool change") }}</button>
+		</div>
+		<div class="kiosk-actions">
+			<button class="kiosk-big-button" id="k-save">{{ _("Save") }}</button>
+			<button class="kiosk-big-button kiosk-green" id="k-submit">{{ _("Submit the shift") }}</button>
+			<button class="kiosk-big-button kiosk-grey" id="k-signout">{{ _("Sign out") }}</button>
+		</div>
+		<div id="k-reason" class="kiosk-card kiosk-orange" style="display: none">
+			<div id="k-reason-text"></div>
+			<label>{{ _("Reason (at least 10 letters)") }}<textarea id="k-reason-input" rows="2"></textarea></label>
+			<button class="kiosk-big-button kiosk-green" id="k-reason-btn">{{ _("Submit with this reason") }}</button>
+		</div>
+		<div class="kiosk-panels">
+			<div class="kiosk-card"><h4>{{ _("Shift") }}</h4><div id="k-shift-panel"></div></div>
+			<div class="kiosk-card"><h4>{{ _("Help") }}</h4><div id="k-aids"></div></div>
+		</div>
+	</div>
+	{% endif %}
+</div>
+{% endblock %}

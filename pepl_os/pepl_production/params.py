@@ -4,7 +4,7 @@ import frappe
 from frappe import _
 from frappe.utils import cint, flt
 
-from pepl_os.pepl_production import config, job_work, ld, load_view, machine_booking, oee, standup
+from pepl_os.pepl_production import config, job_work, kiosk, ld, load_view, machine_booking, oee, standup
 from pepl_os.pepl_production.masters import PIN_DIGITS_FIELD, PIN_DIGITS_RANGE
 from pepl_os.pepl_production.spr import GRACE_FIELD, GRACE_RANGE, UNACCOUNTED_FIELD
 
@@ -32,6 +32,14 @@ def validate_production_params(doc, method=None):
 	if aim not in (None, "") and not 0 < flt(aim) <= 100:
 		errors.append(_("OEE Target % must be more than 0 and at most 100."))
 	errors += config.validate_c1_params(doc)
+	for field, label, bounds in (
+		(kiosk.TRIES_FIELD, _("Kiosk: Wrong PIN Tries"), kiosk.TRIES_RANGE),
+		(kiosk.LOCK_FIELD, _("Kiosk: Lock Minutes"), kiosk.LOCK_RANGE),
+		(kiosk.SESSION_FIELD, _("Kiosk: Session Minutes"), kiosk.SESSION_RANGE),
+	):
+		value = doc.get(field)
+		if value not in (None, "") and not bounds[0] <= cint(value) <= bounds[1]:
+			errors.append(_("{0} must be between {1} and {2}.").format(label, bounds[0], bounds[1]))
 	days = doc.get(job_work.RETURN_DAYS_FIELD)
 	if days not in (None, "") and cint(days) < 1:
 		errors.append(_("Job-Work Return Days must be at least 1."))

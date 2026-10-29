@@ -1,0 +1,27 @@
+/* C3a-B1 - shift-entry kiosk: large type and buttons for a tablet beside the machine */
+#pepl-kiosk { font-size: 17px; max-width: 1200px; margin: 0 auto; }
+#pepl-kiosk h3 { font-size: 20px; margin: 0 0 10px; }
+#pepl-kiosk input, #pepl-kiosk select, #pepl-kiosk textarea { font-size: 18px; padding: 8px 10px; border: 1px solid var(--border-color, #d1d8dd); border-radius: 8px; width: 100%; background: var(--control-bg, #fff); }
+#pepl-kiosk label { display: block; margin-bottom: 12px; font-weight: 600; }
+.kiosk-head { display: grid; grid-template-columns: 2fr 1fr 1fr 2fr; gap: 14px; align-items: end; margin-bottom: 14px; }
+.kiosk-label { font-size: 13px; color: var(--text-muted, #6c7680); }
+.kiosk-machine { font-size: 26px; font-weight: 700; }
+.kiosk-who { text-align: right; font-weight: 600; }
+.kiosk-card { border: 1px solid var(--border-color, #d1d8dd); border-radius: 12px; padding: 16px; margin-bottom: 14px; background: var(--card-bg, #fff); }
+.kiosk-big-button { display: inline-block; font-size: 19px; font-weight: 600; padding: 14px 22px; margin: 6px 8px 6px 0; border-radius: 10px; border: 0; background: var(--primary, #2490ef); color: #fff; text-decoration: none; }
+.kiosk-big-button:disabled { opacity: 0.5; }
+.kiosk-green { background: #29a745; } .kiosk-grey { background: #6c7680; }
+.kiosk-red { border-color: #e24c4c; color: #b52a2a; } .kiosk-orange { border-color: #f0a33a; }
+.kiosk-machines { display: flex; flex-wrap: wrap; }
+.kiosk-table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
+.kiosk-table td, .kiosk-table th { padding: 4px; vertical-align: top; }
+.kiosk-table th { font-size: 13px; color: var(--text-muted, #6c7680); text-align: left; }
+.kiosk-add { font-size: 16px; padding: 8px 14px; border-radius: 8px; border: 1px dashed var(--border-color, #d1d8dd); background: transparent; }
+.kiosk-remove { font-size: 18px; border: 0; background: transparent; color: #b52a2a; }
+.kiosk-hint { font-size: 13px; font-weight: 400; }
+.kiosk-panels { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.kiosk-row { padding: 4px 0; } .kiosk-row::before { content: "●"; margin-right: 8px; }
+.kiosk-row.green::before { color: #29a745; } .kiosk-row.orange::before { color: #f0a33a; } .kiosk-row.red::before { color: #e24c4c; } .kiosk-row.gray::before, .kiosk-row.blue::before { color: #98a1a9; }
+.kiosk-photo { max-width: 90px; max-height: 70px; border-radius: 6px; display: block; margin-top: 4px; }
+#k-message .kiosk-card { font-weight: 600; }
+@media (max-width: 800px) { .kiosk-head, .kiosk-panels { grid-template-columns: 1fr 1fr; } }

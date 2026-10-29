@@ -372,6 +372,29 @@ PRODUCTION_FIELDS = _chain(
 			"default": "1",
 			"description": "When on, every tool change needs a photo of the removed tool before submit.",
 		},
+		# C3a-B1 - the shop-floor kiosk
+		{
+			"fieldname": "custom_kiosk_pin_tries",
+			"label": "Kiosk: Wrong PIN Tries",
+			"fieldtype": "Int",
+			"default": "5",
+			"description": "After this many wrong PINs (3 to 10) the operator's code is locked on the kiosk.",
+		},
+		{
+			"fieldname": "custom_kiosk_lock_minutes",
+			"label": "Kiosk: Lock Minutes",
+			"fieldtype": "Int",
+			"default": "15",
+			"description": "How long a code stays locked after too many wrong PINs (1 to 120 minutes).",
+		},
+		{
+			"fieldname": "custom_kiosk_session_minutes",
+			"label": "Kiosk: Session Minutes",
+			"fieldtype": "Int",
+			"default": "30",
+			"description": "An operator signed in on the kiosk is signed out after this many minutes without saving "
+			"(5 to 240).",
+		},
 		# C3a-X5 - Job Orders from Sales Orders
 		{"fieldname": "custom_job_orders_section", "label": "Job Orders", "fieldtype": "Section Break"},
 		{

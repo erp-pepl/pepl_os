@@ -10,7 +10,12 @@ import frappe
 
 # New PEPL roles created by pepl_os. Later cycles add theirs here
 # (e.g. "PEPL Weighment", "PEPL Kiosk", "PEPL Tally Ingest").
-PEPL_ROLES = ("PEPL CEO", "PEPL Weighment")  # C2-18: the weighbridge / scrap weighment operator
+PEPL_ROLES = (
+	"PEPL CEO",
+	"PEPL Weighment",  # C2-18: the weighbridge / scrap weighment operator
+	"PEPL Kiosk",  # C3a-B1: the shop-floor kiosk device (web pages only, no Desk)
+)
+NO_DESK_ROLES = ("PEPL Kiosk",)
 
 # Role Profile -> roles. One profile = one job at PEPL. Names are in PEPL's
 # words, prefixed "PEPL". A user may hold more than one profile; Frappe then
@@ -36,6 +41,8 @@ ROLE_PROFILES = {
 	"PEPL Stores": ("Stock User", "PEPL Weighment"),
 	"PEPL Production Manager": ("Manufacturing Manager", "Manufacturing User", "Stock User"),
 	"PEPL Foreman": ("Manufacturing User",),
+	# C3a-B1: the login of a kiosk tablet beside the machines (operators sign in on it with code + PIN)
+	"PEPL Kiosk": ("PEPL Kiosk",),
 	"PEPL Quality Manager": ("Quality Manager", "Stock User"),
 	"PEPL Accounts": ("Accounts Manager", "Accounts User"),
 	# View-everything access for PEPL CEO is granted by pepl_os.setup.permissions.grant_ceo_view.
@@ -62,9 +69,13 @@ PROFILE_CORRECTIONS_V0_3 = {
 def ensure_roles():
 	for role_name in PEPL_ROLES:
 		if not frappe.db.exists("Role", role_name):
-			frappe.get_doc({"doctype": "Role", "role_name": role_name, "desk_access": 1}).insert(
-				ignore_permissions=True
-			)
+			frappe.get_doc(
+				{
+					"doctype": "Role",
+					"role_name": role_name,
+					"desk_access": 0 if role_name in NO_DESK_ROLES else 1,
+				}
+			).insert(ignore_permissions=True)
 
 
 def ensure_role_profiles():
