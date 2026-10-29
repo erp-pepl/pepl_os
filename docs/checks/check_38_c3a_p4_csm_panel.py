@@ -1,4 +1,4 @@
-# PEPL OS v0.38.0 - Check 38: C3a-P4 the customer-supplied material (CSM) panel on the Job Order - what this Job
+# PEPL OS v0.38.0 - Check 38 rev 2: C3a-P4 the customer-supplied material (CSM) panel on the Job Order - what this Job
 # Order still needs of the customer's material, what the whole Sales Order still needs, against what the order holds
 # in the CSM stores; green / orange / red, short by, enough for n pieces.
 # Runs on 0.38.0 or later. System Console, Type = Python. Leave "Commit" UNTICKED: everything below, including the
@@ -55,6 +55,11 @@ params = frappe.get_doc(PARAMS)
 params.csm_reconciliation_tolerance_kg = 0.5
 params.custom_job_order_from_sales_order = 1
 params.save()
+# rev 2: section 4 puts the same part on two lines of one order, which ERPNext allows only when Selling Settings
+# "Allow Item to Be Added Multiple Times in a Transaction" is on (rolled back with the rest).
+selling = frappe.get_doc("Selling Settings")
+selling.allow_multiple_items = 1
+selling.save()
 
 # ---------------- 2. a shaft made from the customer's steel ----------------
 # The finished shaft is a sales item with an 8-digit HSN code (India Compliance checks the Sales Order); the

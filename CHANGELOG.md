@@ -2,6 +2,13 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.39.1 — Tests only: P4 test independent of Selling Settings
+
+- CI #39 (whole suite on 0.36.0–0.39.0): the C3a-P4 test that puts the same part on two Sales Order lines was
+  refused on the CI site, where Selling Settings "Allow Item to Be Added Multiple Times in a Transaction" is off
+  (the bench has it on, so Check 38 passed). The test now switches the setting on for itself. No app change.
+- Check 38 rev 2 does the same, so it runs on any site (demo / live).
+
 ## 0.39.0 — Entry aids on the Shift Production Entry (C3a-P5)
 
 - A saved **Shift Production Entry** shows a panel **Entry aids** next to the Shift panel:

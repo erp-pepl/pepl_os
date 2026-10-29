@@ -15,7 +15,7 @@ from pepl_os.tests.factories import (
 	make_work_order,
 	test_warehouse,
 )
-from pepl_os.tests.utils import PEPLTestCase, set_param
+from pepl_os.tests.utils import PEPLTestCase, set_param, set_single
 
 STEEL = "T-P4-CSM-STEEL"  # customer's bar, Kg, no heat tracking
 SHAFT = "T-P4-FG-SHAFT"  # 2 Kg of steel a piece
@@ -101,6 +101,9 @@ class TestJobOrderCSMPanel(PEPLTestCase):
 		self.assertIn("(enough for 7 pieces)", rows[1]["text"])
 
 	def test_enough_for_this_job_order_not_for_the_whole_order(self):
+		# Two lines of the same part: ERPNext refuses that unless Selling Settings allows it (CI #39: the bench had it
+		# on, the CI site has it off). The test sets it, so it runs the same everywhere.
+		set_single("Selling Settings", "allow_multiple_items", 1)
 		so = self._order([(SHAFT, 10), (SHAFT, 5)], received=25)
 		first = _job_orders(so)[0]
 		self.assertEqual(frappe.db.get_value("Work Order", first, "qty"), 10)
