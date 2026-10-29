@@ -294,6 +294,22 @@ def entry_state(session):
 	return state
 
 
+def entry_company(production=()):
+	"""The company of a new kiosk entry. A kiosk login has no default company (C3a-B1 fix found by CI #43), so:
+	the company of the first Job Card on the entry, else the site's default company, else the only company."""
+	for r in production or []:
+		company = r.get("job_card") and frappe.db.get_value("Job Card", r.get("job_card"), "company")
+		if company:
+			return company
+	company = frappe.db.get_single_value("Global Defaults", "default_company")
+	if company:
+		return company
+	companies = frappe.get_all("Company", pluck="name", limit=2)
+	if len(companies) == 1:
+		return companies[0]
+	frappe.throw(_("Pick a Job Card on the first row: the kiosk takes the company from it."))
+
+
 def _attach_photo(doc, data_url, label):
 	"""A photo taken on the kiosk (data URL, JPEG / PNG) saved as a private File on the entry."""
 	if not data_url or not str(data_url).startswith("data:image/"):
@@ -338,6 +354,7 @@ def save_entry(token, production=None, downtime=None, tool_changes=None):
 				"shift": session["shift"],
 				"workstation": session["machine"],
 				"operator": session["operator"],
+				"company": entry_company(production),
 			}
 		)
 	doc.set("production", [])

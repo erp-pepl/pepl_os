@@ -2,6 +2,13 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.42.1 — Kiosk: the entry's company (C3a-B1 fix)
+
+- CI #43 (6 kiosk tests): a new kiosk entry was refused with "Value missing: Company". A kiosk login has no
+  default company (the bench worked only because its site has one). A new entry now takes the company of the
+  Job Card on its first row, else the site's default company, else the only company; with none of these it asks
+  for a Job Card on the first row. Regression test added.
+
 ## 0.42.0 — Shift-entry kiosk and foreman view (C3a-B1)
 
 - **Kiosk page** `/kiosk?machine=<machine>` (website, not the Desk) for a tablet beside each machine. The tablet is

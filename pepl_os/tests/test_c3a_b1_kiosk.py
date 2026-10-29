@@ -157,6 +157,15 @@ class TestKiosk(PEPLTestCase):
 		self.assertEqual((len(doc.production), len(doc.downtime), doc.total_good_qty), (1, 1, 38))
 		self.assertEqual(again["production"][0]["from_time"], "08:00")
 
+	def test_the_entry_takes_the_company_of_its_job_card(self):
+		# Regression (CI #43): a kiosk login has no default company; the entry was refused for a missing company.
+		token = self._sign_in()["token"]
+		name = self._full_shift(token)["entry"]
+		self.assertEqual(
+			frappe.db.get_value(spr.DOCTYPE, name, "company"),
+			frappe.db.get_value("Job Card", self.card, "company"),
+		)
+
 	def test_signing_in_again_brings_back_the_draft(self):
 		token = self._sign_in()["token"]
 		name = self._full_shift(token)["entry"]
