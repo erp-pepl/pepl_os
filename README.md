@@ -115,6 +115,7 @@ Admin screens after install:
 | C3a-P1 Job Order status panel | Work Order form panel: made vs target, shop-floor good / rejected, every routing step with its machine and progress (next step ▶), due date days left / late, LD so far on the Sales Order line |
 | C3a-P2 Production Plan machine load | Production Plan form panel: per machine, this plan's hours + hours already booked on those days against available hours (working hours or active shifts x jobs at once x working days less holidays), load % red / orange (warning % in System Parameters) / green |
 | C3a-P3 Job-Work outstanding panel | Supplier (job worker) and Stock Entry form panels: items still outside, since when, due back / overdue / GST one-year limit, value; red line when an entry brings back more than is outside; button to the Job-Work Reconciliation report |
+| C3a-P4 CSM panel on the Job Order | Work Order form panel (draft and submitted): customer material this Job Order still needs, what the whole Sales Order still needs, what the order holds in CSM stores (enough for n pieces); green / orange / red with short by; no Sales Order → red |
 
 ## Tests
 

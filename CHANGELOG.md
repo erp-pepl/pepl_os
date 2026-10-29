@@ -2,6 +2,20 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.38.0 — Customer-supplied material panel on the Job Order (C3a-P4)
+
+- A **Job Order** (draft or submitted) whose BOM uses customer-supplied material shows a panel **Customer-supplied
+  material**, one line per CSM item: CSM a piece x pieces still to make = what this Job Order needs; what the
+  Sales Order holds in the CSM stores and how many pieces that is enough for; what is already issued or consumed
+  and what sits in CSM Scrap.
+- Green when the order holds enough for everything the whole order still needs (its lines' BOMs less what is
+  already issued or consumed); orange when it covers this Job Order but not the whole order ("the whole order
+  still needs …"); red "short by …" when this Job Order cannot be finished from what is held. "CSM Reconciliation
+  Tolerance (kg)" is allowed. Material already issued to the shop floor counts towards the Job Order.
+- A Job Order using customer material without a Sales Order is red (customer material moves only against its
+  order). Built on the C2-16 CSM balance and the C3a-X9 CSM-per-piece rule, so all three agree.
+- Check 38.
+
 ## 0.37.0 — Job-Work outstanding panel (C3a-P3)
 
 - **Supplier** form of a job worker (a Supplier named as "Job Worker" on a store): panel **Job work outstanding** -
