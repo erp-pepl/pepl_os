@@ -2,6 +2,23 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.44.0 — HR-lite: operators, skill matrix, shift eligibility (C3a-B3)
+
+- **Operator ↔ Employee:** new field **Employee** on PEPL Operator. When set, the operator's name, joining date and
+  login come from the Employee, and an Employee who is Left / Inactive / Suspended makes the operator Inactive (no
+  kiosk, no shift entry). Saving the Employee updates its operator. One Employee = one operator.
+- **Eligible Shifts** on the operator (empty = any shift); the Default Shift must be one of them. New setting
+  **Shift Eligibility Check** (System Parameters → Production → Operators (HR-lite), default Warn): Warn shows
+  "not set to work the … shift" on the entry's Shift panel (Desk and kiosk); Block refuses the shift entry and the
+  kiosk sign-in.
+- **Report "PEPL Skill Matrix"** (Production Command Centre → Reports): every operator against every machine group -
+  level 1-4, green at or above the Minimum Skill Level, orange below it or expiring, red expired; a last row with
+  the qualified operators per group (red below **Minimum Qualified Operators per Machine Group**, default 2); a
+  To Do column per operator (no PIN, no skills, no default shift, no Employee, skills expired / expiring).
+- The operator panel adds the Employee, the eligible shifts and skills expiring within **Skill Expiry Warning
+  Days** (default 30).
+- No payroll. Check 44.
+
 ## 0.43.1 — Estimate vs Actual Cost: Manufacture entries on ERPNext v16 (C3a-B2 fix)
 
 - CI #47: a Job Order with a Manufacture entry stopped the report with "Unknown column 'is_scrap_item'" - ERPNext

@@ -577,6 +577,37 @@ PRODUCTION_FIELDS = _chain(
 			"description": "The Estimate vs Actual Cost report shows a Job Order red when its actual cost a piece is "
 			"above the CST estimate by more than this (more than 0, at most 100).",
 		},
+		# C3a-B3 - HR-lite: operators, skills, shift eligibility
+		{
+			"fieldname": "custom_operators_section",
+			"label": "Operators (HR-lite)",
+			"fieldtype": "Section Break",
+		},
+		{
+			"fieldname": "custom_shift_eligibility_mode",
+			"label": "Shift Eligibility Check",
+			"fieldtype": "Select",
+			"options": "Warn\nBlock",
+			"default": "Warn",
+			"description": "An operator with Eligible Shifts entering another shift: Warn = shown on the entry's Shift "
+			"panel; Block = the entry and the kiosk sign-in are refused. Operators without Eligible Shifts may work "
+			"any shift.",
+		},
+		{
+			"fieldname": "custom_skill_expiry_warning_days",
+			"label": "Skill Expiry Warning Days",
+			"fieldtype": "Int",
+			"default": "30",
+			"description": "A skill whose Valid Until is this close shows orange on the operator and in the Skill Matrix.",
+		},
+		{
+			"fieldname": "custom_skill_min_cover",
+			"label": "Minimum Qualified Operators per Machine Group",
+			"fieldtype": "Int",
+			"default": "2",
+			"description": "The Skill Matrix shows a machine group red when fewer active operators than this hold the "
+			"Minimum Skill Level on it (one absence would stop the machines).",
+		},
 	],
 	after="custom_overhead_percent",
 )

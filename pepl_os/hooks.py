@@ -90,6 +90,8 @@ PAYMENTS = "pepl_os.pepl_purchase.payments"
 doc_events = {
 	# C3a-B1: a login given the PEPL Kiosk profile opens the kiosk after logging in
 	"User": {"on_update": "pepl_os.pepl_production.kiosk.on_user_update"},
+	# C3a-B3: an operator linked to an Employee follows it (name, joining date, login, Left / Inactive)
+	"Employee": {"on_update": "pepl_os.pepl_production.hr_lite.on_employee_update"},
 	"PEPL System Parameters": {
 		# C2-02: no negative days, percentages 0-100, class A + B below 100.
 		# C3a-X2: operator PIN length 4-6.

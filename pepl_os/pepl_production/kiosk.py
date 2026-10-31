@@ -27,7 +27,7 @@ from frappe.utils import add_days, cint, flt, get_datetime, get_time, getdate, n
 
 from pepl_os.common import params
 from pepl_os.common.overrides import _clean_reason, log_override
-from pepl_os.pepl_production import masters, skill, spr, spr_aids
+from pepl_os.pepl_production import hr_lite, masters, skill, spr, spr_aids
 from pepl_os.pepl_production.job_order_panel import qty_text
 
 KIOSK_ROLE = "PEPL Kiosk"
@@ -225,6 +225,7 @@ def sign_in(machine, shift, posting_date, employee_code, pin):
 		)
 	if not frappe.db.get_value(masters.SHIFT, {"name": shift, "is_active": 1}):
 		frappe.throw(_("Choose an active shift."))
+	hr_lite.check_sign_in(operator, shift)  # C3a-B3: Block mode refuses a shift the operator is not set for
 	token = frappe.generate_hash(length=32)
 	session = {
 		"operator": operator,

@@ -7,6 +7,7 @@ from frappe.utils import cint, flt
 from pepl_os.pepl_production import (
 	config,
 	costing,
+	hr_lite,
 	job_work,
 	kiosk,
 	ld,
@@ -42,6 +43,7 @@ def validate_production_params(doc, method=None):
 	if aim not in (None, "") and not 0 < flt(aim) <= 100:
 		errors.append(_("OEE Target % must be more than 0 and at most 100."))
 	errors += config.validate_c1_params(doc)
+	errors += hr_lite.validate_params(doc)  # C3a-B3
 	for field, label, bounds in (
 		(kiosk.TRIES_FIELD, _("Kiosk: Wrong PIN Tries"), kiosk.TRIES_RANGE),
 		(kiosk.LOCK_FIELD, _("Kiosk: Lock Minutes"), kiosk.LOCK_RANGE),

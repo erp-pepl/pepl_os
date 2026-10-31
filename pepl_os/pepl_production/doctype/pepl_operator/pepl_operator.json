@@ -8,10 +8,12 @@
   "employee_code",
   "operator_name",
   "status",
+  "employee",
   "column_break_user",
   "default_shift",
   "joining_date",
   "user",
+  "eligible_shifts",
   "section_break_pin",
   "pin",
   "column_break_pin",
@@ -50,6 +52,13 @@
    "in_standard_filter": 1
   },
   {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "label": "Employee",
+   "options": "Employee",
+   "description": "The person's Employee record. When set, the name, joining date, login and Left / Inactive status come from it (C3a-B3)."
+  },
+  {
    "fieldname": "column_break_user",
    "fieldtype": "Column Break"
   },
@@ -71,6 +80,13 @@
    "label": "ERPNext Login",
    "options": "User",
    "description": "Only if this person also logs in to ERPNext (e.g. a foreman). Shop-floor entries use the PIN."
+  },
+  {
+   "fieldname": "eligible_shifts",
+   "fieldtype": "Table MultiSelect",
+   "label": "Eligible Shifts",
+   "options": "PEPL Operator Shift",
+   "description": "The shifts this operator may work. Empty = any shift. What happens otherwise: System Parameters → Shift Eligibility Check."
   },
   {
    "fieldname": "section_break_pin",
@@ -124,7 +140,7 @@
  ],
  "index_web_pages_for_search": 0,
  "links": [],
- "modified": "2026-10-15 16:00:00.000000",
+ "modified": "2026-10-31 19:00:00.000000",
  "modified_by": "Administrator",
  "module": "PEPL Production",
  "name": "PEPL Operator",

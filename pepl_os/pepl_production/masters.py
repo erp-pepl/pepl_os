@@ -233,4 +233,7 @@ def get_operator_panel(name):
 			rows.append({"text": label, "colour": "green"})
 		else:
 			rows.append({"text": label, "colour": "orange"})
+	from pepl_os.pepl_production import hr_lite  # C3a-B3: Employee, eligible shifts, skills expiring soon
+
+	rows += hr_lite.get_operator_hr_panel(name)["rows"]
 	return {"rows": rows}

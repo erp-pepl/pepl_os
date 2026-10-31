@@ -19,7 +19,7 @@ from frappe import _
 from frappe.utils import cint, flt, get_datetime, getdate, strip_html, to_timedelta, today
 
 from pepl_os.common import params
-from pepl_os.pepl_production import skill
+from pepl_os.pepl_production import hr_lite, skill
 from pepl_os.pepl_production.job_order_panel import qty_text
 from pepl_os.pepl_production.masters import DOWNTIME, OPERATOR, SHIFT
 from pepl_os.pepl_stores import stock_tree
@@ -91,6 +91,7 @@ def validate_entry(doc):
 	_set_defaults(doc)
 	shift = _check_header(doc)
 	skill.check_on_save(doc)  # C3a-X7
+	hr_lite.check_entry(doc)  # C3a-B3: the operator's eligible shifts
 	grace = grace_minutes()
 	window = shift_window(doc.posting_date, shift)
 	intervals = []
@@ -588,6 +589,9 @@ def panel_rows(doc):
 	else:
 		rows.append({"text": explained + " · " + _("every minute explained"), "colour": "green"})
 	rows.append(skill.panel_row(doc))  # C3a-X7
+	eligibility = hr_lite.panel_row(doc)  # C3a-B3
+	if eligibility:
+		rows.append(eligibility)
 
 	made = flt(doc.total_good_qty) + flt(doc.total_rejected_qty)
 	if made:
