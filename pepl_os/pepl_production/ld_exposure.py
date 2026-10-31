@@ -17,6 +17,7 @@ from frappe.utils import add_days, cint, flt, getdate, today
 
 from pepl_os.common import params
 from pepl_os.pepl_production import ld
+from pepl_os.pepl_production.job_order_panel import qty_text
 
 LOOK_AHEAD_FIELD = "custom_ld_look_ahead_days"
 DEFAULT_LOOK_AHEAD = 7
@@ -78,9 +79,9 @@ def order_rows(filters=None):
 				"sector": so.get("custom_sector") or "",
 				"order_value": flt(so.base_net_total),
 				"terms": _("{0}% per {1}, cap {2}%{3}").format(
-					flt(terms["rate"]),
+					qty_text(terms["rate"]),
 					_(terms["period"]).lower(),
-					flt(terms["cap"]),
+					qty_text(terms["cap"]),
 					(", " + _("{0} grace days").format(terms["grace"])) if terms["grace"] else "",
 				)
 				if applies

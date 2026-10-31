@@ -83,7 +83,7 @@ class TestLDExposure(PEPLTestCase):
 		)  # 17 days in 7 = 3 weeks
 		self.assertEqual((row["days_late"], row["late_lines"], row["pending_qty"]), (10, 1, 10))
 		self.assertEqual((row["cap_amount"], row["cap_used"], row["colour"]), (100, 10, "red"))
-		self.assertEqual(row["terms"], "0.5% per week, cap 10%")
+		self.assertEqual(row["terms"], "0.5% per week, cap 10%")  # Regression (CI #52): never "cap 10.0%"
 		self.assertEqual(len(lines), 1)
 		self.assertEqual((lines[0]["days_late"], lines[0]["late_qty"], lines[0]["ld_now"]), (10, 10, 10))
 

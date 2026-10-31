@@ -2,6 +2,11 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.46.1 — LD Exposure: terms written as people write them (C3a-B5 fix)
+
+- CI #52 (1 of 611): the LD Terms column read "0.5% per week, cap 10.0%"; it now reads "cap 10%" (rate and cap
+  written without needless decimals, as everywhere else). Regression test. Check 46 unchanged.
+
 ## 0.46.0 — LD Exposure report (C3a-B5)
 
 - **Report "PEPL LD Exposure"** (Production Command Centre → Reports): for every open Sales Order (submitted, not
