@@ -2,6 +2,20 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.45.0 — Bottleneck report (C3a-B4)
+
+- **Report "PEPL Bottleneck"** (Production Command Centre → Reports): how long work waits in front of each machine
+  group between Job Order operations, from the Job Card time logs (where the shift entries post their blocks).
+  Wait = this operation's first start - the previous operation's finish (complete: good quantity logged reaches the
+  Job Card quantity, or the Job Card is submitted). Started before the previous one finished = "Overlapped" (no
+  wait). Previous finished, this one not started, Job Order open = "Waiting now" with the hours so far. The first
+  operation of a Job Order has no wait. Clock hours.
+- Per machine group: waits, average / longest / total wait, overlaps, jobs waiting now and the oldest, run hours;
+  ranked by average wait; the first is marked the bottleneck. "Show: Operations" lists each wait.
+- New setting **Bottleneck: Wait Warning Hours** (System Parameters → Production → Bottleneck, default 8): a group
+  waiting longer on average is red; a group with work waiting now is orange.
+- Check 45.
+
 ## 0.44.1 — HR-lite: skill expiry read from any row (C3a-B3 fix)
 
 - CI #49 (1 of 595): the skill-expiry rule read `row.valid_until`, which works on Frappe rows but not on a plain

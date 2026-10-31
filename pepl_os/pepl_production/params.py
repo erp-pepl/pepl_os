@@ -5,6 +5,7 @@ from frappe import _
 from frappe.utils import cint, flt
 
 from pepl_os.pepl_production import (
+	bottleneck,
 	config,
 	costing,
 	hr_lite,
@@ -44,6 +45,9 @@ def validate_production_params(doc, method=None):
 		errors.append(_("OEE Target % must be more than 0 and at most 100."))
 	errors += config.validate_c1_params(doc)
 	errors += hr_lite.validate_params(doc)  # C3a-B3
+	wait = doc.get(bottleneck.WARNING_FIELD)
+	if wait not in (None, "") and flt(wait) <= 0:
+		errors.append(_("Bottleneck: Wait Warning Hours must be more than 0."))  # C3a-B4
 	for field, label, bounds in (
 		(kiosk.TRIES_FIELD, _("Kiosk: Wrong PIN Tries"), kiosk.TRIES_RANGE),
 		(kiosk.LOCK_FIELD, _("Kiosk: Lock Minutes"), kiosk.LOCK_RANGE),

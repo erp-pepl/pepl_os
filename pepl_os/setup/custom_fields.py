@@ -608,6 +608,16 @@ PRODUCTION_FIELDS = _chain(
 			"description": "The Skill Matrix shows a machine group red when fewer active operators than this hold the "
 			"Minimum Skill Level on it (one absence would stop the machines).",
 		},
+		# C3a-B4 - bottleneck report
+		{"fieldname": "custom_bottleneck_section", "label": "Bottleneck", "fieldtype": "Section Break"},
+		{
+			"fieldname": "custom_bottleneck_wait_warning_hours",
+			"label": "Bottleneck: Wait Warning Hours",
+			"fieldtype": "Float",
+			"default": "8",
+			"description": "The Bottleneck report shows a machine group red when work waited in front of it longer than "
+			"this on average (clock hours between the previous operation finishing and this one starting).",
+		},
 	],
 	after="custom_overhead_percent",
 )
