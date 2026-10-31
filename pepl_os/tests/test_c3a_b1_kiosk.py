@@ -257,6 +257,40 @@ class TestKiosk(PEPLTestCase):
 		self.assertIn("PEPL Kiosk", roles.ROLE_PROFILES)
 		self.assertTrue(frappe.db.exists("Role Profile", "PEPL Kiosk"))
 
+	# ---- a kiosk login opens the kiosk ----
+	def test_kiosk_role_home_page_is_the_kiosk(self):
+		self.assertEqual(frappe.db.get_value("Role", kiosk.KIOSK_ROLE, "home_page"), kiosk.KIOSK_HOME)
+		self.assertEqual(frappe.get_hooks("role_home_page").get(kiosk.KIOSK_ROLE), [kiosk.KIOSK_HOME])
+
+	def test_a_new_kiosk_login_opens_the_kiosk_after_login(self):
+		# Found on the bench: after login a kiosk user was sent to /desk and met "Not Permitted".
+		user = make_user("t-b1-tablet@example.com", [kiosk.KIOSK_ROLE])
+		self.assertEqual(frappe.db.get_value("User", user, "user_type"), "Website User")
+		self.assertEqual(frappe.db.get_value("User", user, "default_app"), "pepl_os")
+		frappe.set_user(user)
+		from frappe.apps import get_default_path
+		from frappe.website.utils import get_home_page
+
+		frappe.cache.hdel("home_page", user)
+		# what Frappe's login does for a website user (frappe.auth.LoginManager.set_user_info)
+		self.assertEqual(get_default_path() or "/" + get_home_page(), "/kiosk")
+		self.assertTrue(kiosk.kiosk_app_permission())
+
+	def test_desk_users_are_left_alone(self):
+		foreman = make_user("t-b1-foreman@example.com", ["Manufacturing User", kiosk.KIOSK_ROLE])
+		self.assertEqual(frappe.db.get_value("User", foreman, "user_type"), "System User")
+		self.assertFalse(frappe.db.get_value("User", foreman, "default_app"))
+		self.assertFalse(kiosk.kiosk_app_permission())  # Administrator does not see the kiosk app
+
+	def test_older_kiosk_logins_are_pointed_home_and_a_choice_is_kept(self):
+		user = make_user("t-b1-old-tablet@example.com", [kiosk.KIOSK_ROLE])
+		frappe.db.set_value("User", user, "default_app", "")
+		self.assertIn(user, kiosk.point_kiosk_logins_home())
+		self.assertEqual(frappe.db.get_value("User", user, "default_app"), "pepl_os")
+		frappe.db.set_value("User", user, "default_app", "erpnext")  # picked by hand
+		self.assertNotIn(user, kiosk.point_kiosk_logins_home())
+		self.assertEqual(frappe.db.get_value("User", user, "default_app"), "erpnext")
+
 	def test_pages_exist(self):
 		for page in ("kiosk.html", "kiosk.js", "foreman.html", "foreman.js"):
 			self.assertTrue(os.path.exists(frappe.get_app_path("pepl_os", "www", page)), page)

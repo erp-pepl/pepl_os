@@ -1,11 +1,12 @@
-# PEPL OS v0.42.0 - Check 42: C3a-B1 the shift-entry kiosk and the foreman view - code + PIN (wrong PINs lock the
+# PEPL OS v0.42.2 - Check 42 rev 2: C3a-B1 the shift-entry kiosk and the foreman view - code + PIN (wrong PINs lock the
 # code), the operator's own entry saved from the kiosk rows (with the same help as the Desk), a tool-change photo
-# taken on the kiosk, submit, read-only afterwards, and the foreman's board.
-# Runs on 0.42.0 or later. System Console, Type = Python. Leave "Commit" UNTICKED: everything below is undone at the
+# taken on the kiosk, submit, read-only afterwards, and the foreman's board. Rev 2 (v0.42.2): a kiosk login opens
+# the kiosk after logging in (Default App pepl_os -> /kiosk, PEPL Kiosk role home page = kiosk).
+# Runs on 0.42.2 or later. System Console, Type = Python. Leave "Commit" UNTICKED: everything below is undone at the
 # end, except two things outside the database: the tiny test photo file (a few hundred bytes in private/files) and the
 # kiosk's short-lived lock / session entries in the cache (they expire by themselves; the locked test code is unique).
 # Then try the pages in the browser: see the steps in the chat (kiosk login, /kiosk?machine=..., /foreman).
-VERSION = "0.42.0"
+VERSION = "0.42.2"
 PARAMS = "PEPL System Parameters"
 SPR = "PEPL Shift Production Entry"
 K = "pepl_os.pepl_production.kiosk."
@@ -131,6 +132,17 @@ board = frappe.call(K + "foreman_board", posting_date=today, shift=DAY)
 mine = [r for r in board.get("rows") or [] if r.get("machine") == MILL]
 print("INFO  foreman board " + today + " " + DAY + ": " + str(board.get("submitted")) + " submitted, " + str(board.get("drafts")) + " draft, " + str(board.get("missing")) + " missing")
 check(bool(mine) and mine[0].get("state") == "Submitted" and mine[0].get("good") == "38" and ENTRY in mine[0].get("entries"), "6. the foreman board shows " + MILL + ": Submitted, 38 good, entry " + str(ENTRY))
+
+# ---------------- 7. a kiosk login opens the kiosk after logging in ----------------
+check(frappe.db.get_value("Role", "PEPL Kiosk", "home_page") == "kiosk", "7. the PEPL Kiosk role's home page is the kiosk")
+tablet = frappe.get_doc({"doctype": "User", "email": "chk42-tablet-" + RUN + "@example.com", "first_name": "CHK42 Tablet " + RUN, "send_welcome_email": 0,
+                         "roles": [{"role": "PEPL Kiosk"}]}).insert()
+tablet_values = frappe.db.get_value("User", tablet.name, ["user_type", "default_app"], as_dict=True)
+check(tablet_values.user_type == "Website User" and tablet_values.default_app == "pepl_os", "7. a new kiosk login is a Website User whose Default App is pepl_os (its page: /kiosk)")
+kiosk_users = [u for u in frappe.get_all("Has Role", filters={"role": "PEPL Kiosk", "parenttype": "User"}, pluck="parent") if frappe.db.get_value("User", u, "user_type") == "Website User"]
+missing = [u for u in kiosk_users if not frappe.db.get_value("User", u, "default_app")]
+print("INFO  kiosk logins on this site: " + (", ".join(u + " -> " + str(frappe.db.get_value("User", u, "default_app")) for u in kiosk_users) or "none"))
+check(not missing, "7. every kiosk login on this site opens the kiosk after logging in" + (" - not yet: " + ", ".join(missing) if missing else ""))
 
 print("")
 print("RESULT: " + str(len(passed)) + " passed, " + str(len(failed)) + " failed")

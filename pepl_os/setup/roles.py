@@ -16,6 +16,7 @@ PEPL_ROLES = (
 	"PEPL Kiosk",  # C3a-B1: the shop-floor kiosk device (web pages only, no Desk)
 )
 NO_DESK_ROLES = ("PEPL Kiosk",)
+ROLE_HOME_PAGES = {"PEPL Kiosk": "kiosk"}  # C3a-B1: the page a kiosk login opens
 
 # Role Profile -> roles. One profile = one job at PEPL. Names are in PEPL's
 # words, prefixed "PEPL". A user may hold more than one profile; Frappe then
@@ -74,8 +75,12 @@ def ensure_roles():
 					"doctype": "Role",
 					"role_name": role_name,
 					"desk_access": 0 if role_name in NO_DESK_ROLES else 1,
+					"home_page": ROLE_HOME_PAGES.get(role_name, ""),
 				}
 			).insert(ignore_permissions=True)
+		elif ROLE_HOME_PAGES.get(role_name) and not frappe.db.get_value("Role", role_name, "home_page"):
+			# a home page set by hand is kept
+			frappe.db.set_value("Role", role_name, "home_page", ROLE_HOME_PAGES[role_name])
 
 
 def ensure_role_profiles():

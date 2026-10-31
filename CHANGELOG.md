@@ -2,6 +2,16 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.42.2 — Kiosk: a kiosk login opens the kiosk after logging in (C3a-B1)
+
+- A kiosk login (role PEPL Kiosk, no Desk access) landed on "Not Permitted" at /desk after logging in. It now
+  lands on the kiosk: the **PEPL Kiosk** role's home page is `kiosk`, and every kiosk login gets
+  **Default App = pepl_os**, whose page (shown only to kiosk logins) is `/kiosk`. New kiosk logins are set when
+  saved; kiosk logins made before are set on migrate. A Default App someone has already chosen is kept; Desk
+  users are not touched. The tablet then picks its machine (or opens `/kiosk?machine=<machine>` once and is
+  bookmarked).
+- Tests added; Check 42 rev 2 (section 7).
+
 ## 0.42.1 — Kiosk: the entry's company (C3a-B1 fix)
 
 - CI #43 (6 kiosk tests): a new kiosk entry was refused with "Value missing: Company". A kiosk login has no

@@ -30,7 +30,9 @@ from pepl_os.common.overrides import _clean_reason, log_override
 from pepl_os.pepl_production import masters, skill, spr, spr_aids
 from pepl_os.pepl_production.job_order_panel import qty_text
 
-KIOSK_ROLES = ("PEPL Kiosk", "Manufacturing User", "Manufacturing Manager", "System Manager")
+KIOSK_ROLE = "PEPL Kiosk"
+KIOSK_HOME = "kiosk"  # the page a kiosk login opens after logging in
+KIOSK_ROLES = (KIOSK_ROLE, "Manufacturing User", "Manufacturing Manager", "System Manager")
 FOREMAN_ROLES = ("PEPL Foreman", "Manufacturing User", "Manufacturing Manager", "System Manager")
 TRIES_FIELD = "custom_kiosk_pin_tries"
 LOCK_FIELD = "custom_kiosk_lock_minutes"
@@ -60,6 +62,50 @@ def session_minutes():
 def _require(roles):
 	if not set(roles) & set(frappe.get_roles()):
 		frappe.throw(_("This page is for the shop-floor kiosk."), frappe.PermissionError)
+
+
+# The kiosk login lands on the kiosk -------------------------------------------------------------------------
+# After login Frappe sends a website user to the user's Default App (else to /desk when apps are installed), and a
+# kiosk login has no Desk, so it met "Not Permitted". pepl_os is listed as an app whose page is /kiosk (only for
+# kiosk logins), and every kiosk login gets pepl_os as its Default App; the PEPL Kiosk role's home page is the kiosk.
+
+
+def is_kiosk_login(user=None):
+	"""A login with the PEPL Kiosk role and no Desk (a Website User)."""
+	user = user or frappe.session.user
+	if user in ("Guest", "Administrator"):
+		return False
+	return frappe.db.get_value(
+		"User", user, "user_type"
+	) == "Website User" and KIOSK_ROLE in frappe.get_roles(user)
+
+
+def kiosk_app_permission():
+	"""add_to_apps_screen has_permission: the "Shift Entry Kiosk" app is shown to kiosk logins only."""
+	return is_kiosk_login()
+
+
+def point_to_kiosk(user):
+	"""Make the kiosk the Default App of a kiosk login (an app the user picked by hand is kept)."""
+	if not is_kiosk_login(user) or frappe.db.get_value("User", user, "default_app"):
+		return False
+	frappe.db.set_value("User", user, "default_app", "pepl_os", update_modified=False)
+	frappe.clear_document_cache("User", user)
+	frappe.cache.hdel("home_page", user)
+	return True
+
+
+def on_user_update(doc, method=None):
+	"""doc_events: User on_update - a login given the PEPL Kiosk profile opens the kiosk after logging in."""
+	point_to_kiosk(doc.name)
+
+
+def point_kiosk_logins_home():
+	"""Install / migrate: kiosk logins made before this release open the kiosk too."""
+	users = frappe.get_all(
+		"Has Role", filters={"role": KIOSK_ROLE, "parenttype": "User"}, pluck="parent", distinct=True
+	)
+	return [user for user in users if point_to_kiosk(user)]
 
 
 # Shifts and the page --------------------------------------------------------------------------------------

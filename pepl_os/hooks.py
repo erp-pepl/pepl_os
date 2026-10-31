@@ -12,6 +12,19 @@ required_apps = ["erpnext", "pepl_sales"]
 # Shared client helpers: pepl.ask_reason(), pepl.record_override(), pepl.panel()
 app_include_js = ["/assets/pepl_os/js/pepl_os_common.js"]
 
+# C3a-B1: a kiosk login (role PEPL Kiosk, no Desk) opens the shift-entry kiosk after logging in: pepl_os is listed as
+# an app whose page is /kiosk, shown only to kiosk logins, and is their Default App; the role's home page is the kiosk.
+add_to_apps_screen = [
+	{
+		"name": "pepl_os",
+		"logo": "/assets/frappe/images/frappe-framework-logo.svg",
+		"title": "Shift Entry Kiosk",
+		"route": "/kiosk",
+		"has_permission": "pepl_os.pepl_production.kiosk.kiosk_app_permission",
+	}
+]
+role_home_page = {"PEPL Kiosk": "kiosk"}
+
 # Installation
 # ------------
 # Custom fields and property setters are applied here (idempotent), never in
@@ -75,6 +88,8 @@ CSM = "pepl_os.pepl_stores.csm"
 PAYMENTS = "pepl_os.pepl_purchase.payments"
 
 doc_events = {
+	# C3a-B1: a login given the PEPL Kiosk profile opens the kiosk after logging in
+	"User": {"on_update": "pepl_os.pepl_production.kiosk.on_user_update"},
 	"PEPL System Parameters": {
 		# C2-02: no negative days, percentages 0-100, class A + B below 100.
 		# C3a-X2: operator PIN length 4-6.
