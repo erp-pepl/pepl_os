@@ -2,6 +2,18 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.46.0 — LD Exposure report (C3a-B5)
+
+- **Report "PEPL LD Exposure"** (Production Command Centre → Reports): for every open Sales Order (submitted, not
+  fully delivered) with an LD clause - late days x the contractual rate (per week or day, a part counted as a whole),
+  capped as the clause says, using the order's own terms (C3a-X11). Columns: terms, days late, late lines, pending
+  quantity, **LD so far**, **LD in N days** if nothing more is delivered, the LD added in that time, the cap and how
+  much of it is used. Red = LD running; orange = LD starts within the look-ahead; green = on time; grey = no LD
+  clause (only when "Only orders with LD terms" is unticked). "Show: Lines" gives each late or soon-due line.
+- New setting **LD: Look-Ahead Days** (System Parameters → Production, default 7, 0-365).
+- Bottleneck report: the summary now says "waiting in front of it now" (the count is for the bottleneck group).
+- Check 46.
+
 ## 0.45.0 — Bottleneck report (C3a-B4)
 
 - **Report "PEPL Bottleneck"** (Production Command Centre → Reports): how long work waits in front of each machine

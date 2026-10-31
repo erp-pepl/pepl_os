@@ -179,7 +179,7 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "Reports",
-   "link_count": 7,
+   "link_count": 8,
    "onboard": 0,
    "type": "Card Break"
   },
@@ -242,6 +242,17 @@
    "dependencies": "",
    "hidden": 0,
    "is_query_report": 1,
+   "label": "LD Exposure",
+   "link_count": 0,
+   "link_to": "PEPL LD Exposure",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 1,
    "label": "Downtime Category Review",
    "link_count": 0,
    "link_to": "PEPL Downtime Category Review",
@@ -261,7 +272,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-10-31 20:00:00.000000",
+ "modified": "2026-10-31 21:00:00.000000",
  "modified_by": "Administrator",
  "module": "PEPL Production",
  "name": "Production Command Centre",

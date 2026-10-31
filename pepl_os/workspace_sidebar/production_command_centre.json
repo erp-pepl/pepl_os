@@ -156,6 +156,18 @@
    "icon": "file-text",
    "indent": 0,
    "keep_closed": 0,
+   "label": "LD Exposure",
+   "link_to": "PEPL LD Exposure",
+   "link_type": "Report",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "file-text",
+   "indent": 0,
+   "keep_closed": 0,
    "label": "Production Settings",
    "link_to": "PEPL Production Settings",
    "link_type": "Report",
@@ -163,7 +175,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-10-31 20:00:00.000000",
+ "modified": "2026-10-31 21:00:00.000000",
  "modified_by": "Administrator",
  "module": "PEPL Production",
  "name": "Production Command Centre",

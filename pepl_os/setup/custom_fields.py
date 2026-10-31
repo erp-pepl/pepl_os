@@ -563,6 +563,14 @@ PRODUCTION_FIELDS = _chain(
 			"fieldtype": "Percent",
 			"default": "10",
 		},
+		{
+			"fieldname": "custom_ld_look_ahead_days",
+			"label": "LD: Look-Ahead Days",
+			"fieldtype": "Int",
+			"default": "7",
+			"description": "The LD Exposure report also shows the LD if nothing more is delivered in this many days, and "
+			"which orders start LD in that time (C3a-B5).",
+		},
 		# C3a-B2 - estimate against actual cost
 		{
 			"fieldname": "custom_costing_variance_section",

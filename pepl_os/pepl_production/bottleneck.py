@@ -250,7 +250,7 @@ def summary(groups, warning=None):
 		return _("No waiting between operations in this period.")
 	top = groups[0]
 	text = _(
-		"Bottleneck: {0} - work waited on average {1} h before its machines (longest {2} h); {3} job(s) waiting now."
+		"Bottleneck: {0} - work waited on average {1} h before its machines (longest {2} h); {3} job(s) waiting in front of it now."
 	).format(top["workstation_type"], top["average_hours"], top["longest_hours"], top["waiting_now"])
 	red = [g["workstation_type"] for g in groups if g["colour"] == "red"]
 	if red:
