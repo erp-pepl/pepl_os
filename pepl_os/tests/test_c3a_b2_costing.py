@@ -240,9 +240,11 @@ class TestCosting(PEPLTestCase):
 			{"s_warehouse": "RM", "basic_amount": 60},
 			{"s_warehouse": "BO", "basic_amount": 25},
 			{"t_warehouse": "FG", "basic_amount": 85, "is_finished_item": 1},
-			{"t_warehouse": "Scrap", "basic_amount": 4, "is_scrap_item": 1},
+			{"t_warehouse": "Scrap", "basic_amount": 4, "secondary_item_type": "Scrap"},
 		]
 		self.assertEqual(costing.material_value(rows), 81)
+		# Regression (CI #47): ERPNext v16 has no "is_scrap_item" column; nothing but warehouses is needed
+		self.assertNotIn("is_scrap_item", frappe.get_meta("Stock Entry Detail").get_valid_columns())
 
 	def test_erpnext_operating_cost_rows_are_left_out(self):
 		rows = [

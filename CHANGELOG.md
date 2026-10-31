@@ -2,6 +2,13 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.43.1 — Estimate vs Actual Cost: Manufacture entries on ERPNext v16 (C3a-B2 fix)
+
+- CI #47: a Job Order with a Manufacture entry stopped the report with "Unknown column 'is_scrap_item'" - ERPNext
+  v16 replaced that field with secondary items. Material is now told apart by warehouse only: rows taken from a
+  store are consumed, rows put into a store that are not the finished item (scrap, by-products) are returned and
+  taken off. Regression test added. Check 43 unchanged.
+
 ## 0.43.0 — Estimate vs Actual Cost report (C3a-B2)
 
 - **Report "PEPL Estimate vs Actual Cost"** (Production Command Centre → Reports; Job Order → View → Cost vs

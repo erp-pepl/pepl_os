@@ -7,7 +7,7 @@ Estimate (a piece) - the item's PEPL CST Cost Sheet:
   other = surface treatment + other charges (component and tender level); overhead = the CST's overhead amount.
 
 Actual (a piece) - the Job Order, the same way as the weekly CPC (C3a-X4):
-- material = what its Manufacture entries consumed (stock value), less the scrap they returned. Before the first
+- material = what its Manufacture entries consumed (stock value), less the scrap / by-products they returned. Before the first
   Manufacture entry: the BOM's raw-material cost a piece x pieces worked on the shop floor (good + rejected),
   marked "material from the BOM".
 - machining = run minutes on its submitted Shift Production Entries x the machine's Machine-Hour Rate (System
@@ -111,15 +111,19 @@ def _manufacture_entries(work_order):
 
 
 def material_value(rows):
-	"""Stock value the Manufacture entry rows consumed (raw material and bought-out), less the scrap they returned.
-	The finished item's own row is not material."""
-	consumed = scrap = 0.0
+	"""Stock value the Manufacture entry rows consumed (raw material and bought-out), less what they returned to
+	stock besides the finished item (scrap, by-products). Told apart by warehouse only: a row taken from a store is
+	consumed; a row put into a store that is not the finished item is returned. (ERPNext v16 replaced the old
+	"is_scrap_item" field with secondary items - CI #47 - so no scrap field is read.)"""
+	consumed = returned = 0.0
 	for row in rows:
-		if cint(row.get("is_scrap_item")):
-			scrap += flt(row.get("basic_amount")) if row.get("t_warehouse") else 0.0
-		elif not cint(row.get("is_finished_item")) and row.get("s_warehouse"):
+		if cint(row.get("is_finished_item")):
+			continue
+		if row.get("s_warehouse"):
 			consumed += flt(row.get("basic_amount"))
-	return consumed - scrap
+		elif row.get("t_warehouse"):
+			returned += flt(row.get("basic_amount"))
+	return consumed - returned
 
 
 def extra_cost_value(rows):
@@ -142,7 +146,7 @@ def _entry_rows(entries):
 	items = frappe.get_all(
 		"Stock Entry Detail",
 		filters=where,
-		fields=["s_warehouse", "t_warehouse", "basic_amount", "is_finished_item", "is_scrap_item"],
+		fields=["s_warehouse", "t_warehouse", "basic_amount", "is_finished_item"],
 	)
 	costs = frappe.get_all(
 		"Landed Cost Taxes and Charges",
