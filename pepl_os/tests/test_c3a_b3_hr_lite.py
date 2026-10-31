@@ -159,6 +159,7 @@ class TestHRLite(PEPLTestCase):
 
 	# ---- 2. skills ----
 	def test_skill_states(self):
+		# Regression (CI #49): plain dicts, not only Frappe rows, are read (row.get, never row.valid_until)
 		as_of = today()
 		self.assertEqual(hr_lite.skill_state({"valid_until": None}, as_of), "current")
 		self.assertEqual(hr_lite.skill_state({"valid_until": add_days(as_of, -1)}, as_of), "expired")

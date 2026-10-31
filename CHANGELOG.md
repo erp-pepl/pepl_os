@@ -2,6 +2,12 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.44.1 — HR-lite: skill expiry read from any row (C3a-B3 fix)
+
+- CI #49 (1 of 595): the skill-expiry rule read `row.valid_until`, which works on Frappe rows but not on a plain
+  dict, so it failed in the unit test. It now reads `row.get("valid_until")`. The screens were not affected
+  (Check 44 passed 22/0); the test is the regression test. Check 44 unchanged.
+
 ## 0.44.0 — HR-lite: operators, skill matrix, shift eligibility (C3a-B3)
 
 - **Operator ↔ Employee:** new field **Employee** on PEPL Operator. When set, the operator's name, joining date and

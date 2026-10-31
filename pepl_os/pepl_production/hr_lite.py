@@ -165,11 +165,11 @@ def panel_row(doc):
 
 # ---------------- 2. skills ----------------
 def skill_state(row, as_of=None, warn_days=None):
-	"""'expired', 'expiring' (within the warning days) or 'current'."""
+	"""'expired', 'expiring' (within the warning days) or 'current'. `row` may be a plain dict (CI #49)."""
 	as_of = getdate(as_of or today())
 	if not row.get("valid_until"):
 		return "current"
-	left = date_diff(row.valid_until, as_of)
+	left = date_diff(row.get("valid_until"), as_of)
 	if left < 0:
 		return "expired"
 	days = expiry_days() if warn_days is None else warn_days
