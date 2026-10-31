@@ -2,6 +2,20 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.47.0 — Shift-entry rejections go to the Scrap Register (C3a-B6)
+
+- When a Shift Production Entry is submitted, its rejected pieces become a **Scrap Weighment** (source Rejection),
+  linked to the entry (new fields Shift Production Entry, Rejected Pieces): scrap item = the made item's new
+  field **Scrap Item when Rejected** (Item, Inventory section), else System Parameters → **Rejection Scrap Item**;
+  weight = rejected pieces x the item's Weight Per Unit (Kg or Gram); submitted at once at the scrap rate of the
+  day into Scrap Yard. If the Job Order's BOM uses customer-supplied material, the CSM twin of the scrap item goes
+  into CSM Scrap at zero against the Job Order's Sales Order.
+- Scrap item, weight per unit or scrap rate missing: nothing is posted and Stores gets one ToDo on the entry
+  (rule PRD-REJECT-SCRAP). A failure never stops the entry.
+- Cancelling the entry cancels its weighments (and their scrap receipts) and closes the ToDo.
+- The entry's Shift panel says where the rejected pieces went. New setting **Rejections to Scrap Register** (on).
+- Check 47.
+
 ## 0.46.1 — LD Exposure: terms written as people write them (C3a-B5 fix)
 
 - CI #52 (1 of 611): the LD Terms column read "0.5% per week, cap 10.0%"; it now reads "cap 10%" (rate and cap

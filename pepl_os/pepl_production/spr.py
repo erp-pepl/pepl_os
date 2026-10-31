@@ -19,7 +19,7 @@ from frappe import _
 from frappe.utils import cint, flt, get_datetime, getdate, strip_html, to_timedelta, today
 
 from pepl_os.common import params
-from pepl_os.pepl_production import hr_lite, skill
+from pepl_os.pepl_production import hr_lite, rejection_scrap, skill
 from pepl_os.pepl_production.job_order_panel import qty_text
 from pepl_os.pepl_production.masters import DOWNTIME, OPERATOR, SHIFT
 from pepl_os.pepl_stores import stock_tree
@@ -448,6 +448,7 @@ def before_submit(doc):
 def on_submit(doc):
 	post_to_job_cards(doc)
 	issue_consumables(doc)
+	rejection_scrap.on_submit(doc)  # C3a-B6: rejected pieces to the Scrap Register
 
 
 def before_cancel(doc):
@@ -462,6 +463,7 @@ def before_cancel(doc):
 
 
 def on_cancel(doc):
+	rejection_scrap.on_cancel(doc)  # C3a-B6
 	remove_from_job_cards(doc)
 	cancel_consumables(doc)
 
@@ -592,6 +594,7 @@ def panel_rows(doc):
 	eligibility = hr_lite.panel_row(doc)  # C3a-B3
 	if eligibility:
 		rows.append(eligibility)
+	rows += rejection_scrap.panel_rows(doc)  # C3a-B6
 
 	made = flt(doc.total_good_qty) + flt(doc.total_rejected_qty)
 	if made:

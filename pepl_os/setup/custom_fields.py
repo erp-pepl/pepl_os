@@ -626,6 +626,27 @@ PRODUCTION_FIELDS = _chain(
 			"description": "The Bottleneck report shows a machine group red when work waited in front of it longer than "
 			"this on average (clock hours between the previous operation finishing and this one starting).",
 		},
+		# C3a-B6 - shift-entry rejections to the Scrap Register
+		{
+			"fieldname": "custom_rejection_scrap_section",
+			"label": "Rejections to Scrap",
+			"fieldtype": "Section Break",
+		},
+		{
+			"fieldname": "custom_rejections_to_scrap",
+			"label": "Rejections to Scrap Register",
+			"fieldtype": "Check",
+			"default": "1",
+			"description": "When a shift entry is submitted, its rejected pieces become a Scrap Weighment (source "
+			"Rejection) posted into Scrap Yard; if the scrap item, weight or rate is missing, Stores gets a ToDo.",
+		},
+		{
+			"fieldname": "custom_rejection_scrap_item",
+			"label": "Rejection Scrap Item",
+			"fieldtype": "Link",
+			"options": "Item",
+			"description": "The scrap item for rejected pieces of an item without its own 'Scrap Item when Rejected'.",
+		},
 	],
 	after="custom_overhead_percent",
 )
@@ -818,6 +839,16 @@ CUSTOM_FIELDS["Item"] = [
 		"in_standard_filter": 1,
 		"insert_after": "custom_heat_tracked",
 		"description": "A / B / C by 12-month consumption value, set every month. Decides how often it is counted.",
+	},
+	{
+		# C3a-B6
+		"fieldname": "custom_rejection_scrap_item",
+		"label": "Scrap Item when Rejected",
+		"fieldtype": "Link",
+		"options": "Item",
+		"insert_after": "weight_uom",
+		"description": "Pieces of this item rejected on a shift entry go to the Scrap Register as this scrap item "
+		"(weight = rejected pieces x Weight Per Unit). Empty = System Parameters > Rejection Scrap Item.",
 	},
 	{
 		"fieldname": "custom_last_counted_on",
