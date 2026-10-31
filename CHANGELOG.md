@@ -2,6 +2,13 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.42.3 — Kiosk: morning times shown again (C3a-B1 fix)
+
+- CI #45: a saved kiosk row starting at 08:00 came back to the page as "8:00:" (the database's time text cut at five
+  characters), which the tablet's time box cannot show - a morning row looked blank after Save or sign-in, and the
+  shift list read "8:00:-16:30". Times now always come back as HH:MM (08:00). Regression test added; Check 42 rev 3
+  checks the times.
+
 ## 0.42.2 — Kiosk: a kiosk login opens the kiosk after logging in (C3a-B1)
 
 - A kiosk login (role PEPL Kiosk, no Desk access) landed on "Not Permitted" at /desk after logging in. It now

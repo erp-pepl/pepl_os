@@ -2,6 +2,7 @@
 
 import base64
 import os
+from datetime import timedelta
 
 import frappe
 from frappe.utils import add_days, today
@@ -156,6 +157,16 @@ class TestKiosk(PEPLTestCase):
 		)
 		self.assertEqual((len(doc.production), len(doc.downtime), doc.total_good_qty), (1, 1, 38))
 		self.assertEqual(again["production"][0]["from_time"], "08:00")
+
+	def test_morning_times_come_back_as_two_digit_clock_times(self):
+		# Regression (CI #45): 08:00 came back as "8:00:" (the text of a timedelta cut at 5), which the kiosk's
+		# time box cannot show, so a morning row lost its time on the page.
+		self.assertEqual(kiosk._clock(timedelta(hours=8)), "08:00")
+		self.assertEqual(kiosk._clock(timedelta(hours=16, minutes=30)), "16:30")
+		self.assertEqual(kiosk._clock("08:05:00"), "08:05")
+		self.assertEqual((kiosk._clock(None), kiosk._clock("")), ("", ""))
+		shift = next(s for s in kiosk.kiosk_context(MILL)["shifts"] if s["name"] == DAY)
+		self.assertEqual((shift["start"], shift["end"]), ("08:00", "16:30"))
 
 	def test_the_entry_takes_the_company_of_its_job_card(self):
 		# Regression (CI #43): a kiosk login has no default company; the entry was refused for a missing company.

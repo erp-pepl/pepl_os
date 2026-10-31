@@ -23,7 +23,7 @@ from datetime import timedelta
 
 import frappe
 from frappe import _
-from frappe.utils import add_days, cint, flt, get_datetime, getdate, now_datetime, today
+from frappe.utils import add_days, cint, flt, get_datetime, get_time, getdate, now_datetime, today
 
 from pepl_os.common import params
 from pepl_os.common.overrides import _clean_reason, log_override
@@ -143,7 +143,7 @@ def kiosk_context(machine):
 		"machine": ws.name,
 		"machine_group": ws.workstation_type or "",
 		"shifts": [
-			{"name": s.name, "start": str(s.start_time)[:5], "end": str(s.end_time)[:5]} for s in _shifts()
+			{"name": s.name, "start": _clock(s.start_time), "end": _clock(s.end_time)} for s in _shifts()
 		],
 		"shift": shift,
 		"dates": [today(), add_days(today(), -1)],
@@ -276,7 +276,9 @@ def open_job_cards(machine):
 
 
 def _clock(value):
-	return str(value)[:5] if value else ""
+	"""A stored time as HH:MM for the page. The database gives a time as a timedelta, whose text has no leading zero
+	("8:00:00"), so cutting the text gave "8:00:", which a time box cannot show (CI #45)."""
+	return get_time(value).strftime("%H:%M") if value not in (None, "") else ""
 
 
 def entry_state(session):

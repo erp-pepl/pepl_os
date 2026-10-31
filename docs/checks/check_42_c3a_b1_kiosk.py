@@ -1,12 +1,13 @@
-# PEPL OS v0.42.2 - Check 42 rev 2: C3a-B1 the shift-entry kiosk and the foreman view - code + PIN (wrong PINs lock the
+# PEPL OS v0.42.3 - Check 42 rev 3: C3a-B1 the shift-entry kiosk and the foreman view - code + PIN (wrong PINs lock the
 # code), the operator's own entry saved from the kiosk rows (with the same help as the Desk), a tool-change photo
 # taken on the kiosk, submit, read-only afterwards, and the foreman's board. Rev 2 (v0.42.2): a kiosk login opens
-# the kiosk after logging in (Default App pepl_os -> /kiosk, PEPL Kiosk role home page = kiosk).
-# Runs on 0.42.2 or later. System Console, Type = Python. Leave "Commit" UNTICKED: everything below is undone at the
+# the kiosk after logging in (Default App pepl_os -> /kiosk, PEPL Kiosk role home page = kiosk). Rev 3 (v0.42.3):
+# times come back to the page as 08:00, not 8:00: (CI #45).
+# Runs on 0.42.3 or later. System Console, Type = Python. Leave "Commit" UNTICKED: everything below is undone at the
 # end, except two things outside the database: the tiny test photo file (a few hundred bytes in private/files) and the
 # kiosk's short-lived lock / session entries in the cache (they expire by themselves; the locked test code is unique).
 # Then try the pages in the browser: see the steps in the chat (kiosk login, /kiosk?machine=..., /foreman).
-VERSION = "0.42.2"
+VERSION = "0.42.3"
 PARAMS = "PEPL System Parameters"
 SPR = "PEPL Shift Production Entry"
 K = "pepl_os.pepl_production.kiosk."
@@ -119,6 +120,9 @@ out = frappe.call(K + "save_entry", token=TOKEN, production=[{"job_card": CARD, 
 check(out.get("entry") == ENTRY and len(frappe.get_doc(SPR, ENTRY).downtime) == 1, "4. saving again updates the same entry (stop 12:00-16:30 added), no second entry")
 again = frappe.call(K + "sign_in", machine=MILL, shift=DAY, posting_date=today, employee_code=OP, pin=pin)
 check(again.get("entry") == ENTRY and len(again.get("production")) == 1, "4. signing in again brings back the draft")
+times = [again.get("production")[0].get("from_time"), again.get("production")[0].get("to_time")] + [r.get("from_time") for r in again.get("downtime")]
+shift_times = [[x.get("start"), x.get("end")] for x in ctx.get("shifts") if x.get("name") == DAY][0]
+check(times == ["08:00", "12:00", "12:00"] and shift_times == ["08:00", "16:30"], "4. times come back to the page as two-digit clock times: rows " + ", ".join(str(x) for x in times) + "; shift " + "-".join(str(x) for x in shift_times))
 
 # ---------------- 5. submit, then read-only ----------------
 out = frappe.call(K + "submit_entry", token=TOKEN)
