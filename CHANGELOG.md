@@ -2,6 +2,20 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.48.0 — Daily Stand-up, exception-only (C3a-B7)
+
+- The morning stand-up now lists **only what needs attention**, each part only when it has something, numbered as
+  shown: machines below the OEE target (plus one line "n of m machines at or above the OEE target"); unplanned
+  stops of at least **Stand-up: Minimum Stop Minutes** (default 30; breakdowns marked; planned stops never);
+  machines without a shift entry; Job Orders at delivery risk; **orders running LD** and how many start LD within
+  the look-ahead (C3a-B5); **work waiting** in front of a machine group longer than the bottleneck warning
+  (C3a-B4); job work overdue; **rejected pieces waiting for Stores to weigh** (C3a-B6). Nothing to report:
+  "All clear".
+- The record keeps **Things Needing Attention** and **All Clear**; the e-mail subject says "n exception(s)" or
+  "all clear". Each part is built on its own: one that fails is left out and logged, the stand-up still goes out.
+- **Stand-up: Exception-Only** (System Parameters → Production, on): untick it for the full page as before.
+- Check 48.
+
 ## 0.47.0 — Shift-entry rejections go to the Scrap Register (C3a-B6)
 
 - When a Shift Production Entry is submitted, its rejected pieces become a **Scrap Weighment** (source Rejection),

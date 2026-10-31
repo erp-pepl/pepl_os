@@ -12,6 +12,8 @@
   "cb_head",
   "emailed_to",
   "emailed_on",
+  "exceptions",
+  "all_clear",
   "sb_numbers",
   "machines_reported",
   "average_oee",
@@ -65,6 +67,21 @@
    "fieldtype": "Datetime",
    "label": "E-mailed On",
    "read_only": 1
+  },
+  {
+   "fieldname": "exceptions",
+   "fieldtype": "Int",
+   "label": "Things Needing Attention",
+   "read_only": 1,
+   "in_list_view": 1,
+   "description": "Exception-only stand-up (C3a-B7): how many rows the page lists."
+  },
+  {
+   "fieldname": "all_clear",
+   "fieldtype": "Check",
+   "label": "All Clear",
+   "read_only": 1,
+   "in_list_view": 1
   },
   {
    "fieldname": "sb_numbers",
@@ -188,7 +205,7 @@
  "in_create": 1,
  "index_web_pages_for_search": 0,
  "links": [],
- "modified": "2026-10-27 02:00:00.000000",
+ "modified": "2026-10-31 23:00:00.000000",
  "modified_by": "Administrator",
  "module": "PEPL Production",
  "name": "PEPL Daily Standup",

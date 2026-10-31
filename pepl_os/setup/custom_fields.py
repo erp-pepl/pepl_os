@@ -486,6 +486,22 @@ PRODUCTION_FIELDS = _chain(
 			"description": "Open Job Orders due within this many days (or already late) and not finished are listed "
 			"in the morning stand-up, e-mailed at 07:45 to the Standup Email Group.",
 		},
+		{
+			"fieldname": "custom_standup_exception_only",
+			"label": "Stand-up: Exception-Only",
+			"fieldtype": "Check",
+			"default": "1",
+			"description": "The morning stand-up lists only what needs attention (machines below target, long unplanned "
+			"stops, missing entries, delivery risk, LD running, work waiting, job work overdue, rejections to weigh), "
+			"or 'All clear'. Untick for the full page (every machine, every stop) (C3a-B7).",
+		},
+		{
+			"fieldname": "custom_standup_min_stop_minutes",
+			"label": "Stand-up: Minimum Stop Minutes",
+			"fieldtype": "Int",
+			"default": "30",
+			"description": "An unplanned stop is an exception in the stand-up from this many minutes in the day.",
+		},
 		# C3a-C1 - standard-time governance (used by the learning-standards workflow, Work Package E2). The band a
 		# run may differ from its standard is pepl_sales "Cycle Deviation Threshold Low / High" (0.8 / 1.2).
 		{

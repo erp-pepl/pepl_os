@@ -66,6 +66,9 @@ def validate_production_params(doc, method=None):
 	warning = doc.get(job_work.GST_WARNING_FIELD)
 	if warning not in (None, "") and not 0 <= cint(warning) < job_work.GST_LIMIT_DAYS:
 		errors.append(_("Job-Work GST Warning Days must be between 0 and 364."))
+	least = doc.get(standup.MIN_STOP_FIELD)
+	if least not in (None, "") and cint(least) < 0:
+		errors.append(_("Stand-up: Minimum Stop Minutes cannot be negative."))  # C3a-B7
 	ahead = doc.get(standup.RISK_DAYS_FIELD)
 	if ahead not in (None, "") and cint(ahead) < 0:
 		errors.append(_("Stand-up: Days Ahead for Delivery Risk cannot be negative."))

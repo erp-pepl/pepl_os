@@ -62,6 +62,9 @@ class TestDailyStandup(PEPLTestCase):
 		set_param("skill_check_mode", "Advisory")
 		set_param(standup.RISK_DAYS_FIELD, 3)
 		set_param(standup.GROUP_FIELD, GROUP)
+		set_param(
+			standup.EXCEPTION_FIELD, 0
+		)  # these tests describe the full page; C3a-B7 tests the exception-only one
 
 	def _floor(self):
 		"""Yesterday on the mill: 4 h run (8 good, 2 rejected), 1 h spindle breakdown, 3 h no load.
