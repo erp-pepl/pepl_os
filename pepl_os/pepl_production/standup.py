@@ -72,7 +72,9 @@ def recipients():
 
 
 def machine_days(day):
-	return frappe.get_all(
+	"""The Daily OEE of each machine on the day. "Below target" is judged against today's OEE Target % (a Daily
+	OEE record keeps the flag of the day it was built, which may have used an older target - Check 48)."""
+	rows = frappe.get_all(
 		oee.DOCTYPE,
 		filters={"oee_date": day},
 		fields=[
@@ -91,6 +93,10 @@ def machine_days(day):
 		],
 		order_by="oee asc, workstation asc",
 	)
+	aim = oee.target()
+	for row in rows:
+		row.below_target = 1 if flt(row.oee) < aim else 0
+	return rows
 
 
 def top_stops(day, limit=5):

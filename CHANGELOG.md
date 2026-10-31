@@ -2,6 +2,15 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.48.1 — Stand-up: today's OEE target decides "below target" (C3a-B7 fix)
+
+- Check 48 (1 of 13): after the OEE Target % was lowered, the stand-up still listed a machine as below target,
+  because it used the flag kept on the Daily OEE record from the day it was built. The stand-up now compares each
+  machine's OEE with the target in force when the stand-up is built (exception page, full page and the count on
+  the record). Regression test added.
+- CI #55 (2 of 619): two exception-only tests counted records other tests had left on the CI site (delivery risk,
+  LD, job work...). These tests now hand the stand-up exactly the parts they test. No change for users.
+
 ## 0.48.0 — Daily Stand-up, exception-only (C3a-B7)
 
 - The morning stand-up now lists **only what needs attention**, each part only when it has something, numbered as

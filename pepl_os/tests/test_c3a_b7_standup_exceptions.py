@@ -90,6 +90,15 @@ class TestStandupExceptions(PEPLTestCase):
 		self.assertEqual(doc.all_clear, 0)
 		self.assertIn(f"{doc.exceptions} exception(s)", standup.subject(doc))
 
+	def test_today_s_oee_target_decides_below_target(self):
+		# Regression (Check 48): the Daily OEE was built with 85 %; lowering the target afterwards must count
+		self._floor()
+		self.assertIn("Machines below the OEE target", standup.build(YESTERDAY).summary)
+		set_param(oee.TARGET_FIELD, 1)
+		page = standup.build(YESTERDAY).summary
+		self.assertNotIn("Machines below the OEE target", page)
+		self.assertIn("1 of 1 machines at or above the OEE target.", page)
+
 	def test_short_stops_and_machines_on_target_are_left_out(self):
 		set_param(oee.TARGET_FIELD, 1)  # every machine meets 1 %
 		set_param(standup.MIN_STOP_FIELD, 90)  # the 60-minute breakdown is under it
@@ -100,8 +109,26 @@ class TestStandupExceptions(PEPLTestCase):
 		self.assertNotIn(SPINDLE, page)
 		self.assertIn("1. Machines without a shift entry", page)  # numbering follows what is shown
 
+	def _quiet(self, **parts):
+		"""Build the stand-up for a day with nothing on it; the parts that read today's whole site (delivery risk,
+		job work, LD, waiting work, rejections to weigh) give only what the test hands them (CI #55: the site
+		keeps records of other tests)."""
+		world = {
+			"job_orders_at_risk": [],
+			"job_work_overdue": [],
+			"_ld_running": [],
+			"_waiting": [],
+			"_to_weigh": [],
+		}
+		world.update(parts)
+		patches = [patch.object(standup, name, return_value=value) for name, value in world.items()]
+		for p in patches:
+			p.start()
+			self.addCleanup(p.stop)
+		return standup.build(QUIET_DAY)
+
 	def test_all_clear(self):
-		doc = standup.build(QUIET_DAY)
+		doc = self._quiet()
 		self.assertEqual((doc.exceptions, doc.all_clear), (0, 1))
 		self.assertIn("all clear", doc.summary)
 		self.assertIn("Nothing needs attention today.", doc.summary)
@@ -127,11 +154,7 @@ class TestStandupExceptions(PEPLTestCase):
 			},
 		]
 		weigh = [frappe._dict(reference_name="SPR-T-0001")]
-		with (
-			patch.object(standup, "_ld_running", return_value=orders),
-			patch.object(standup, "_to_weigh", return_value=weigh),
-		):
-			doc = standup.build(QUIET_DAY)
+		doc = self._quiet(_ld_running=orders, _to_weigh=weigh)
 		self.assertIn("Orders running LD", doc.summary)
 		self.assertIn("SO-LATE", doc.summary)
 		self.assertNotIn("SO-SOON", doc.summary.split("Orders running LD")[1].split("<p>")[0])
@@ -142,15 +165,21 @@ class TestStandupExceptions(PEPLTestCase):
 
 	def test_work_waiting_in_front_of_a_machine_group(self):
 		waiting = [{"job_order": "JO-T-1", "operation": "Turning", "group": "LATHES", "hours": 30.0}]
-		with patch.object(standup, "_waiting", return_value=waiting):
-			doc = standup.build(QUIET_DAY)
+		doc = self._quiet(_waiting=waiting)
 		self.assertIn("Work waiting in front of a machine group", doc.summary)
 		self.assertIn("JO-T-1", doc.summary)
 
 	def test_a_failing_part_is_left_out_and_logged(self):
 		before = frappe.db.count("Error Log")
-		with patch.object(standup, "_waiting", side_effect=Exception("boom")):
-			doc = standup.build(QUIET_DAY)
+		failing = patch.object(standup, "_waiting", side_effect=Exception("boom"))
+		failing.start()
+		self.addCleanup(failing.stop)
+		world = {"job_orders_at_risk": [], "job_work_overdue": [], "_ld_running": [], "_to_weigh": []}
+		for name, value in world.items():
+			p = patch.object(standup, name, return_value=value)
+			p.start()
+			self.addCleanup(p.stop)
+		doc = standup.build(QUIET_DAY)
 		self.assertEqual(doc.all_clear, 1)
 		self.assertGreater(frappe.db.count("Error Log"), before)
 
