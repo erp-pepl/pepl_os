@@ -563,6 +563,20 @@ PRODUCTION_FIELDS = _chain(
 			"fieldtype": "Percent",
 			"default": "10",
 		},
+		# C3a-B2 - estimate against actual cost
+		{
+			"fieldname": "custom_costing_variance_section",
+			"label": "Costing: Estimate vs Actual",
+			"fieldtype": "Section Break",
+		},
+		{
+			"fieldname": "custom_cost_variance_warning_percent",
+			"label": "Costing: Variance Warning %",
+			"fieldtype": "Percent",
+			"default": "10",
+			"description": "The Estimate vs Actual Cost report shows a Job Order red when its actual cost a piece is "
+			"above the CST estimate by more than this (more than 0, at most 100).",
+		},
 	],
 	after="custom_overhead_percent",
 )

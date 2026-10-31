@@ -4,7 +4,17 @@ import frappe
 from frappe import _
 from frappe.utils import cint, flt
 
-from pepl_os.pepl_production import config, job_work, kiosk, ld, load_view, machine_booking, oee, standup
+from pepl_os.pepl_production import (
+	config,
+	costing,
+	job_work,
+	kiosk,
+	ld,
+	load_view,
+	machine_booking,
+	oee,
+	standup,
+)
 from pepl_os.pepl_production.masters import PIN_DIGITS_FIELD, PIN_DIGITS_RANGE
 from pepl_os.pepl_production.spr import GRACE_FIELD, GRACE_RANGE, UNACCOUNTED_FIELD
 
@@ -52,6 +62,7 @@ def validate_production_params(doc, method=None):
 	for field, label in (
 		(ld.DEFAULT_RATE_FIELD, _("LD: Default Rate %")),
 		(ld.DEFAULT_CAP_FIELD, _("LD: Default Cap %")),
+		(costing.WARNING_FIELD, _("Costing: Variance Warning %")),
 	):
 		value = doc.get(field)
 		if value not in (None, "") and not 0 < flt(value) <= 100:

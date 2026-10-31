@@ -2,6 +2,23 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.43.0 — Estimate vs Actual Cost report (C3a-B2)
+
+- **Report "PEPL Estimate vs Actual Cost"** (Production Command Centre → Reports; Job Order → View → Cost vs
+  Estimate): for each Job Order, the CST estimate a piece against what it really cost a piece, in four parts -
+  material, machining, job work & other, overhead - with the variance and variance %. "Show: Item" adds the Job
+  Orders of each item together.
+- Estimate: the CST of the Sales Order's tender for that item; else the item's latest Approved / Used-in-Bid CST
+  (Drafts never count). Added up exactly as the CST adds up its subtotals.
+- Actual, the same way as the weekly CPC: material = what the Manufacture entries consumed less scrap returned
+  (before the first Manufacture entry: BOM material x pieces worked, and the note says so); machining = run minutes
+  on the submitted shift entries x Machine-Hour Rate + their consumables shared by run minutes; job work & other =
+  the extra costs typed on the Manufacture entries (ERPNext's own operating-cost rows are left out); overhead =
+  Overhead (%) on all of it; a piece = total ÷ pieces made (or good pieces reported, until finished goods are
+  booked).
+- New setting **Costing: Variance Warning %** (System Parameters → Production, default 10): above it the row is red.
+- Check 43.
+
 ## 0.42.3 — Kiosk: morning times shown again (C3a-B1 fix)
 
 - CI #45: a saved kiosk row starting at 08:00 came back to the page as "8:00:" (the database's time text cut at five
