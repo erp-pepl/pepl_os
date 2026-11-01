@@ -20,6 +20,13 @@ frappe.pages["pepl-system-health"].on_page_load = function (wrapper) {
 				"_blank"
 			);
 		});
+		// C3a-T1: is the Production chain set up and doing its job on live records?
+		page.add_inner_button(__("Download Cycle 3a health check"), () => {
+			window.open(
+				"/api/method/pepl_os.pepl_production.health_check.download_health_check?since=2026-07-01",
+				"_blank"
+			);
+		});
 	}
 	render(page);
 };

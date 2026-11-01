@@ -2,6 +2,21 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.49.0 — Cycle 3a health check and the end-to-end Check (C3a-T1)
+
+- **Cycle 3a health check** (PEPL System Health → "Download Cycle 3a health check", System Manager; read-only):
+  eight sheets - shop-floor masters (shifts, downtime categories, machines without a group, groups without a
+  Machine-Hour Rate, operators without PIN / skills / default shift, expired skills, groups short of qualified
+  operators), shift entries (drafts left for 2 days, minutes not explained, missing tool photos, machines gone
+  quiet), Job Orders (late, stalled, Sales Order lines with a BOM but no Job Order), daily results (entries without
+  Daily OEE / Machine Week), costing and scrap (items made without CST, weight per unit or scrap item; rejections
+  not weighed after 2 days), LD (LD-sector orders without the clause; LD running), the Production scheduled jobs,
+  and the Production settings still at their default (to confirm with PEPL).
+- **Check 49 - end to end**: one Railways order through the whole chain: Sales Order with LD → drafted Job Order →
+  Job Card → the shift entered and submitted on the kiosk → Job Card time log, Daily OEE, Machine Week, rejections
+  in the Scrap Register → Job Order panel, Estimate vs Actual Cost, LD Exposure, Skill Matrix, foreman board,
+  Command Centre, exception-only stand-up → the health check.
+
 ## 0.48.1 — Stand-up: today's OEE target decides "below target" (C3a-B7 fix)
 
 - Check 48 (1 of 13): after the OEE Target % was lowered, the stand-up still listed a machine as below target,
