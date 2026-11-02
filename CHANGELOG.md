@@ -2,6 +2,20 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.50.0 — Cycle 3a handover documents (C3a-T1)
+
+- `docs/cycle3a_handover.md` (the chain, panels, reports, jobs, rule codes, settings, kiosk device, checks, known
+  limits), `docs/cycle3a_kiosk_uat.md` (operators and foreman, Pass / Fail), `docs/cycle3a_production_manager_uat.md`
+  (Production Manager, Pass / Fail), `docs/cycle3a_manuals_annex.md` (what changes for each role) and
+  `docs/cycle3a_pepl_inputs.md` (what PEPL fills in before going live).
+- Check 49 rev 2: the Job Card's time logs are read through the Job Card. Check 32 rev 3: unticks Stand-up:
+  Exception-Only for its run (it checks the full page; Check 48 checks the exception-only one).
+- Cycle 3a summary (0.23.0 - 0.50.0): foundations X1-X11 and R1 (Shift Production Entry, masters, skill check, Job
+  Orders from Sales Orders, double-booking, Daily OEE, Machine Week, job work, CSM consumption, stand-up, LD clause,
+  machine-hour rate groups); panels P1-P5; configure C1; Production Command Centre; builds B1-B7 (kiosk and foreman
+  view, Estimate vs Actual Cost, HR-lite and Skill Matrix, Bottleneck, LD Exposure, rejections to the Scrap
+  Register, exception-only stand-up); T1 (Cycle 3a health check, end-to-end Check 49). No code change in this release.
+
 ## 0.49.0 — Cycle 3a health check and the end-to-end Check (C3a-T1)
 
 - **Cycle 3a health check** (PEPL System Health → "Download Cycle 3a health check", System Manager; read-only):

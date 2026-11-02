@@ -1,5 +1,7 @@
-# PEPL OS v0.32.0 - Check 32 rev 2: C3a-X10 the Daily Stand-up - yesterday's shop floor, top stops, machines without a
+# PEPL OS v0.32.0 - Check 32 rev 3: C3a-X10 the Daily Stand-up - yesterday's shop floor, top stops, machines without a
 # shift entry, Job Orders at delivery risk, job work overdue; built for a day and e-mailed to the Standup Email Group.
+# Rev 3 (v0.50.0): this Check is about the full page, so it unticks "Stand-up: Exception-Only" (C3a-B7, on by
+# default since v0.48.0) for its run; Check 48 covers the exception-only page.
 # Runs on 0.32.0 or later. System Console, Type = Python. Leave "Commit" UNTICKED: everything below, including the
 # System Parameters changes this check makes, is undone at the end.
 VERSION = "0.32.0"
@@ -55,6 +57,8 @@ params = frappe.get_doc(PARAMS)
 params.standup_email_group = GROUP
 params.custom_standup_risk_days = 3
 params.custom_spr_tool_photo_required = 0
+if frappe.get_meta(PARAMS).get_field("custom_standup_exception_only"):
+    params.custom_standup_exception_only = 0  # the full page (rev 3)
 params.save()
 settings = frappe.get_doc("Manufacturing Settings")
 settings.disable_capacity_planning = 1

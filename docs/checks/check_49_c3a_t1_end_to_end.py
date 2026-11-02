@@ -1,8 +1,10 @@
-# PEPL OS v0.49.0 - Check 49: C3a-T1 end to end - one order through the whole Production chain:
+# PEPL OS v0.49.0 - Check 49 rev 2: C3a-T1 end to end - one order through the whole Production chain:
 # Sales Order (Railways, LD) -> draft Job Order -> submitted Job Order and Job Card -> the operator's shift entered
 # and submitted on the kiosk -> Job Card time log, Daily OEE, Machine Week, rejected pieces in the Scrap Register ->
 # Job Order panel, Estimate vs Actual Cost, LD Exposure, Skill Matrix, foreman board, Command Centre, exception-only
 # stand-up -> Cycle 3a health check.
+# Rev 2: the Job Card's time logs are read from the Job Card itself (a child table read on its own returned
+# nothing in the System Console).
 # Runs on 0.49.0 or later. System Console, Type = Python. Leave "Commit" UNTICKED: everything below is undone at the
 # end (except the kiosk's short-lived session entry in the cache, which expires by itself).
 VERSION = "0.49.0"
@@ -156,8 +158,9 @@ frappe.call(K + "sign_out", token=TOKEN)
 check(frappe.db.get_value(SPR, ENTRY, "docstatus") == 1, "4. submitted from the kiosk")
 
 # ---------------- 5. what the submission set going ----------------
-logs = frappe.get_all("Job Card Time Log", filters={"parent": CARD}, fields=["completed_qty", "time_in_mins"])
-check(len(logs) == 1 and logs[0].completed_qty == 36, "5. Job Card " + str(CARD) + " has the time log: 36 done")
+logs = frappe.get_doc("Job Card", CARD).time_logs
+print("INFO  Job Card " + str(CARD) + " time logs: " + ", ".join(str(l.from_time) + " - " + str(l.to_time) + " done " + str(l.completed_qty) for l in logs))
+check(len(logs) == 1 and logs[0].completed_qty == 36 and logs[0].get("custom_pepl_spr") == ENTRY, "5. Job Card " + str(CARD) + " has the time log from " + str(ENTRY) + ": 36 done")
 daily = frappe.get_all("PEPL OEE Daily", filters={"workstation": MILL, "oee_date": yesterday}, fields=["name", "oee", "good_qty", "rejected_qty"])
 check(len(daily) == 1 and daily[0].good_qty == 36 and daily[0].rejected_qty == 4, "5. Daily OEE " + (daily[0].name if daily else "missing") + " built: OEE " + str(daily[0].oee if daily else "-") + " %")
 week = frappe.get_all("PEPL Machine Week", filters={"workstation": MILL}, fields=["name", "run_minutes", "machine_cost"])
