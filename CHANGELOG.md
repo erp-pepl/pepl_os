@@ -2,6 +2,23 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.51.0 — Cycle 3a UAT set-up and Check ALL (C3a-T1)
+
+- `docs/checks/setup_c3a_uat.py` (demo site only, System Console, Commit ticked; safe to run again): the named
+  logins of the foreman and the Production Manager, the kiosk tablet login, machines MILL-01 / LATHE-01 with their
+  groups and machine-hour rates, General and Evening shifts, operators OP-101 (PIN 1357, level 3) and OP-102 (PIN 2468,
+  level 1), an Employee for OP-102, the UAT shaft (BOM, weight, scrap item, Approved CST) and a plate without a BOM,
+  and one submitted Railways Sales Order due 2 days ago (drafts the Job Order; PRD-NO-BOM ToDo for the plate).
+- `docs/checks/check_all_c3a.py` (Check ALL rev 4) and its builder `docs/checks/build_check_all.py`: checks 23 – 49,
+  unchanged, run one after another as a background job (Frappe Cloud stops a web request after 120 seconds);
+  rollback after each check; result in a Note "PEPL Check ALL <time>". Demo site, 2 Nov 2026: 27 checks, 503 passed,
+  0 failed.
+- UAT guides: the set-up script, the order of the UAT day (Production Manager section A → kiosk → sections B to F),
+  named logins, concrete steps for operators OP-101 / OP-102. Handover: Check ALL, UAT set-up, and how releases reach
+  the sites (main branch, green CI before any deploy, backup, outside working hours).
+- Master System Document: the Cycle 3a entry is the 0.23.0 – 0.51.0 sections of this file; the summary is in 0.50.0.
+  No code change in this release.
+
 ## 0.50.0 — Cycle 3a handover documents (C3a-T1)
 
 - `docs/cycle3a_handover.md` (the chain, panels, reports, jobs, rule codes, settings, kiosk device, checks, known

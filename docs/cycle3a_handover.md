@@ -89,6 +89,20 @@ code; a session ends after the session minutes without saving. The shop-floor Wi
 
 - Automated tests: GitHub → Actions → CI → Run workflow (fresh site; `tests/test_c3a_*.py`). Acceptance = all green.
 - System Console checks 23 – 49 (one per deliverable, Commit unticked; Check 49 runs the whole chain end to end).
+- **Check ALL** (`docs/checks/check_all_c3a.py`): runs checks 23 – 49 in one go as a background job and writes the
+  result to a Note "PEPL Check ALL <time>"; each check is undone after it runs. On the demo site on 2 Nov 2026:
+  all 27 checks, 503 passed, 0 failed.
+- **UAT set-up** (`docs/checks/setup_c3a_uat.py`, demo site only, Commit ticked): the logins, machines, shifts,
+  operators and the order the two UAT guides start from.
+
+## How releases reach the sites
+
+- Every release is pushed to the main branch of the private repository; CI runs the whole test suite on a fresh
+  site. **No release reaches the demo or the live site until its CI is green.**
+- Order: local bench → CI green → demo site (backup first, outside working hours) → live site (backup first,
+  outside working hours). Every bug fixed gets a regression test; every release gets a CHANGELOG entry.
+- This replaces the "branch and pull request" wording of the standing terms; the safeguard (green CI before any
+  deploy) is the same.
 - **Cycle 3a health check** (PEPL System Health): set-up gaps and live data against the automation; zero findings
   expected once PEPL's inputs are in (information rows excepted).
 

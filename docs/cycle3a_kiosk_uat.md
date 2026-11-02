@@ -4,16 +4,22 @@
 on the shop-floor Wi-Fi, on the demo site. **How long:** about 45 minutes.
 Write **Pass** or **Fail** in the last column. For a Fail, write what you saw.
 
-## Before you start (the Production Manager or the consultant sets this up)
+## Before you start (the consultant sets this up)
 
-| What | Example |
+The consultant runs `docs/checks/setup_c3a_uat.py` once on the demo site (System Console, Commit ticked). It makes:
+
+| What | On the demo site |
 | --- | --- |
-| A kiosk login for the tablet (Role Profile **PEPL Kiosk**) | `tablet-mill01@pepl.example` |
-| One machine with a machine group | **MILL-01** (group **MILL**) |
-| One shift for today | **General Shift 08:00 – 16:30**, 30 minutes break |
-| Two operators with a code, a PIN and a skill on the group | **OP-101** (PIN 1357, level 3), **OP-102** (PIN 2468, level 1) |
-| A submitted Job Order with a Job Card on MILL-01 | 40 pieces, 6 minutes a piece |
+| A kiosk login for the tablet (role **PEPL Kiosk**) | `tablet-mill01@pepl.example` (password printed by the script) |
+| The foreman's own login (Role Profile **PEPL Foreman**) | the foreman's name and e-mail, put at the top of the script |
+| Two machines with a machine group | **MILL-01** (group **MILL**), **LATHE-01** (group **LATHE**, it ran yesterday) |
+| Shifts | **General Shift 08:00 – 16:30**, 30 minutes break; **Evening Shift 16:30 – 01:00** |
+| Two operators with a code, a PIN and a skill on the group | **OP-101** Ramesh Kumar (PIN 1357, level 3), **OP-102** Suresh Patil (PIN 2468, level 1) |
+| A Job Order for 40 shafts with a Job Card on MILL-01 | 6 minutes a piece; the Production Manager submits it first (his guide, section A) |
 | A downtime category for no work | **No Plan / No Load** (planned stop) |
+
+**Order of the UAT day:** ① Production Manager guide section A (the Job Order is submitted) → ② this kiosk guide →
+③ Production Manager guide sections B to F. Everyone uses his own login, never Administrator.
 
 ## A. Signing in
 

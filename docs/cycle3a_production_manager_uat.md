@@ -2,16 +2,19 @@
 
 **Who:** the Production Manager (HOD), with the consultant. **Where:** the demo site, Desk. **How long:** about
 2 hours. Write **Pass** or **Fail** in the last column. For a Fail, write what you saw.
-Use one Railways customer order for 40 shafts (a finished item with a BOM, one operation on MILL-01, a weight per
-unit and a scrap item when rejected, and an Approved CST). The kiosk UAT should be done first on the same order.
+The consultant first runs `docs/checks/setup_c3a_uat.py` on the demo site (System Console, Commit ticked). It makes
+the Production Manager's own login (Role Profile **PEPL Production Manager**), the machines, shifts and operators,
+and one submitted Railways Sales Order, due 2 days ago on purpose: 40 × **UAT-SHAFT** (BOM, 6 minutes a piece on
+MILL-01, 0.25 kg a piece, scrap item when rejected, Approved CST) and 5 × **UAT-PLATE** (no BOM).
+**Order of the UAT day:** ① section A below → ② the kiosk UAT (operators and foreman) → ③ sections B to F below.
 
 ## A. From the order to the Job Order
 
 | # | Do this | You should see | Pass / Fail |
 | --- | --- | --- | --- |
-| A1 | Submit the Sales Order (Railways, due 2 days ago for the test) | the LD section filled: 0.5 % per week, cap 10 % | |
-| A2 | Open Job Orders (Work Order list) | one **draft** Job Order for 40 shafts, "Drafted from Sales Order", due on the line's date | |
-| A3 | A line whose item has no BOM | a ToDo **PRD-NO-BOM** for Production | |
+| A1 | Open the UAT Sales Order (Railways, due 2 days ago for the test) | the LD section filled: 0.5 % per week, cap 10 % | |
+| A2 | Open Job Orders (Work Order list) | one **draft** Job Order for 40 UAT-SHAFT, "Drafted from Sales Order", due on the line's date | |
+| A3 | The UAT-PLATE line has no BOM: open your ToDo list | a ToDo **PRD-NO-BOM** naming UAT-PLATE | |
 | A4 | Submit the Job Order | its Job Card on MILL-01; the panel shows "Made 0 of 40", the routing and "LD so far" | |
 
 ## B. Planning
@@ -36,9 +39,9 @@ unit and a scrap item when rejected, and an Approved CST). The kiosk UAT should 
 
 | # | Do this | You should see | Pass / Fail |
 | --- | --- | --- | --- |
-| D1 | Open an operator; link his **Employee** | name and joining date come from the Employee | |
-| D2 | Set the Employee to **Left** | the operator becomes **Inactive**; the kiosk no longer accepts him | |
-| D3 | Give an operator **Eligible Shifts** = Day only; enter an Evening shift for him | Warn: the Shift panel says he is not set for that shift (Block: refused) | |
+| D1 | Open operator **OP-102**; set Employee = **Suresh Patil**; Save | name and joining date come from the Employee | |
+| D2 | Open Employee Suresh Patil: Status **Left**, Relieving Date today; Save; open OP-102 again | the operator becomes **Inactive**; the kiosk no longer accepts him | |
+| D3 | OP-101's Eligible Shifts = General Shift only. New Shift Production Entry: MILL-01, **Evening Shift**, operator OP-101, one stop row No Plan / No Load 17:00 – 18:00; Save | Warn: the Shift panel says he is not set for that shift (Block: refused) | |
 | D4 | Report **Skill Matrix** | every operator against every machine group; red expired, orange expiring or below the level; the last row "Qualified operators", red below the minimum; the To Do column | |
 
 ## E. Flow, delivery and scrap
