@@ -2,6 +2,24 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.60.0 — Cycle 3b starts: incoming QC Inspection with the Purchase Receipt (C3b-Q1)
+
+- QC Inspection = ERPNext's Quality Inspection. Saving a draft Purchase Receipt gives every line whose item has
+  "Inspection Required before Purchase" its own draft QC Inspection (type Incoming, sample size = received
+  quantity, the item's inspection plan = Quality Inspection Template, the line's heat Batch, the supplier). A line
+  removed or changed to another item, or a deleted draft receipt, takes its unused draft along.
+- System Parameters > Quality (new tab): **Incoming QC: Stock Classes** (one per line; empty until PEPL chooses,
+  e.g. Raw Material and Bought-Out Components) ticks the inspection on new items of those classes; adding a class
+  ticks its existing items, removing it unticks them. **Incoming QC Gate** (Advisory / Soft Block / Hard Block,
+  default Soft Block): a line whose inspection is not submitted, or is Rejected while quantity is still accepted
+  into stores, needs a reason (rule QA-IN-QC, Override Log) or is refused.
+- Stock Settings: ERPNext's "Stop" when a Quality Inspection is not submitted / rejected is set to "Warn" once at
+  install / migrate, so PEPL's gate decides (a line with no inspection at all is still refused by ERPNext).
+- An inspected item without an inspection plan gives the Quality Notification Owner a ToDo (QA-NO-QC-PLAN), closed
+  when the plan is set. Purchase Receipt panel "Incoming QC": each inspected line, its inspection and status.
+- QC Inspection fields: Created with the Receipt, Supplier (for the vendor scorecard, C3b-Q6).
+- 14 tests (test_c3b_q1_incoming_qc.py); Check 60 (docs/checks/check_60_c3b_q1_incoming_qc.py).
+
 ## 0.51.0 — Cycle 3a UAT set-up and Check ALL (C3a-T1)
 
 - `docs/checks/setup_c3a_uat.py` (demo site only, System Console, Commit ticked; safe to run again): the named

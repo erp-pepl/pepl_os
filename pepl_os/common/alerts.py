@@ -66,6 +66,21 @@ def raise_todo(
 	)
 
 
+def close_one(rule_code, reference_doctype, reference_name):
+	"""Close the open ToDo of this rule on this one record (if any); other records' ToDos stay open."""
+	others = frappe.get_all(
+		"ToDo",
+		filters={
+			"status": "Open",
+			"reference_type": reference_doctype,
+			"reference_name": ["!=", reference_name],
+			"description": ["like", f"%PEPL-OPS::{rule_code}%"],
+		},
+		pluck="reference_name",
+	)
+	return close_resolved(rule_code, reference_doctype, others)
+
+
 def close_resolved(rule_code, reference_doctype, active_reference_names):
 	"""Close open ToDos of this rule whose record is no longer an exception."""
 	return close_resolved_rule_todos(

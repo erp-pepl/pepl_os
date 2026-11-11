@@ -45,7 +45,8 @@ doctype_js = {
 	# C2-11 approval check runs before the C2-08 reason dialog
 	"Purchase Order": ["public/js/purchase_order.js", "public/js/supplier_gate.js"],
 	# C2-15: heat panel, Split by heat, reason dialog when the gate asks for one
-	"Purchase Receipt": "public/js/purchase_receipt.js",
+	# C3b-Q1: Incoming QC panel and the reason dialog of the incoming QC gate
+	"Purchase Receipt": ["public/js/purchase_receipt.js", "public/js/purchase_receipt_qc.js"],
 	# C2-16: Sales Order (CSM) picked from submitted orders of the company
 	# C3a-P3: job work outstanding at the job worker for the items of the entry
 	"Stock Entry": "public/js/stock_entry.js",
@@ -84,6 +85,7 @@ PO_APPROVAL = "pepl_os.pepl_purchase.po_approval"
 TRACKER = "pepl_os.pepl_purchase.tracker"
 LETDOWN = "pepl_os.pepl_purchase.letdown"
 HEAT = "pepl_os.pepl_stores.heat"
+INCOMING_QC = "pepl_os.pepl_quality.incoming_qc"
 CSM = "pepl_os.pepl_stores.csm"
 PAYMENTS = "pepl_os.pepl_purchase.payments"
 
@@ -98,9 +100,14 @@ doc_events = {
 		"validate": [
 			"pepl_os.pepl_purchase.params.validate_purchase_params",
 			"pepl_os.pepl_production.params.validate_production_params",
+			"pepl_os.pepl_quality.params.validate_quality_params",
 		],
-		# A5: a changed audit-log retention applies immediately.
-		"on_update": "pepl_os.pepl_governance.retention.on_parameters_update",
+		"on_update": [
+			# A5: a changed audit-log retention applies immediately.
+			"pepl_os.pepl_governance.retention.on_parameters_update",
+			# C3b-Q1: a changed "Incoming QC: Stock Classes" ticks / unticks the items' inspection
+			f"{INCOMING_QC}.on_parameters_update",
+		],
 	},
 	# C2-04: a company created after install gets PEPL's stores at once.
 	"Company": {"on_update": "pepl_os.pepl_stores.stock_tree.on_company_update"},
@@ -115,7 +122,10 @@ doc_events = {
 		"on_cancel": f"{PAYMENTS}.on_payment_entry_change",
 	},
 	# C2-04: stock class from the Item Group; Capital never stock; CSM customer-provided.
-	"Item": {"validate": "pepl_os.pepl_stores.stock_tree.validate_item"},
+	# C3b-Q1: an item of a class in "Incoming QC: Stock Classes" is inspected on receipt
+	"Item": {"validate": ["pepl_os.pepl_stores.stock_tree.validate_item", f"{INCOMING_QC}.validate_item"]},
+	# C3b-Q1: an incoming QC Inspection names its supplier
+	"Quality Inspection": {"validate": f"{INCOMING_QC}.validate_inspection"},
 	# C2-04: customer-supplied material and PEPL material never share a store.
 	# C2-15: heat number -> Batch on receipts, Batch -> heat on issues; the heat number gate
 	# C2-16: every customer-supplied line moves against its Sales Order; the order shows its scrap option
@@ -133,9 +143,13 @@ doc_events = {
 	},
 	"Purchase Receipt": {
 		# C2-15: heat number -> Batch, the heat / MTC gate, the Receipt Log
-		"before_validate": f"{HEAT}.before_validate_receipt",
+		# C3b-Q1: a line keeps only this receipt's own QC Inspection
+		"before_validate": [f"{HEAT}.before_validate_receipt", f"{INCOMING_QC}.before_validate_receipt"],
 		"validate": CSM_SEGREGATION,
-		"before_submit": f"{HEAT}.before_submit_receipt",
+		# C3b-Q1: each line that needs inspection gets its draft QC Inspection; the incoming QC gate
+		"on_update": f"{INCOMING_QC}.sync_inspections",
+		"on_trash": f"{INCOMING_QC}.on_trash_receipt",
+		"before_submit": [f"{HEAT}.before_submit_receipt", f"{INCOMING_QC}.before_submit_receipt"],
 		# C2-12: a receipt recomputes the trackers of its Purchase Orders
 		# C2-14: a late receipt line is logged as a letdown; cancelling the receipt removes it
 		"on_submit": [

@@ -6,6 +6,7 @@ from pepl_os.pepl_production.command_centre import ensure_top_downtime_block
 from pepl_os.pepl_production.kiosk import point_kiosk_logins_home
 from pepl_os.pepl_production.masters import ensure_production_masters
 from pepl_os.pepl_purchase.command_centre import ensure_command_centre_block
+from pepl_os.pepl_quality.incoming_qc import switch_stock_settings_once
 from pepl_os.pepl_stores.csm import ensure_return_type
 from pepl_os.pepl_stores.heat import allow_same_item_lines_once, enable_batches
 from pepl_os.pepl_stores.reorder import switch_off_auto_mr_once
@@ -42,6 +43,7 @@ def ensure_setup():
 	ensure_production_masters()  # C3a-X2: the default downtime categories (once)
 	ensure_top_downtime_block()  # C3a-CC: the "Top Downtime Cause (7 days)" card on the Production Command Centre
 	point_kiosk_logins_home()  # C3a-B1: kiosk logins open the kiosk after logging in
+	switch_stock_settings_once()  # C3b-Q1: ERPNext's QC 'Stop' actions -> 'Warn' (PEPL's gate decides), once
 
 
 def before_install():

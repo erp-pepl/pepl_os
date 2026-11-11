@@ -669,6 +669,64 @@ PRODUCTION_FIELDS = _chain(
 
 CUSTOM_FIELDS[SYSTEM_PARAMETERS] += PRODUCTION_FIELDS
 
+# Cycle 3b - Quality rulebook (one tab). Values marked "to confirm" are set with the Quality Manager (C3b-C1).
+QUALITY_FIELDS = _chain(
+	[
+		{"fieldname": "custom_quality_tab", "label": "Quality", "fieldtype": "Tab Break"},
+		# C3b-Q1 - incoming QC Inspection with the Purchase Receipt
+		{
+			"fieldname": "custom_incoming_qc_section",
+			"label": "Incoming QC Inspection",
+			"fieldtype": "Section Break",
+		},
+		{
+			"fieldname": "custom_incoming_qc_stock_classes",
+			"label": "Incoming QC: Stock Classes",
+			"fieldtype": "Small Text",
+			"description": "One stock class per line, e.g. Raw Material and Bought-Out Components. Items of these "
+			"classes get 'Inspection Required before Purchase' ticked: a QC Inspection is created with every "
+			"Purchase Receipt line of them. Adding a class ticks its items, removing it unticks them. Empty = only "
+			"items ticked by hand are inspected. " + PEPL_VALUE,
+		},
+		{"fieldname": "custom_incoming_qc_column", "fieldtype": "Column Break"},
+		{
+			"fieldname": "custom_incoming_qc_gate_mode",
+			"label": "Incoming QC Gate",
+			"fieldtype": "Select",
+			"options": "Advisory\nSoft Block\nHard Block",
+			"default": "Soft Block",
+			"description": "A receipt line whose QC Inspection is not submitted, or is Rejected while quantity is "
+			"accepted into stores: Advisory = warning; Soft Block = a reason is needed (Override Log); Hard Block = "
+			"the receipt is refused.",
+		},
+	],
+	after="custom_rejection_scrap_item",
+)
+
+CUSTOM_FIELDS[SYSTEM_PARAMETERS] += QUALITY_FIELDS
+
+# C3b-Q1 - QC Inspection (ERPNext Quality Inspection): made with the receipt; its supplier.
+CUSTOM_FIELDS["Quality Inspection"] = [
+	{
+		"fieldname": "custom_auto_created",
+		"label": "Created with the Receipt",
+		"fieldtype": "Check",
+		"read_only": 1,
+		"no_copy": 1,
+		"insert_after": "reference_name",
+		"description": "Made by PEPL OS when the Purchase Receipt was saved. An unused draft is removed with its line.",
+	},
+	{
+		"fieldname": "custom_supplier",
+		"label": "Supplier",
+		"fieldtype": "Link",
+		"options": "Supplier",
+		"read_only": 1,
+		"in_standard_filter": 1,
+		"insert_after": "custom_auto_created",
+	},
+]
+
 # C2-03 - Supplier: criticality, MSME and the RM groups supplied.
 APPROVAL_STATES = "\nDraft\nUnder Review\nApproved\nConditionally Approved\nSuspended\nExpired\nRejected"
 CUSTOM_FIELDS["Supplier"] = _chain(
