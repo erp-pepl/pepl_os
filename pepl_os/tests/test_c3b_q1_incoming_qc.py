@@ -256,7 +256,8 @@ class TestIncomingQC(PEPLTestCase):
 		set_param(qc.MODE_FIELD, qc.HARD_BLOCK)
 		pr = _receipt([(BOLT, 10)])
 		_inspect(pr.items[0].quality_inspection, "Rejected")
-		with self.assertRaisesRegex(frappe.ValidationError, "Rejected but 10"):
+		# regression 0.60.1: quantities without ".0" (Check 60 showed "Rejected but 20.0")
+		with self.assertRaisesRegex(frappe.ValidationError, "Rejected but 10 is accepted"):
 			pr.reload().submit()
 		# the whole lot booked as rejected (nothing accepted into stores): the gate has nothing to stop
 		pr.reload()

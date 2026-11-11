@@ -2,6 +2,12 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.60.1 — Fix to C3b-Q1: quantities without ".0"
+
+- The incoming QC gate and the receipt's Incoming QC panel write quantities as people write them ("Rejected but 20 is
+  accepted", not "20.0"), with qty_text as everywhere else. Regression test; Check 60 rev 2 (runs on 0.60.1).
+  Found by Check 60 on the bench (11 Nov 2026: 24 passed, 0 failed; text "20.0").
+
 ## 0.60.0 — Cycle 3b starts: incoming QC Inspection with the Purchase Receipt (C3b-Q1)
 
 - QC Inspection = ERPNext's Quality Inspection. Saving a draft Purchase Receipt gives every line whose item has

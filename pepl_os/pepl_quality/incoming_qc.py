@@ -29,6 +29,7 @@ from frappe.utils import cint, cstr, flt
 
 from pepl_os.common import alerts, params
 from pepl_os.common.overrides import has_recent_override
+from pepl_os.pepl_production.job_order_panel import qty_text
 from pepl_os.pepl_stores import stock_tree
 
 QI = "Quality Inspection"
@@ -340,7 +341,7 @@ def receipt_gaps(doc):
 				(
 					row,
 					_("QC Inspection {0} is {1} but {2} is accepted into stores").format(
-						name, _(qi.status), flt(row.qty)
+						name, _(qi.status), qty_text(row.qty)
 					),
 				)
 			)
@@ -415,7 +416,7 @@ def get_receipt_qc_panel(purchase_receipt):
 			rows.append(
 				{
 					"text": _("{0}: {1} {2} - accepted qty {3}, rejected qty {4}").format(
-						label, name, _(qi.status), flt(row.qty), flt(row.get("rejected_qty"))
+						label, name, _(qi.status), qty_text(row.qty), qty_text(row.get("rejected_qty"))
 					),
 					"colour": "red",
 				}

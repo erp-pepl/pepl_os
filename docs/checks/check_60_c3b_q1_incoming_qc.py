@@ -1,10 +1,11 @@
-# PEPL OS v0.60.0 - Check 60: C3b-Q1 incoming QC Inspection with the Purchase Receipt - items of the stock classes
+# PEPL OS v0.60.1 - Check 60 rev 2: C3b-Q1 incoming QC Inspection with the Purchase Receipt - items of the stock classes
 # in "Incoming QC: Stock Classes" are inspected on receipt; saving a receipt makes one draft QC Inspection per such
 # line (with the item's inspection plan); an item without a plan gives Quality a ToDo; the incoming QC gate
 # (Advisory / Soft Block / Hard Block) stops a receipt until its inspections are submitted and accepted.
-# Runs on 0.60.0 or later. System Console, Type = Python. Leave "Commit" UNTICKED: everything below, including the
+# Rev 2 (0.60.1): quantities are written without ".0" ("Rejected but 20 is accepted").
+# Runs on 0.60.1 or later. System Console, Type = Python. Leave "Commit" UNTICKED: everything below, including the
 # System Parameters changes it makes, is undone at the end. Afterwards look at a receipt in the browser (see chat).
-VERSION = "0.60.0"
+VERSION = "0.60.1"
 PARAMS = "PEPL System Parameters"
 QI = "Quality Inspection"
 PR = "Purchase Receipt"
@@ -163,7 +164,7 @@ check(not frappe.call(QC + ".qc_gate_check", name=pr.name), "5. Hard Block never
 inspect(washer_qi, "1.5")
 check(frappe.db.get_value(QI, washer_qi, "status") == "Accepted", "5. washer reading 1.5 (plan 1.4-1.6) -> Accepted")
 inspect(bolt_qi, "Rejected")
-refused("5. bolt inspection Rejected while 20 are accepted into stores -> refused", lambda: frappe.get_doc(PR, pr.name).submit(), "Rejected but 20")
+refused("5. bolt inspection Rejected while 20 are accepted into stores -> refused", lambda: frappe.get_doc(PR, pr.name).submit(), "Rejected but 20 is accepted")
 
 # ---------------- 6. Soft Block with a reason ----------------
 set_params({"custom_incoming_qc_gate_mode": "Soft Block"})
