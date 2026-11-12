@@ -98,6 +98,10 @@ def draft_material_request(so):
 
 def on_sales_order_submit(doc, method=None):
 	"""doc_events: Sales Order on_submit (runs after pepl_sales' own handler)."""
+	from pepl_os.pepl_accounts import historic
+
+	if historic.is_historic_order(doc):  # CR1: an order of an earlier year - its material is long bought
+		return
 	try:
 		name = draft_material_request(doc)
 	except Exception:

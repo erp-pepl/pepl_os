@@ -46,7 +46,12 @@ def default_sectors():
 
 def apply_defaults(doc):
 	"""A new order of an LD sector starts with the standard clause (only when nothing was entered)."""
+	from pepl_os.pepl_accounts import historic
+
 	if not doc.is_new() or doc.get(APPLICABLE) or flt(doc.get(RATE)):
+		return False
+	# CR1: no default clause on an order of an earlier year
+	if historic.is_historic(doc.get("transaction_date")):
 		return False
 	if (doc.get("custom_sector") or "").strip() not in default_sectors():
 		return False

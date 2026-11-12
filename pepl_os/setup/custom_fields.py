@@ -705,6 +705,30 @@ QUALITY_FIELDS = _chain(
 
 CUSTOM_FIELDS[SYSTEM_PARAMETERS] += QUALITY_FIELDS
 
+# CR1 - Accounts & GST: booking PEPL's older Sales Orders and Sales Invoices with their real dates.
+ACCOUNTS_GST_FIELDS = _chain(
+	[
+		{"fieldname": "custom_accounts_gst_tab", "label": "Accounts & GST", "fieldtype": "Tab Break"},
+		{
+			"fieldname": "custom_historic_booking_section",
+			"label": "Historic Booking",
+			"fieldtype": "Section Break",
+		},
+		{
+			"fieldname": "custom_historic_booking_before",
+			"label": "Historic Booking: Documents Dated Before",
+			"fieldtype": "Date",
+			"description": "Sales Orders and Sales Invoices dated before this day are old business booked from Tally "
+			"(e.g. 01-04-2026). Such an order drafts no Material Request and no Job Orders and gets no default LD "
+			"clause; such an invoice needs its Tally Invoice No. and makes no e-Invoice or e-Waybill. "
+			"Empty = every document is treated as new.",
+		},
+	],
+	after="custom_incoming_qc_gate_mode",
+)
+
+CUSTOM_FIELDS[SYSTEM_PARAMETERS] += ACCOUNTS_GST_FIELDS
+
 # C3b-Q1 - QC Inspection (ERPNext Quality Inspection): made with the receipt; its supplier.
 CUSTOM_FIELDS["Quality Inspection"] = [
 	{
@@ -1127,6 +1151,21 @@ CUSTOM_FIELDS["Sales Order"] = [
 	},
 ]
 
+# CR1 - an order of an earlier year, booked from the old records
+CUSTOM_FIELDS["Sales Order"] += [
+	{
+		"fieldname": "custom_historic_booking",
+		"label": "Historic Booking",
+		"fieldtype": "Check",
+		"read_only": 1,
+		"no_copy": 1,
+		"in_standard_filter": 1,
+		"insert_after": "custom_csm_scrap_disposition",
+		"description": "Dated before System Parameters → Accounts & GST → Historic Booking: no Material Request, "
+		"Job Orders or default LD were made.",
+	},
+]
+
 # C3a-X11 - the contractual Liquidated Damages clause (fixed once the order is submitted)
 CUSTOM_FIELDS["Sales Order"] += _chain(
 	[
@@ -1185,6 +1224,30 @@ CUSTOM_FIELDS["Sales Order"] += _chain(
 	],
 	after="terms",
 )
+
+# CR1 - the invoice's number in Tally (the mirror matches on it); an invoice of an earlier year
+CUSTOM_FIELDS["Sales Invoice"] = [
+	{
+		"fieldname": "custom_tally_invoice_no",
+		"label": "Tally Invoice No.",
+		"fieldtype": "Data",
+		"no_copy": 1,
+		"in_standard_filter": 1,
+		"search_index": 1,
+		"insert_after": "due_date",
+		"description": "The number of this invoice in Tally. Needed on a historic booking; one invoice per number.",
+	},
+	{
+		"fieldname": "custom_historic_booking",
+		"label": "Historic Booking",
+		"fieldtype": "Check",
+		"read_only": 1,
+		"no_copy": 1,
+		"in_standard_filter": 1,
+		"insert_after": "custom_tally_invoice_no",
+		"description": "Dated before System Parameters → Accounts & GST → Historic Booking (raised earlier, in Tally).",
+	},
+]
 
 # C2-17 - Vendor payments: MSME 45-day clock on the bill; Tally payments recorded as Payment Entries.
 CUSTOM_FIELDS["Purchase Invoice"] = [

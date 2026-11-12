@@ -117,7 +117,9 @@ def _flag_missing_boms(so, items):
 
 def on_sales_order_submit(doc, method=None):
 	"""doc_events: Sales Order on_submit (after pepl_sales and the C2-07 Material Request)."""
-	if not enabled():
+	from pepl_os.pepl_accounts import historic
+
+	if not enabled() or historic.is_historic_order(doc):  # CR1: an old order's work is long done
 		return
 	frappe.db.savepoint(SAVEPOINT)
 	try:

@@ -86,6 +86,7 @@ TRACKER = "pepl_os.pepl_purchase.tracker"
 LETDOWN = "pepl_os.pepl_purchase.letdown"
 HEAT = "pepl_os.pepl_stores.heat"
 INCOMING_QC = "pepl_os.pepl_quality.incoming_qc"
+HISTORIC = "pepl_os.pepl_accounts.historic"
 CSM = "pepl_os.pepl_stores.csm"
 PAYMENTS = "pepl_os.pepl_purchase.payments"
 
@@ -113,6 +114,12 @@ doc_events = {
 	"Company": {"on_update": "pepl_os.pepl_stores.stock_tree.on_company_update"},
 	# C2-03: Udyam number required for MSME suppliers.
 	"Supplier": {"validate": "pepl_os.pepl_purchase.supplier.validate_supplier"},
+	# CR1: an invoice dated before "Historic Booking: Documents Dated Before" - Tally Invoice No., no e-Invoice /
+	# e-Waybill, a valuation rate for stock never received
+	"Sales Invoice": {
+		"validate": f"{HISTORIC}.validate_sales_invoice",
+		"before_submit": f"{HISTORIC}.before_submit_sales_invoice",
+	},
 	# C2-17: MSME flag and pay-by date on the bill
 	"Purchase Invoice": {"validate": f"{PAYMENTS}.validate_invoice"},
 	# C2-17: one submitted entry per Tally voucher; Payment Run rows and MSME ToDos follow payments
@@ -177,11 +184,13 @@ doc_events = {
 	# C2-07: draft the Material Request for bought-out and short raw material
 	# C2-07 Material Request; C3a-X5 draft Job Orders (deleted again on cancel)
 	"Sales Order": {
+		# CR1: an order dated before "Historic Booking: Documents Dated Before" is marked historic
 		# C3a-X11: the LD clause (sector defaults, sensible values)
-		"validate": "pepl_os.pepl_production.ld.validate_sales_order",
+		"validate": [f"{HISTORIC}.validate_sales_order", "pepl_os.pepl_production.ld.validate_sales_order"],
 		"on_submit": [
 			"pepl_os.pepl_purchase.material_request.on_sales_order_submit",
 			"pepl_os.pepl_production.job_orders.on_sales_order_submit",
+			f"{HISTORIC}.on_sales_order_submit",
 		],
 		"on_cancel": "pepl_os.pepl_production.job_orders.on_sales_order_cancel",
 	},

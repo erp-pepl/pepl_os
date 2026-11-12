@@ -2,6 +2,35 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.61.0 — CR1: older Sales Orders and Sales Invoices with their real dates; negative stock; GST as in Tally
+
+PEPL's request of 7 Nov 2026: book the pending Sales Orders of earlier years (2022 onwards) and the Sales Invoices
+already raised against them with their real dates, let stock go negative where the inward stock is not yet entered,
+and keep GST (CGST / SGST / IGST) on orders and invoices consistent with Tally.
+
+- **Fiscal Years:** ERPNext accepts a date only inside a Fiscal Year (the sites started with 2026-27, hence "nothing
+  before 01-04-2026"). `create_fiscal_years(from_date)` adds every missing earlier year (1 April – 31 March), same
+  companies as the existing years; System Manager / Accounts Manager; safe to run again.
+- **System Parameters > Accounts & GST (new tab) > Historic Booking: Documents Dated Before** (empty = off; PEPL:
+  01-04-2026). A Sales Order dated before it is ticked **Historic Booking** and drafts no Material Request (C2-07), no
+  Job Orders and no PRD-NO-BOM ToDo (C3a-X5), and gets no default LD clause (C3a-X11; LD typed by hand stays). PEPL's
+  PSD and Document Trackers are still made. A quantity still to be made goes to Production by hand (Create → Work Order).
+- **Sales Invoice:** new field **Tally Invoice No.** (one invoice per number); a historic invoice needs it on submit,
+  is ticked Historic Booking, and makes no e-Invoice and no e-Waybill (both "Not Applicable"). With Update Stock, an item
+  that has no stock history in its store and no rate is named in plain words ("enter the Valuation Rate") before
+  ERPNext refuses. The Payment Tracker is still made (it stays outstanding until the Tally receipt is recorded).
+- **GST ledgers as in Tally** (PEPL's "GrpSum (GST)"): `setup_tally_gst_ledgers(company)` builds the 10 Tally groups and
+  27 ledgers under Duties and Taxes, names copied letter for letter. India Compliance's accounts are renamed to them
+  (Output Tax CGST / SGST / IGST → CGST / SGST / IGST under Output - GST; Input Tax … → Intermediate ITC - WB CGST /
+  WB SGST / IGST; Input Tax … RCM → Payable Under RCM - …), so the GST tax templates, Item Tax Templates and GST
+  Settings keep working and orders and invoices show the Tally ledgers; template descriptions follow. Sales reverse
+  charge and refund accounts keep India Compliance's names (no Tally ledger). Input-side mapping to be confirmed by
+  PEPL's accountant before purchase bills are booked.
+- **Negative stock:** ERPNext's Stock Settings > Allow Negative Stock, switched on by the set-up while PEPL books and off
+  again afterwards; the later Material Receipt of the stock already sold brings the balances back to zero.
+- `docs/checks/setup_cr1.py` (Commit ticked; the set-up above), Check 61 (`docs/checks/check_61_cr1_historic_booking_gst.py`,
+  Commit unticked), `docs/cr1_booking_guide.md` (PEPL's steps), 15 tests (`test_cr1_historic_booking.py`).
+
 ## 0.60.1 — Fix to C3b-Q1: quantities without ".0"
 
 - The incoming QC gate and the receipt's Incoming QC panel write quantities as people write them ("Rejected but 20 is
