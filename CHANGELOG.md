@@ -2,6 +2,13 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.61.1 — Fix to CR1: an emptied Historic Booking date reads as "off"
+
+- Frappe reads an emptied Date System Parameter back as 0001-01-01 instead of nothing. CR1 already treated every
+  document as new in that case (nothing is dated before year 1), but the rule now also reports itself as off
+  (`cutoff()` = None). Regression test. Found by CI #62 (663 passed, 1 failed: test_rule_off_when_the_date_is_empty).
+  Check 61 unchanged (its section 8 passed on the bench).
+
 ## 0.61.0 — CR1: older Sales Orders and Sales Invoices with their real dates; negative stock; GST as in Tally
 
 PEPL's request of 7 Nov 2026: book the pending Sales Orders of earlier years (2022 onwards) and the Sales Invoices

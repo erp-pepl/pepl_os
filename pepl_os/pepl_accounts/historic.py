@@ -30,9 +30,13 @@ SETUP_ROLES = ("System Manager", "Accounts Manager")
 
 
 def cutoff():
-	"""The Historic Booking date, or None when the rule is off."""
+	"""The Historic Booking date, or None when the rule is off.
+
+	Frappe reads an emptied Date of a Single back as 0001-01-01 (seen on CI #62): that is "no date" too.
+	"""
 	value = params.get(CUTOFF_FIELD)
-	return getdate(value) if value else None
+	date = getdate(value) if value else None
+	return date if date and date.year > 1 else None
 
 
 def is_historic(date):

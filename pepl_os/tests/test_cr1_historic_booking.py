@@ -98,6 +98,12 @@ class TestHistoricBooking(PEPLTestCase):
 		self.assertEqual(so.get(historic.FLAG), 0)
 		self.assertEqual(so.get(ld.APPLICABLE), 1)  # a new Railways order keeps its standard LD clause
 
+	def test_an_emptied_date_read_back_as_year_one_is_off(self):
+		# Regression (CI #62): an emptied Date of a Single can come back as 0001-01-01.
+		set_param(historic.CUTOFF_FIELD, "0001-01-01")
+		self.assertIsNone(historic.cutoff())
+		self.assertFalse(historic.is_historic(add_years(today(), -4)))
+
 	def test_the_day_itself_is_not_historic(self):
 		self.assertTrue(historic.is_historic(add_days(today(), -1)))
 		self.assertFalse(historic.is_historic(today()))
