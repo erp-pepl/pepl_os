@@ -2,6 +2,38 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.62.0 — CR2: tender data open only to three named users
+
+PEPL's request of 15 Nov 2026: PEPL Tender records are sensitive. Only ankit@, sudam@ and aviral@parasramkagroup.com may
+view, create, change or delete them; nobody else (CEO and System Managers included). Sales Orders made from a tender
+stay open to everyone who works on them (Job Orders, delivery, invoicing); only their tender details are hidden.
+
+- **The list lives in the site configuration**, key `pepl_tender_access_users` (bench `set-config`; Frappe Cloud
+  dashboard → Site Config), not in System Parameters: System Managers can change System Parameters but not the site
+  configuration. Empty / missing = restriction off (as before CR2). Administrator always has access.
+- **PEPL Tender and PEPL CST Cost Sheet** (all Cost Sheets) with every table inside them open only for the listed
+  users: forms, lists, reports, link searches, the API, prints. So do everything pointing at them: their files,
+  change history, comments, assignments (ToDo), e-mails, deleted copies, view / print / export logs, shares, and
+  Generated Documents made from a tender. A tender or Cost Sheet can no longer be shared or assigned to anyone else
+  (a daily deadline alert meant for someone else goes to the first listed user).
+- **Role PEPL Tender Access** (new): given automatically to exactly the listed users and taken from anyone else
+  (on every User save, every migrate, every day). Full rights on PEPL Tender and PEPL CST Cost Sheet, delete
+  included (an exception to Work Package A's delete restriction, on these two DocTypes only).
+- **Sales Order:** Tender Reference and NIT Number moved to permission level 1, readable and writable only by PEPL
+  Tender Access. PEPL Sector stays visible. Making the Sales Order from a won tender is done by a listed user (the
+  button is on the tender); everything after it works for every user as before.
+- **CEO:** no longer sees tenders or Cost Sheets (view removed; PEPL Tender Viewer taken out of the CEO profile).
+- **Role Profiles:** "PEPL Sales & Tender Manager / Executive" renamed **PEPL Sales Manager / PEPL Sales Executive**
+  without the tender roles (users keep their profile); new **PEPL Tender Only** = PEPL Tender Manager + Sales User.
+- **PEPL Estimate vs Actual Cost:** the CST estimate columns are shown only to the listed users; others see actual
+  costs with the note "CST estimate shown only to the Tender Access users".
+- **PEPL Audit Trail:** events on tender data shown only to the listed users.
+- Seven pepl_sales methods that read or changed tender / Cost Sheet data without asking Frappe first now ask
+  (get_tender_summary, the four Cost Sheet buttons, the Cost Sheet backfill, the tender deadline run).
+- `docs/checks/setup_cr2.py` (Administrator, Commit ticked), Check 62 (`check_62_cr2_tender_access.py`,
+  Administrator, Commit unticked), `docs/cr2_tender_access_guide.md` (PEPL's test steps), 38 tests
+  (`test_cr2_tender_access.py`). Patch `v0_62.split_tender_profiles`.
+
 ## 0.61.1 — Fix to CR1: an emptied Historic Booking date reads as "off"
 
 - Frappe reads an emptied Date System Parameter back as 0001-01-01 instead of nothing. CR1 already treated every

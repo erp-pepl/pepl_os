@@ -9,3 +9,4 @@
 pepl_os.patches.v0_3.correct_stores_profile
 pepl_os.patches.v0_34.link_machine_hour_rate_groups
 pepl_os.patches.v0_40.remove_spr_slow_speed_parameter
+pepl_os.patches.v0_62.split_tender_profiles

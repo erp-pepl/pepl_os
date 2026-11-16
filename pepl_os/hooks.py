@@ -90,9 +90,58 @@ HISTORIC = "pepl_os.pepl_accounts.historic"
 CSM = "pepl_os.pepl_stores.csm"
 PAYMENTS = "pepl_os.pepl_purchase.payments"
 
+# CR2 - tender data (PEPL Tender, PEPL CST Cost Sheet) open only to the users listed in site_config.json
+# (pepl_tender_access_users), plus Administrator. See pepl_os/pepl_governance/tender_access.py.
+TENDER_ACCESS = "pepl_os.pepl_governance.tender_access"
+_TA_GATED = ("PEPL Tender", "PEPL CST Cost Sheet", "PEPL Generated Document")
+_TA_TABLES = (
+	"PEPL Tender",
+	"PEPL CST Cost Sheet",
+	"PEPL Tender Item",
+	"PEPL Tender Item Competitor",
+	"PEPL Tender Bid Document",
+	"PEPL Tender PO Schedule",
+	"PEPL Tender Source Link",
+	"PEPL CST Component",
+	"PEPL CST Competitor History",
+)
+# records pointing at a tender / Cost Sheet: their files, history, comments, assignments, logs, shares
+_TA_RELATED = {
+	"File": "file_conditions",
+	"Version": "version_conditions",
+	"Comment": "comment_conditions",
+	"ToDo": "todo_conditions",
+	"Communication": "communication_conditions",
+	"Deleted Document": "deleted_document_conditions",
+	"Activity Log": "activity_log_conditions",
+	"Access Log": "access_log_conditions",
+	"View Log": "view_log_conditions",
+	"Notification Log": "notification_log_conditions",
+	"Email Queue": "email_queue_conditions",
+	"DocShare": "docshare_conditions",
+}
+
+has_permission = {
+	**{doctype: f"{TENDER_ACCESS}.has_permission" for doctype in _TA_GATED},
+	**{doctype: f"{TENDER_ACCESS}.has_related_permission" for doctype in _TA_RELATED},
+}
+
+permission_query_conditions = {
+	**{doctype: f"{TENDER_ACCESS}.query_conditions" for doctype in _TA_TABLES},
+	"PEPL Generated Document": f"{TENDER_ACCESS}.generated_document_conditions",
+	**{doctype: f"{TENDER_ACCESS}.{method}" for doctype, method in _TA_RELATED.items()},
+}
+
 doc_events = {
 	# C3a-B1: a login given the PEPL Kiosk profile opens the kiosk after logging in
-	"User": {"on_update": "pepl_os.pepl_production.kiosk.on_user_update"},
+	# CR2: the PEPL Tender Access role belongs to exactly the listed users
+	"User": {
+		"validate": f"{TENDER_ACCESS}.validate_user",
+		"on_update": "pepl_os.pepl_production.kiosk.on_user_update",
+	},
+	# CR2: a tender / Cost Sheet is never assigned or shared to someone outside the list
+	"ToDo": {"validate": f"{TENDER_ACCESS}.validate_todo"},
+	"DocShare": {"validate": f"{TENDER_ACCESS}.validate_docshare"},
 	# C3a-B3: an operator linked to an Employee follows it (name, joining date, login, Left / Inactive)
 	"Employee": {"on_update": "pepl_os.pepl_production.hr_lite.on_employee_update"},
 	"PEPL System Parameters": {
@@ -235,6 +284,8 @@ scheduler_events = {
 		"pepl_os.pepl_production.oee.daily_oee",
 		# C3a-X8: one ToDo per job worker holding overdue material (PRD-JW-OVERDUE)
 		"pepl_os.pepl_production.job_work.daily_job_work_alerts",
+		# CR2: the Tender Access role and the Sales Order tender fields follow the list in site_config.json
+		f"{TENDER_ACCESS}.daily_sync",
 	],
 	"cron": {
 		# C3a-X4: every Monday 02:30, last week's MTBF / MTTR / CPC for every machine
@@ -265,6 +316,26 @@ override_whitelisted_methods = {
 	"frappe.utils.print_format.download_pdf": "pepl_os.common.letterhead.download_pdf",
 	"erpnext.buying.doctype.request_for_quotation.request_for_quotation.get_pdf": (
 		"pepl_os.common.letterhead.rfq_pdf"
+	),
+	# CR2: pepl_sales methods that read or change tender / Cost Sheet data without asking Frappe first
+	"pepl_sales.pepl_sales.doctype.pepl_tender.pepl_tender.get_tender_summary": f"{TENDER_ACCESS}.get_tender_summary",
+	"pepl_sales.pepl_sales.doctype.pepl_cst_cost_sheet.pepl_cst_cost_sheet.sync_components_from_product": (
+		f"{TENDER_ACCESS}.sync_components_from_product"
+	),
+	"pepl_sales.pepl_sales.doctype.pepl_cst_cost_sheet.pepl_cst_cost_sheet.fetch_competitor_history": (
+		f"{TENDER_ACCESS}.fetch_competitor_history"
+	),
+	"pepl_sales.pepl_sales.doctype.pepl_cst_cost_sheet.pepl_cst_cost_sheet.clone_cost_sheet_for_new_tender": (
+		f"{TENDER_ACCESS}.clone_cost_sheet_for_new_tender"
+	),
+	"pepl_sales.pepl_sales.doctype.pepl_cst_cost_sheet.pepl_cst_cost_sheet.create_or_update_draft_bom": (
+		f"{TENDER_ACCESS}.create_or_update_draft_bom"
+	),
+	"pepl_sales.pepl_sales.tender_cst_sync.backfill_existing_tender_cost_sheets": (
+		f"{TENDER_ACCESS}.backfill_existing_tender_cost_sheets"
+	),
+	"pepl_sales.operational_notifications.run_tender_deadline_notifications": (
+		f"{TENDER_ACCESS}.run_tender_deadline_notifications"
 	),
 }
 

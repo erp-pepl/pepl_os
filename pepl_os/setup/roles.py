@@ -14,6 +14,8 @@ PEPL_ROLES = (
 	"PEPL CEO",
 	"PEPL Weighment",  # C2-18: the weighbridge / scrap weighment operator
 	"PEPL Kiosk",  # C3a-B1: the shop-floor kiosk device (web pages only, no Desk)
+	# CR2: given by pepl_os to exactly the users in site_config.json pepl_tender_access_users (never in a profile)
+	"PEPL Tender Access",
 )
 NO_DESK_ROLES = ("PEPL Kiosk",)
 ROLE_HOME_PAGES = {"PEPL Kiosk": "kiosk"}  # C3a-B1: the page a kiosk login opens
@@ -47,15 +49,15 @@ ROLE_PROFILES = {
 	"PEPL Quality Manager": ("Quality Manager", "Stock User"),
 	"PEPL Accounts": ("Accounts Manager", "Accounts User"),
 	# View-everything access for PEPL CEO is granted by pepl_os.setup.permissions.grant_ceo_view.
-	"PEPL CEO": ("PEPL CEO", "PEPL Tender Viewer"),
-	# Cycle 1 (pepl_sales) jobs, so every login can be given a profile
-	"PEPL Sales & Tender Manager": (
-		"Sales Manager",
-		"Sales User",
-		"Sales Master Manager",
-		"PEPL Tender Manager",
-	),
-	"PEPL Sales & Tender Executive": ("Sales User", "PEPL Tender Executive"),
+	# CR2: the CEO no longer sees tenders (only the Tender Access users do)
+	"PEPL CEO": ("PEPL CEO",),
+	# Cycle 1 (pepl_sales) jobs, so every login can be given a profile.
+	# CR2: Sales and Tender are separate jobs. "PEPL Tender Only" is for the Tender Access users; Sales User lets
+	# them make the Sales Order from a won tender. A tender opens only for the users listed in site_config.json,
+	# whatever profile anyone else is given.
+	"PEPL Sales Manager": ("Sales Manager", "Sales User", "Sales Master Manager"),
+	"PEPL Sales Executive": ("Sales User",),
+	"PEPL Tender Only": ("PEPL Tender Manager", "Sales User"),
 	"PEPL Engineering": ("Engineering Manager", "Engineering User"),
 }
 
@@ -65,6 +67,29 @@ PROFILE_CORRECTIONS_V0_3 = {
 	# Stores must not raise or approve Purchase Orders (Purchase User can).
 	"PEPL Stores": ("Purchase User",),
 }
+
+# CR2 (0.62.0): the CEO's tender view goes; the two Sales & Tender profiles become Sales-only profiles
+# (renamed, so the users holding them keep them).
+PROFILE_CORRECTIONS_V0_62 = {
+	"PEPL CEO": ("PEPL Tender Viewer",),
+	"PEPL Sales & Tender Manager": ("PEPL Tender Manager", "PEPL Tender Executive", "PEPL Tender Viewer"),
+	"PEPL Sales & Tender Executive": ("PEPL Tender Manager", "PEPL Tender Executive", "PEPL Tender Viewer"),
+}
+PROFILE_RENAMES_V0_62 = {
+	"PEPL Sales & Tender Manager": "PEPL Sales Manager",
+	"PEPL Sales & Tender Executive": "PEPL Sales Executive",
+}
+
+
+def rename_profiles(renames):
+	"""Rename Role Profiles (users keep them). A profile whose new name is already taken keeps its old name.
+	Returns {old: new} for the ones renamed."""
+	done = {}
+	for old, new in renames.items():
+		if frappe.db.exists("Role Profile", old) and not frappe.db.exists("Role Profile", new):
+			frappe.rename_doc("Role Profile", old, new, force=True, show_alert=False)
+			done[old] = new
+	return done
 
 
 def ensure_roles():

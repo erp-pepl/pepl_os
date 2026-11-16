@@ -14,6 +14,8 @@ import json
 import frappe
 from frappe.utils import add_days, get_datetime, getdate
 
+from pepl_os.pepl_governance import tender_access
+
 EVENT_FIELD_CHANGE = "Field Change"
 EVENT_LOGIN = "Login / Logout"
 EVENT_PRINT_EXPORT = "Print / Export"
@@ -245,5 +247,6 @@ def get_events(filters):
 			truncated.append(event_type)
 		rows.extend(found)
 
+	rows = tender_access.filter_events(rows)  # CR2: tender events only for the Tender Access users
 	rows.sort(key=lambda r: get_datetime(r["time"]), reverse=True)
 	return rows, truncated

@@ -1,4 +1,4 @@
-"""A2 / A5 - Delete rights restricted to the System Manager.
+"""A2 / A5 - Delete rights restricted to the System Manager (CR2: and the Tender Access users on tender data).
 
 Applied on install and on every migrate, so a delete right re-granted by
 hand in Role Permission Manager is removed again at the next deploy. Other
@@ -13,6 +13,16 @@ import frappe
 from frappe.permissions import add_permission, setup_custom_perms, update_permission_property
 
 ALLOWED_TO_DELETE = {"System Manager", "Administrator"}
+
+# CR2: the Tender Access users (PEPL's request) may delete tenders and Cost Sheets. Nobody else can open those
+# records (System Managers included), so the delete restriction does not take this right away again.
+DELETE_EXCEPTIONS = {
+	"PEPL Tender": {"PEPL Tender Access"},
+	"PEPL CST Cost Sheet": {"PEPL Tender Access"},
+}
+
+# CR2: tender data is open only to the Tender Access users; the CEO's view-everything leaves it out.
+NOT_FOR_CEO = ("PEPL Tender", "PEPL CST Cost Sheet")
 
 # The CEO sees everything and changes nothing.
 CEO_ROLE = "PEPL CEO"
@@ -97,8 +107,12 @@ def perm_rows(doctype):
 	)
 
 
+def may_delete(doctype, role):
+	return role in ALLOWED_TO_DELETE or role in DELETE_EXCEPTIONS.get(doctype, ())
+
+
 def roles_with_delete(doctype):
-	return sorted({r.role for r in perm_rows(doctype) if r.delete and r.role not in ALLOWED_TO_DELETE})
+	return sorted({r.role for r in perm_rows(doctype) if r.delete and not may_delete(doctype, r.role)})
 
 
 def enforcement_enabled():
@@ -117,7 +131,7 @@ def restrict_delete(doctypes=None, force=False):
 	if not (force or enforcement_enabled()):
 		return changed
 	for doctype in doctypes or delete_restricted_doctypes():
-		offenders = [r for r in perm_rows(doctype) if r.delete and r.role not in ALLOWED_TO_DELETE]
+		offenders = [r for r in perm_rows(doctype) if r.delete and not may_delete(doctype, r.role)]
 		if not offenders:
 			continue
 		for row in offenders:
@@ -130,9 +144,10 @@ def restrict_delete(doctypes=None, force=False):
 def ceo_view_doctypes():
 	"""Every business record: core transactions and masters plus every PEPL DocType.
 
-	The audit logs are left out: the CEO reads those through the PEPL Audit Trail report.
+	The audit logs are left out: the CEO reads those through the PEPL Audit Trail report. Tender data (CR2) is
+	left out: only the Tender Access users open it.
 	"""
-	return [d for d in delete_restricted_doctypes() if d not in LOG_DOCTYPES]
+	return [d for d in delete_restricted_doctypes() if d not in LOG_DOCTYPES and d not in NOT_FOR_CEO]
 
 
 SYSTEM_PARAMETERS = "PEPL System Parameters"

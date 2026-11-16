@@ -26,6 +26,7 @@ from frappe import _
 from frappe.utils import cint, flt
 
 from pepl_os.common import params
+from pepl_os.pepl_governance import tender_access
 from pepl_os.pepl_production import machine_week
 from pepl_os.pepl_production.job_order_panel import qty_text
 
@@ -38,6 +39,7 @@ RETIRED_STATUSES = ("Superseded", "Obsolete")
 MANUFACTURE_PURPOSES = ("Manufacture", "Material Consumption for Manufacture")
 ELEMENTS = ("material", "machining", "other", "overhead")
 STATUSES = ("Completed", "In Process", "Not Started", "Stopped", "Closed")
+ESTIMATE_HIDDEN = "CST estimate shown only to the Tender Access users"
 
 
 def warning_percent():
@@ -307,15 +309,19 @@ def rows(filters=None):
 	warning = warning_percent()
 	estimates = {}
 	out = []
+	# CR2: Cost Sheets are open only to the Tender Access users; everyone else sees the actual cost only.
+	sees_estimates = tender_access.can_access()
 	for wo in _job_orders(filters):
 		key = (wo.production_item, wo.sales_order)
 		if key not in estimates:
-			name, basis = choose_sheet(wo.production_item, wo.sales_order)
+			name, basis = choose_sheet(wo.production_item, wo.sales_order) if sees_estimates else (None, None)
 			estimates[key] = (name, basis, estimate_from_sheet(frappe.get_doc(CST, name)) if name else None)
 		sheet, basis, est = estimates[key]
 		act = actual_for(wo.name)
 		notes = list(act.notes)
-		if not sheet:
+		if not sees_estimates:
+			notes.insert(0, _(ESTIMATE_HIDDEN))
+		elif not sheet:
 			notes.insert(0, _("No CST estimate for this item"))
 		if not act.pieces:
 			notes.insert(0, _("Nothing made yet"))
@@ -425,5 +431,7 @@ def summary_message(data):
 	text = _(
 		"Red: actual a piece above the CST estimate by more than {0}% (System Parameters → Costing: Variance Warning %)."
 	).format(qty_text(warning))
+	if not tender_access.can_access():
+		return frappe.utils.escape_html(_(ESTIMATE_HIDDEN) + ".")
 	text += " " + _("{0} of {1} row(s) over; {2} without a CST estimate.").format(over, len(data), missing)
 	return frappe.utils.escape_html(text)

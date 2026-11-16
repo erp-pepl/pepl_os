@@ -2,6 +2,7 @@
 
 from pepl_os.common.letterhead import ensure_default_print_formats
 from pepl_os.pepl_governance.retention import apply_log_retention
+from pepl_os.pepl_governance.tender_access import apply_access_setup
 from pepl_os.pepl_production.command_centre import ensure_top_downtime_block
 from pepl_os.pepl_production.kiosk import point_kiosk_logins_home
 from pepl_os.pepl_production.masters import ensure_production_masters
@@ -31,6 +32,7 @@ def ensure_setup():
 	restrict_delete()  # A2 / A5
 	grant_ceo_view()  # A2: the CEO sees every record, changes none
 	grant_extra_views()  # A2: e.g. Accounts sees Purchase Orders
+	apply_access_setup()  # CR2: tender data only for the users in site_config.json pepl_tender_access_users
 	apply_log_retention()  # A5
 	seed_stock_structure()  # C2-04: stock classes, stores, Item Group defaults
 	enable_batches()  # C2-15: Batch = heat number needs batches switched on in Stock Settings

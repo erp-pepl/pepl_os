@@ -58,9 +58,9 @@ class TestAccessAudit(PEPLTestCase):
 
 class TestRoleProfiles(PEPLTestCase):
 	def test_all_profiles_exist_with_expected_roles(self):
-		# Seven Cycle 2+ profiles, the CEO included, three for the Cycle 1 (Sales) jobs, and the kiosk
-		# device login (C3a-B1).
-		self.assertEqual(len(roles.ROLE_PROFILES), 11)
+		# Seven Cycle 2+ profiles, the CEO included, four for the Cycle 1 jobs (CR2: Sales Manager, Sales
+		# Executive, Tender Only, Engineering), and the kiosk device login (C3a-B1).
+		self.assertEqual(len(roles.ROLE_PROFILES), 12)
 		for profile, expected in roles.ROLE_PROFILES.items():
 			self.assertTrue(frappe.db.exists("Role Profile", profile), profile)
 			have = set(frappe.get_all("Has Role", filters={"parent": profile}, pluck="role"))
