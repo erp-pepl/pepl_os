@@ -3,7 +3,8 @@
 From version 0.62.0, **tenders and Cost Sheets open only for three logins:**
 ankit@parasramkagroup.com, sudam@parasramkagroup.com and aviral@parasramkagroup.com.
 Nobody else sees them. That includes the CEO login and the System Manager logins.
-Sales Orders made from a tender stay open to everyone who works on them. Only the **Tender Reference** and
+**Only these three make a Sales Order from a tender** (button on the tender). After that, the Sales Order stays
+open to everyone who works on it. Only the **Tender Reference** and
 **NIT Number** on those orders are hidden.
 
 Do these tests on the demo site. Write Pass or Fail in the last column.
@@ -19,6 +20,8 @@ Do these tests on the demo site. Write Pass or Fail in the last column.
 | 7 | The same sales user | Type a tender number (e.g. TND-2026-0003) in the search bar | The tender does not open: "not permitted" | |
 | 8 | The CEO login | Repeat 6 and 7 | Same: no tender opens | |
 | 9 | A System Manager login (not one of the three) | Repeat 6 and 7, and open **PEPL CST Cost Sheet** list | Nothing opens; both lists empty | |
+| 9a | Ankit | Open a won tender and click **Create Sales Order** | The Sales Order is made, with the Tender Reference filled | |
+| 9b | A sales user (not one of the three) | Make a new Sales Order and try to put a tender number in it (e.g. through Data Import) | Refused: "Only the Tender Access users can make a Sales Order from a tender" | |
 | 10 | A sales user | Open a Sales Order made from a tender (e.g. SAL-ORD-2026-00006) | It opens; **Tender Reference** and **NIT Number** are not shown; everything else is | |
 | 11 | Ankit | Open the same Sales Order | Tender Reference and NIT Number are shown | |
 | 12 | A production / stores user | Create a Job Order or Delivery Note from that Sales Order | It works as before | |

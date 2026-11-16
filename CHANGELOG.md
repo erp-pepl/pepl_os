@@ -2,6 +2,14 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.62.1 — CR2: only the three make a Sales Order from a tender
+
+- PEPL (Aviral ji, 16 Nov 2026): a Sales Order is made from a tender only by ankit@, sudam@ or aviral@ - otherwise
+  others would have to open the tender. The "Create Sales Order" button is on the tender, which only they open; now
+  anyone else who sets or changes a Sales Order's Tender Reference another way (API, Data Import, code) is refused
+  with a plain message instead of the field being blanked silently. Everyone still works on the Sales Order once it
+  exists (Job Orders, delivery, invoicing). Sales Order before_insert + before_validate. 5 tests; Check 62 line 3.
+
 ## 0.62.0 — CR2: tender data open only to three named users
 
 PEPL's request of 15 Nov 2026: PEPL Tender records are sensitive. Only ankit@, sudam@ and aviral@parasramkagroup.com may

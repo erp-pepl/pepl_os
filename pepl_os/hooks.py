@@ -233,6 +233,9 @@ doc_events = {
 	# C2-07: draft the Material Request for bought-out and short raw material
 	# C2-07 Material Request; C3a-X5 draft Job Orders (deleted again on cancel)
 	"Sales Order": {
+		# CR2 (0.62.1): only the Tender Access users make a Sales Order from a tender (PEPL, 16 Nov 2026)
+		"before_insert": f"{TENDER_ACCESS}.guard_sales_order_tender",
+		"before_validate": f"{TENDER_ACCESS}.guard_sales_order_tender",
 		# CR1: an order dated before "Historic Booking: Documents Dated Before" is marked historic
 		# C3a-X11: the LD clause (sector defaults, sensible values)
 		"validate": [f"{HISTORIC}.validate_sales_order", "pepl_os.pepl_production.ld.validate_sales_order"],

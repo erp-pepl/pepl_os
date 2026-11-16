@@ -282,6 +282,26 @@ def validate_user(doc, method=None):
 		doc.set("roles", [r for r in doc.get("roles") if r.role != ACCESS_ROLE])
 
 
+def guard_sales_order_tender(doc, method=None):
+	"""Only the Tender Access users create a Sales Order from a tender (PEPL, Aviral ji, 16 Nov 2026): anyone else
+	who sets or changes the Tender Reference - by the API, Data Import or code - is refused, not silently blanked.
+	Sales Order before_insert (before Frappe blanks level-1 fields) and before_validate (saves)."""
+	if not is_active() or can_access():
+		return
+	field = SALES_ORDER_FIELDS[0]
+	tender = doc.get(field)
+	if not tender:
+		return
+	before = frappe.db.get_value("Sales Order", doc.name, field) if doc.get("name") else None
+	if tender != before:
+		frappe.throw(
+			_("Only the Tender Access users can make a Sales Order from a tender ({0}). {1}").format(
+				tender, _(RESTRICTED_MESSAGE)
+			),
+			frappe.PermissionError,
+		)
+
+
 # ---------------- set-up: rights, Sales Order fields, the role ----------------
 def holders():
 	return sorted(
@@ -395,6 +415,11 @@ def access_status():
 			f: frappe.db.get_value("Custom Field", {"dt": "Sales Order", "fieldname": f}, "permlevel")
 			for f in SALES_ORDER_FIELDS
 		},
+		"sales_order_guard": all(
+			f"{__name__}.guard_sales_order_tender"
+			in (frappe.get_hooks("doc_events").get("Sales Order", {}).get(event) or [])
+			for event in ("before_insert", "before_validate")
+		),
 		"guarded_methods": all(
 			original in frappe.get_hooks("override_whitelisted_methods")
 			for original in GUARDED_METHODS.values()

@@ -235,6 +235,45 @@ class TestNotPassedOn(TenderAccessCase):
 		called.assert_called_once_with(ta.GUARDED_METHODS["get_tender_summary"])
 
 
+class TestTenderSalesOrder(TenderAccessCase):
+	"""PEPL (Aviral ji, 16 Nov 2026): only the three make a Sales Order from a tender."""
+
+	def _order(self, tender="TND-T-CR2-SO", name=None):
+		return frappe._dict(doctype="Sales Order", name=name, custom_tender_reference=tender)
+
+	def test_outsider_cannot_make_a_sales_order_from_a_tender(self):
+		frappe.set_user(PLAIN)
+		with self.assertRaises(frappe.PermissionError):
+			ta.guard_sales_order_tender(self._order())
+		frappe.set_user(OTHER)  # System Manager: refused too
+		with self.assertRaises(frappe.PermissionError):
+			ta.guard_sales_order_tender(self._order())
+
+	def test_listed_user_and_administrator_can(self):
+		frappe.set_user(ONE)
+		ta.guard_sales_order_tender(self._order())
+		frappe.set_user("Administrator")
+		ta.guard_sales_order_tender(self._order())
+
+	def test_outsider_works_on_an_existing_tender_order(self):
+		frappe.set_user(PLAIN)
+		ta.guard_sales_order_tender(self._order(tender=None))  # an ordinary order
+		with patch.object(frappe.db, "get_value", return_value="TND-T-CR2-SO"):
+			ta.guard_sales_order_tender(self._order(name="SO-CR2"))  # saving the order: link unchanged
+			with self.assertRaises(frappe.PermissionError):
+				ta.guard_sales_order_tender(self._order(tender="TND-OTHER", name="SO-CR2"))  # re-pointing it
+
+	def test_no_list_no_restriction(self):
+		self.set_list([])
+		frappe.set_user(PLAIN)
+		ta.guard_sales_order_tender(self._order())
+
+	def test_guard_runs_before_frappe_blanks_the_field(self):
+		events = frappe.get_hooks("doc_events")["Sales Order"]
+		for event in ("before_insert", "before_validate"):
+			self.assertIn(f"{ta.__name__}.guard_sales_order_tender", events[event])
+
+
 class TestRoleRightsAndFields(TenderAccessCase):
 	def test_role_follows_the_list(self):
 		self.assertIn(ta.ACCESS_ROLE, frappe.get_roles(ONE))

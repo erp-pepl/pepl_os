@@ -1,8 +1,8 @@
-# PEPL OS v0.62.0 - Check 62: CR2 - tender data (PEPL Tender, PEPL CST Cost Sheet) open only to the three
+# PEPL OS v0.62.1 - Check 62: CR2 - tender data (PEPL Tender, PEPL CST Cost Sheet) open only to the three
 # Tender Access users; tender Sales Orders open to everyone, their Tender Reference / NIT Number hidden.
-# Runs on 0.62.0 or later, after setup_cr2.py. System Console, Type = Python, logged in as **Administrator**.
+# Runs on 0.62.1 or later, after setup_cr2.py. System Console, Type = Python, logged in as **Administrator**.
 # Leave "Commit" UNTICKED: the test assignment in section 8 is undone at the end.
-VERSION = "0.62.0"
+VERSION = "0.62.1"
 TA = "pepl_os.pepl_governance.tender_access"
 EXPECTED = ["ankit@parasramkagroup.com", "sudam@parasramkagroup.com", "aviral@parasramkagroup.com"]
 ROLE = "PEPL Tender Access"
@@ -63,6 +63,7 @@ check(levels.get("custom_tender_reference") == 1 and levels.get("custom_nit_numb
 sector = frappe.db.get_value("Custom Field", {"dt": "Sales Order", "fieldname": "custom_sector"}, "permlevel") or 0
 check(sector == 0, "3. Sales Order PEPL Sector stays visible to everyone (level " + str(sector) + ")")
 check(status.get("guarded_methods"), "3. the 7 pepl_sales tender / Cost Sheet methods ask PEPL first")
+check(status.get("sales_order_guard"), "3. only the three can make a Sales Order from a tender (0.62.1 guard installed)")
 
 # ---------------- 4. Role Profiles ----------------
 def profile_roles(name):
