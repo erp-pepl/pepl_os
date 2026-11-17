@@ -2,6 +2,15 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.62.2 — Fix to CR2: Sales Managers no longer see the tender fields
+
+- 0.62.0 put Tender Reference and NIT Number on Sales Order permission level 1. ERPNext uses level 1 itself
+  (Ignore Pricing Rule) and gives Sales Manager read + write there, so Sales Managers could still see both fields.
+  They now sit on level 5, which only PEPL Tender Access holds; any other role added there by hand is taken off again
+  on the next migrate / daily run, and the level-1 row 0.62.x added is removed. ERPNext's own level-1 rows are kept.
+  Found by Check 62 on the bench (17 Nov 2026: 20 passed, 3 failed - line 3 "readable only by PEPL Tender Access:
+  Sales Manager, PEPL Tender Access"). 3 regression tests; Check 62 rev 3 (needs 0.62.2).
+
 ## 0.62.1 — CR2: only the three make a Sales Order from a tender
 
 - PEPL (Aviral ji, 16 Nov 2026): a Sales Order is made from a tender only by ankit@, sudam@ or aviral@ - otherwise

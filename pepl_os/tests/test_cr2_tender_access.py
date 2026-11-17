@@ -312,7 +312,8 @@ class TestRoleRightsAndFields(TenderAccessCase):
 		ta.set_sales_order_field_level()
 		for f in present:
 			self.assertEqual(
-				frappe.db.get_value("Custom Field", {"dt": "Sales Order", "fieldname": f}, "permlevel"), 1
+				frappe.db.get_value("Custom Field", {"dt": "Sales Order", "fieldname": f}, "permlevel"),
+				ta.SALES_ORDER_LEVEL,
 			)
 		self.assertEqual(
 			frappe.db.get_value(
@@ -328,18 +329,53 @@ class TestRoleRightsAndFields(TenderAccessCase):
 				frappe.db.get_value("Custom Field", {"dt": "Sales Order", "fieldname": f}, "permlevel"), 0
 			)
 
-	def test_sales_order_level_one_belongs_to_the_access_role_only(self):
-		ta.grant_access_rights()
-		rows = frappe.get_all(
-			"Custom DocPerm", filters={"parent": "Sales Order", "permlevel": 1, "read": 1}, pluck="role"
+	def _readers(self, level):
+		return sorted(
+			frappe.get_all(
+				"Custom DocPerm",
+				filters={"parent": "Sales Order", "permlevel": level, "read": 1},
+				pluck="role",
+			)
 		)
-		self.assertIn(ta.ACCESS_ROLE, rows)
+
+	def test_tender_fields_level_belongs_to_the_access_role_only(self):
+		"""Regression (Check 62 on the bench, 17 Nov 2026): at level 1 ERPNext also lets Sales Manager read."""
+		ta.grant_access_rights()
+		self.assertNotEqual(ta.SALES_ORDER_LEVEL, 1)
+		self.assertEqual(self._readers(ta.SALES_ORDER_LEVEL), [ta.ACCESS_ROLE])
 		row = frappe.db.get_value(
 			"Custom DocPerm",
-			{"parent": "Sales Order", "permlevel": 1, "role": ta.ACCESS_ROLE},
+			{"parent": "Sales Order", "permlevel": ta.SALES_ORDER_LEVEL, "role": ta.ACCESS_ROLE},
 			["read", "write"],
 		)
 		self.assertEqual(tuple(row), (1, 1))
+		self.assertNotIn(ta.ACCESS_ROLE, self._readers(1))  # our old level-1 row is gone ...
+		erpnext_level_one = frappe.get_all(
+			"DocPerm", filters={"parent": "Sales Order", "permlevel": 1}, pluck="role"
+		)
+		for role in erpnext_level_one:  # ... ERPNext's own level-1 rows (Ignore Pricing Rule) are kept
+			self.assertIn(role, self._readers(1))
+
+	def test_a_role_added_by_hand_to_the_tender_level_is_taken_away(self):
+		from frappe.permissions import add_permission, update_permission_property
+
+		ta.grant_access_rights()
+		add_permission("Sales Order", "Sales Manager", ta.SALES_ORDER_LEVEL)
+		update_permission_property(
+			"Sales Order", "Sales Manager", ta.SALES_ORDER_LEVEL, "read", 1, validate=False
+		)
+		self.assertIn("Sales Manager", self._readers(ta.SALES_ORDER_LEVEL))
+		ta.grant_access_rights()
+		self.assertEqual(self._readers(ta.SALES_ORDER_LEVEL), [ta.ACCESS_ROLE])
+
+	def test_old_level_one_row_is_removed_on_upgrade(self):
+		from frappe.permissions import add_permission, update_permission_property
+
+		add_permission("Sales Order", ta.ACCESS_ROLE, 1)
+		update_permission_property("Sales Order", ta.ACCESS_ROLE, 1, "read", 1, validate=False)
+		changed = ta.grant_access_rights()
+		self.assertIn("Sales Order (level 1 row removed)", changed)
+		self.assertNotIn(ta.ACCESS_ROLE, self._readers(1))
 
 	def test_access_role_has_full_rights_and_keeps_delete(self):
 		ta.grant_access_rights()

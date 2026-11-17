@@ -1,8 +1,8 @@
-# PEPL OS v0.62.1 - Check 62: CR2 - tender data (PEPL Tender, PEPL CST Cost Sheet) open only to the three
+# PEPL OS v0.62.2 - Check 62: CR2 - tender data (PEPL Tender, PEPL CST Cost Sheet) open only to the three
 # Tender Access users; tender Sales Orders open to everyone, their Tender Reference / NIT Number hidden.
-# Runs on 0.62.1 or later, after setup_cr2.py. System Console, Type = Python, logged in as **Administrator**.
+# Runs on 0.62.2 or later, after setup_cr2.py. System Console, Type = Python, logged in as **Administrator**.
 # Leave "Commit" UNTICKED: the test assignment in section 8 is undone at the end.
-VERSION = "0.62.1"
+VERSION = "0.62.2"
 TA = "pepl_os.pepl_governance.tender_access"
 EXPECTED = ["ankit@parasramkagroup.com", "sudam@parasramkagroup.com", "aviral@parasramkagroup.com"]
 ROLE = "PEPL Tender Access"
@@ -55,11 +55,14 @@ c = perm("PEPL CST Cost Sheet", ROLE)
 check(bool(c) and c.read and c.write and c.create and c.delete, "3. " + ROLE + ": read, write, create, delete on PEPL CST Cost Sheet")
 for doctype in GATED:
     check(not perm(doctype, "PEPL CEO"), "3. the CEO has no view of " + doctype)
-level1 = frappe.get_all("Custom DocPerm", filters={"parent": "Sales Order", "permlevel": 1, "read": 1}, pluck="role")
-check(level1 == [ROLE], "3. Sales Order level 1 (tender fields) readable only by " + ROLE + ": " + ", ".join(level1))
+LEVEL = 5  # 0.62.2: level 1 is ERPNext's (Ignore Pricing Rule, Sales Manager)
+level5 = frappe.get_all("Custom DocPerm", filters={"parent": "Sales Order", "permlevel": LEVEL, "read": 1}, pluck="role")
+check(level5 == [ROLE], "3. Sales Order level 5 (tender fields) readable only by " + ROLE + ": " + ", ".join(level5))
+level1 = frappe.get_all("Custom DocPerm", filters={"parent": "Sales Order", "permlevel": 1, "role": ROLE}, pluck="role")
+check(not level1, "3. the old level-1 row of " + ROLE + " on Sales Order is gone")
 levels = status.get("sales_order_field_levels") or {}
-check(levels.get("custom_tender_reference") == 1 and levels.get("custom_nit_number") == 1,
-      "3. Sales Order Tender Reference and NIT Number at level 1: " + str(levels))
+check(levels.get("custom_tender_reference") == LEVEL and levels.get("custom_nit_number") == LEVEL,
+      "3. Sales Order Tender Reference and NIT Number at level 5: " + str(levels))
 sector = frappe.db.get_value("Custom Field", {"dt": "Sales Order", "fieldname": "custom_sector"}, "permlevel") or 0
 check(sector == 0, "3. Sales Order PEPL Sector stays visible to everyone (level " + str(sector) + ")")
 check(status.get("guarded_methods"), "3. the 7 pepl_sales tender / Cost Sheet methods ask PEPL first")
@@ -81,6 +84,8 @@ for old, new in [["PEPL Sales & Tender Manager", "PEPL Sales Manager"], ["PEPL S
 tenders = frappe.db.count("PEPL Tender")
 sheets = frappe.db.count("PEPL CST Cost Sheet")
 print("INFO  on this site: " + str(tenders) + " tender(s), " + str(sheets) + " Cost Sheet(s)")
+if not tenders:
+    print("INFO  no tenders here, so section 5 only proves the rules are wired; the demo run (21 tenders) proves what each login sees")
 users = frappe.get_all("User", filters={"enabled": 1, "user_type": "System User", "name": ["not in", ["Administrator", "Guest"]]}, pluck="name")
 outsiders_seeing = []
 order_openers = []
@@ -97,7 +102,8 @@ for user in users:
             outsiders_seeing.append(user + " " + str(counts) + (" opens a tender" if seen.get("opens_a_tender") else ""))
         if seen.get("opens_tender_sales_order"):
             order_openers.append(user)
-check(not outsiders_seeing, "5. none of the other " + str(len(users) - len(expected)) + " logins sees a tender, Cost Sheet, or their history / comments / files / ToDos"
+others = [u for u in users if u.lower() not in expected]
+check(not outsiders_seeing, "5. none of the other " + str(len(others)) + " logins sees a tender, Cost Sheet, or their history / comments / files / ToDos"
       + ("" if not outsiders_seeing else ": " + "; ".join(outsiders_seeing)))
 managers = frappe.get_all("Has Role", filters={"role": "System Manager", "parenttype": "User", "parent": ["in", users]}, pluck="parent")
 print("INFO  System Managers outside the list (they cannot open tenders): " + (", ".join([m for m in managers if m.lower() not in expected]) or "none"))

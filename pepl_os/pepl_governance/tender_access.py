@@ -10,7 +10,7 @@ Parameters: System Managers can edit System Parameters, but not the site configu
 dashboard only). An empty or missing list switches the restriction off (every role works as before CR2).
 
 Sales Orders stay open to every role that had them. Their Tender Reference and NIT Number fields move to
-permission level 1, readable only by the role PEPL Tender Access, which this module gives to exactly the listed
+permission level 5 (SALES_ORDER_LEVEL), readable only by the role PEPL Tender Access, which this module gives to exactly the listed
 users (and takes from anyone else whenever a User is saved, on every migrate and every day).
 """
 
@@ -50,8 +50,10 @@ RELATED = {
 	"DocShare": ("share_doctype", "share_name"),
 }
 
-# Sales Order fields hidden from everyone but the Tender Access users (permission level 1).
+# Sales Order fields hidden from everyone but the Tender Access users. Level 5, not 1: ERPNext's own Sales Order
+# keeps "Ignore Pricing Rule" at level 1 with read + write for Sales Manager (Check 62 on the bench, 17 Nov 2026).
 SALES_ORDER_FIELDS = ("custom_tender_reference", "custom_nit_number")
+SALES_ORDER_LEVEL = 5
 
 # Rights of the PEPL Tender Access role.
 TENDER_RIGHTS = (
@@ -285,7 +287,7 @@ def validate_user(doc, method=None):
 def guard_sales_order_tender(doc, method=None):
 	"""Only the Tender Access users create a Sales Order from a tender (PEPL, Aviral ji, 16 Nov 2026): anyone else
 	who sets or changes the Tender Reference - by the API, Data Import or code - is refused, not silently blanked.
-	Sales Order before_insert (before Frappe blanks level-1 fields) and before_validate (saves)."""
+	Sales Order before_insert (before Frappe blanks the tender fields) and before_validate (saves)."""
 	if not is_active() or can_access():
 		return
 	field = SALES_ORDER_FIELDS[0]
@@ -328,8 +330,8 @@ def sync_access_role():
 
 
 def set_sales_order_field_level():
-	"""Tender Reference and NIT Number at level 1 while the restriction is on, back at 0 when it is off."""
-	level = 1 if is_active() else 0
+	"""Tender Reference and NIT Number at SALES_ORDER_LEVEL while the restriction is on, back at 0 when it is off."""
+	level = SALES_ORDER_LEVEL if is_active() else 0
 	changed = []
 	for fieldname in SALES_ORDER_FIELDS:
 		name = frappe.db.get_value("Custom Field", {"dt": "Sales Order", "fieldname": fieldname}, "name")
@@ -343,7 +345,7 @@ def set_sales_order_field_level():
 
 def grant_access_rights():
 	"""PEPL Tender Access: full rights on PEPL Tender and PEPL CST Cost Sheet; reads and writes the Sales Order's
-	tender fields (level 1). The CEO's view of tender data (Work Package A) is taken away."""
+	tender fields (SALES_ORDER_LEVEL, nobody else). The CEO's view of tender data (Work Package A) is taken away."""
 	from frappe.permissions import add_permission, setup_custom_perms, update_permission_property
 
 	from pepl_os.setup.permissions import grant_view
@@ -359,20 +361,32 @@ def grant_access_rights():
 			frappe.clear_cache(doctype=doctype)
 			changed.append(doctype + " (CEO view removed)")
 	so = "Sales Order"
+	level = SALES_ORDER_LEVEL
+	# 0.62.0 / 0.62.1 used level 1, which ERPNext shares with Sales Manager: that row of ours is removed.
+	if frappe.db.exists("Custom DocPerm", {"parent": so, "role": ACCESS_ROLE, "permlevel": 1}):
+		frappe.db.delete("Custom DocPerm", {"parent": so, "role": ACCESS_ROLE, "permlevel": 1})
+		frappe.clear_cache(doctype=so)
+		changed.append(so + " (level 1 row removed)")
+	# Nobody else may hold the tender fields' level, even if added by hand in Role Permission Manager.
+	others = {"parent": so, "permlevel": level, "role": ["!=", ACCESS_ROLE]}
+	if frappe.db.exists("Custom DocPerm", others):
+		frappe.db.delete("Custom DocPerm", others)
+		frappe.clear_cache(doctype=so)
+		changed.append(so + f" (other roles removed from level {level})")
 	row = frappe.db.get_value(
 		"Custom DocPerm",
-		{"parent": so, "role": ACCESS_ROLE, "permlevel": 1},
+		{"parent": so, "role": ACCESS_ROLE, "permlevel": level},
 		["name", "read", "write"],
 		as_dict=True,
 	)
 	if not (row and row.read and row.write):
 		setup_custom_perms(so)
 		if not row:
-			add_permission(so, ACCESS_ROLE, 1)
+			add_permission(so, ACCESS_ROLE, level)
 		for ptype in ("read", "write"):
-			update_permission_property(so, ACCESS_ROLE, 1, ptype, 1, validate=False)
+			update_permission_property(so, ACCESS_ROLE, level, ptype, 1, validate=False)
 		frappe.clear_cache(doctype=so)
-		changed.append(so + " (level 1)")
+		changed.append(so + f" (level {level})")
 	return changed
 
 
