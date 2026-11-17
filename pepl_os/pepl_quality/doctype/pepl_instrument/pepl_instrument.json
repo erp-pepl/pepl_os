@@ -1,0 +1,268 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-11-18 02:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "instrument_id",
+  "instrument_name",
+  "instrument_type",
+  "column_break_main",
+  "status",
+  "location",
+  "item",
+  "section_details",
+  "make",
+  "serial_number",
+  "column_break_details",
+  "measuring_range",
+  "least_count",
+  "section_calibration",
+  "calibration_frequency_days",
+  "calibration_agency",
+  "calibration_state",
+  "days_to_due",
+  "column_break_calibration",
+  "last_calibrated_on",
+  "calibration_due_on",
+  "last_certificate_no",
+  "last_certificate",
+  "last_calibration_record",
+  "section_remarks",
+  "remarks"
+ ],
+ "fields": [
+  {
+   "fieldname": "instrument_id",
+   "fieldtype": "Data",
+   "label": "Instrument ID",
+   "reqd": 1,
+   "unique": 1,
+   "in_list_view": 1,
+   "description": "The number marked on the instrument, e.g. VC-001. Cannot be changed later."
+  },
+  {
+   "fieldname": "instrument_name",
+   "fieldtype": "Data",
+   "label": "Instrument Name",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "instrument_type",
+   "fieldtype": "Select",
+   "label": "Type",
+   "options": "Vernier Caliper\nMicrometer\nHeight Gauge\nDial Gauge\nBore Gauge\nPlug Gauge\nRing Gauge\nSnap Gauge\nThread Gauge\nSlip Gauge\nSurface Plate\nHardness Tester\nTorque Wrench\nCMM\nProfile Projector\nWeighing Scale\nOther",
+   "in_standard_filter": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "column_break_main",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Active\nUnder Calibration\nOut of Service\nScrapped",
+   "default": "Active",
+   "reqd": 1,
+   "in_standard_filter": 1,
+   "description": "Only an Active instrument may be used for inspection. A failed calibration sets Out of Service; a passed one sets it Active again."
+  },
+  {
+   "fieldname": "location",
+   "fieldtype": "Data",
+   "label": "Location / Holder",
+   "description": "Where it is kept or who holds it, e.g. QC Lab, Machine Shop 2."
+  },
+  {
+   "fieldname": "item",
+   "fieldtype": "Link",
+   "label": "Stock Item",
+   "options": "Item",
+   "description": "Optional: the Tools & Gauges item this instrument was bought as."
+  },
+  {
+   "fieldname": "section_details",
+   "fieldtype": "Section Break",
+   "label": "Details"
+  },
+  {
+   "fieldname": "make",
+   "fieldtype": "Data",
+   "label": "Make"
+  },
+  {
+   "fieldname": "serial_number",
+   "fieldtype": "Data",
+   "label": "Serial Number"
+  },
+  {
+   "fieldname": "column_break_details",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "measuring_range",
+   "fieldtype": "Data",
+   "label": "Range",
+   "description": "e.g. 0 - 150 mm"
+  },
+  {
+   "fieldname": "least_count",
+   "fieldtype": "Data",
+   "label": "Least Count",
+   "description": "e.g. 0.01 mm"
+  },
+  {
+   "fieldname": "section_calibration",
+   "fieldtype": "Section Break",
+   "label": "Calibration"
+  },
+  {
+   "fieldname": "calibration_frequency_days",
+   "fieldtype": "Int",
+   "label": "Calibration Frequency (Days)",
+   "reqd": 1,
+   "default": "365",
+   "description": "Next due = calibration date + this, unless the certificate gives another date."
+  },
+  {
+   "fieldname": "calibration_agency",
+   "fieldtype": "Data",
+   "label": "Usual Calibration Agency",
+   "description": "e.g. the NABL lab that calibrates it."
+  },
+  {
+   "fieldname": "calibration_state",
+   "fieldtype": "Select",
+   "label": "Calibration State",
+   "options": "\nValid\nDue Soon\nOverdue\nNever Calibrated\nNot in Use",
+   "read_only": 1,
+   "no_copy": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "days_to_due",
+   "fieldtype": "Int",
+   "label": "Days to Due",
+   "read_only": 1,
+   "no_copy": 1,
+   "description": "Negative = days overdue. Updated every morning."
+  },
+  {
+   "fieldname": "column_break_calibration",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "last_calibrated_on",
+   "fieldtype": "Date",
+   "label": "Last Calibrated On",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "calibration_due_on",
+   "fieldtype": "Date",
+   "label": "Calibration Due On",
+   "read_only": 1,
+   "no_copy": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "last_certificate_no",
+   "fieldtype": "Data",
+   "label": "Last Certificate No.",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "last_certificate",
+   "fieldtype": "Attach",
+   "label": "Last Certificate",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "last_calibration_record",
+   "fieldtype": "Link",
+   "label": "Last Calibration Record",
+   "options": "PEPL Calibration Record",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "section_remarks",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-18 02:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "PEPL Quality",
+ "name": "PEPL Instrument",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "print": 1,
+   "export": 1,
+   "report": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "share": 1
+  },
+  {
+   "role": "Quality Manager",
+   "read": 1,
+   "print": 1,
+   "export": 1,
+   "report": 1,
+   "write": 1,
+   "create": 1,
+   "email": 1,
+   "share": 1
+  },
+  {
+   "role": "Stock User",
+   "read": 1,
+   "print": 1,
+   "export": 1,
+   "report": 1
+  },
+  {
+   "role": "Manufacturing User",
+   "read": 1,
+   "print": 1,
+   "export": 1,
+   "report": 1
+  },
+  {
+   "role": "Manufacturing Manager",
+   "read": 1,
+   "print": 1,
+   "export": 1,
+   "report": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1,
+ "autoname": "field:instrument_id",
+ "naming_rule": "By fieldname",
+ "title_field": "instrument_name",
+ "show_title_field_in_link": 1,
+ "search_fields": "instrument_name,instrument_type,calibration_state"
+}

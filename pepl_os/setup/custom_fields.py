@@ -705,6 +705,39 @@ QUALITY_FIELDS = _chain(
 
 CUSTOM_FIELDS[SYSTEM_PARAMETERS] += QUALITY_FIELDS
 
+# C3b-Q2 - instruments and calibration (still on the Quality tab)
+CALIBRATION_FIELDS = _chain(
+	[
+		{
+			"fieldname": "custom_calibration_section",
+			"label": "Instruments and Calibration",
+			"fieldtype": "Section Break",
+		},
+		{
+			"fieldname": "custom_calibration_alert_days",
+			"label": "Calibration: Alert Days",
+			"fieldtype": "Int",
+			"default": "15",
+			"description": "An instrument due for calibration within this many days is 'Due Soon' and Quality gets a "
+			"ToDo (QA-CAL-DUE); overdue or never calibrated = a High priority ToDo. 0 to 365.",
+		},
+		{"fieldname": "custom_calibration_column", "fieldtype": "Column Break"},
+		{
+			"fieldname": "custom_calibration_gate_mode",
+			"label": "Calibration Gate",
+			"fieldtype": "Select",
+			"options": "Advisory\nSoft Block\nHard Block",
+			"default": "Hard Block",
+			"description": "A QC Inspection reading taken with an instrument that is overdue, never calibrated or not in "
+			"use: Advisory = warning; Soft Block = a reason is needed (Override Log); Hard Block = the inspection "
+			"cannot be submitted.",
+		},
+	],
+	after="custom_incoming_qc_gate_mode",
+)
+
+CUSTOM_FIELDS[SYSTEM_PARAMETERS] += CALIBRATION_FIELDS
+
 # CR1 - Accounts & GST: booking PEPL's older Sales Orders and Sales Invoices with their real dates.
 ACCOUNTS_GST_FIELDS = _chain(
 	[
@@ -724,7 +757,7 @@ ACCOUNTS_GST_FIELDS = _chain(
 			"Empty = every document is treated as new.",
 		},
 	],
-	after="custom_incoming_qc_gate_mode",
+	after="custom_calibration_gate_mode",  # after the Quality tab (C3b-Q2 moved its end)
 )
 
 CUSTOM_FIELDS[SYSTEM_PARAMETERS] += ACCOUNTS_GST_FIELDS
@@ -748,6 +781,20 @@ CUSTOM_FIELDS["Quality Inspection"] = [
 		"read_only": 1,
 		"in_standard_filter": 1,
 		"insert_after": "custom_auto_created",
+	},
+]
+
+# C3b-Q2 - each reading of a QC Inspection names the instrument it was measured with.
+CUSTOM_FIELDS["Quality Inspection Reading"] = [
+	{
+		"fieldname": "custom_instrument",
+		"label": "Instrument",
+		"fieldtype": "Link",
+		"options": "PEPL Instrument",
+		"insert_after": "specification",
+		"in_list_view": 1,
+		"columns": 2,
+		"description": "The gauge or instrument this was measured with. It must be calibrated (Calibration Gate).",
 	},
 ]
 

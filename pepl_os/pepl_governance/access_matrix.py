@@ -63,6 +63,8 @@ MATRIX_DOCTYPES = (
 	("Production", "PEPL Machine Week", "Machine Week (MTBF, MTTR, CPC)"),
 	("Production", "PEPL Daily Standup", "Daily Stand-up"),
 	("Quality", "Quality Inspection", "Quality Inspection"),
+	("Quality", "PEPL Instrument", "Instrument (calibration)"),
+	("Quality", "PEPL Calibration Record", "Calibration Record"),
 	("Accounts", "Payment Entry", "Payment Entry"),
 	("Accounts", "Journal Entry", "Journal Entry"),
 	("Accounts", "PEPL Company Document", "Company Documents (PAN, GST, Udyam)"),

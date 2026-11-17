@@ -59,6 +59,8 @@ doctype_js = {
 	"Supplier": "public/js/supplier_payments.js",
 	# C2-19: reorder level vs projected stock; "Create Material Request" when below
 	"Item": "public/js/item_reorder.js",
+	# C3b-Q2: reason dialog when a reading's instrument is out of calibration (Calibration Gate = Soft Block)
+	"Quality Inspection": "public/js/quality_inspection.js",
 	# C3a-P1: Job Order status panel (quantity, routing progress, delivery, LD)
 	# C3a-P4: customer-supplied material held against what the Job Order still needs
 	"Work Order": "public/js/work_order.js",
@@ -86,6 +88,7 @@ TRACKER = "pepl_os.pepl_purchase.tracker"
 LETDOWN = "pepl_os.pepl_purchase.letdown"
 HEAT = "pepl_os.pepl_stores.heat"
 INCOMING_QC = "pepl_os.pepl_quality.incoming_qc"
+CALIBRATION = "pepl_os.pepl_quality.calibration"
 HISTORIC = "pepl_os.pepl_accounts.historic"
 CSM = "pepl_os.pepl_stores.csm"
 PAYMENTS = "pepl_os.pepl_purchase.payments"
@@ -181,7 +184,11 @@ doc_events = {
 	# C3b-Q1: an item of a class in "Incoming QC: Stock Classes" is inspected on receipt
 	"Item": {"validate": ["pepl_os.pepl_stores.stock_tree.validate_item", f"{INCOMING_QC}.validate_item"]},
 	# C3b-Q1: an incoming QC Inspection names its supplier
-	"Quality Inspection": {"validate": f"{INCOMING_QC}.validate_inspection"},
+	# C3b-Q2: a reading taken with an instrument out of calibration (the Calibration Gate)
+	"Quality Inspection": {
+		"validate": f"{INCOMING_QC}.validate_inspection",
+		"before_submit": f"{CALIBRATION}.before_submit_inspection",
+	},
 	# C2-04: customer-supplied material and PEPL material never share a store.
 	# C2-15: heat number -> Batch on receipts, Batch -> heat on issues; the heat number gate
 	# C2-16: every customer-supplied line moves against its Sales Order; the order shows its scrap option
@@ -287,6 +294,8 @@ scheduler_events = {
 		"pepl_os.pepl_production.oee.daily_oee",
 		# C3a-X8: one ToDo per job worker holding overdue material (PRD-JW-OVERDUE)
 		"pepl_os.pepl_production.job_work.daily_job_work_alerts",
+		# C3b-Q2: instruments due / overdue / never calibrated -> one ToDo each to Quality (QA-CAL-DUE)
+		f"{CALIBRATION}.daily_calibration_alerts",
 		# CR2: the Tender Access role and the Sales Order tender fields follow the list in site_config.json
 		f"{TENDER_ACCESS}.daily_sync",
 	],
