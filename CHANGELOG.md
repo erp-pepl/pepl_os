@@ -10,6 +10,9 @@ Entries for the Master System Document. Newest first.
   on the next migrate / daily run, and the level-1 row 0.62.x added is removed. ERPNext's own level-1 rows are kept.
   Found by Check 62 on the bench (17 Nov 2026: 20 passed, 3 failed - line 3 "readable only by PEPL Tender Access:
   Sales Manager, PEPL Tender Access"). 3 regression tests; Check 62 rev 3 (needs 0.62.2).
+- docs/checks/setup_cr2.py rev 2 (17 Nov 2026): no `frappe.get_roles` (the System Console sandbox does not allow it;
+  the bench run stopped with "module has no attribute 'get_roles'" and rolled back). Roles are read from Has Role.
+  Labels say level 5. No code change.
 
 ## 0.62.1 — CR2: only the three make a Sales Order from a tender
 

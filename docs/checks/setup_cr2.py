@@ -1,11 +1,11 @@
-# PEPL OS v0.62.0 - CR2 set-up: tender data open only to the three Tender Access users.
+# PEPL OS v0.62.2 - CR2 set-up (rev 2, 17 Nov 2026): tender data open only to the three Tender Access users.
 # System Console, Type = Python, **Commit TICKED** (this one saves). Safe to run again.
 # Log in as **Administrator** to run it (after CR2 nobody else, System Managers included, opens tender data).
 # Before running: the list must already be in the site configuration (bench: set-config; Frappe Cloud: Site Config),
 # key pepl_tender_access_users = the three emails below. This script never changes that list; it applies it:
 #  1. Stops if the site configuration does not hold exactly the three emails, or a login is missing.
 #  2. Rights: PEPL Tender Access = full rights on PEPL Tender and PEPL CST Cost Sheet; Sales Order Tender Reference
-#     and NIT Number at level 1 (only PEPL Tender Access reads them); the CEO's view of tenders removed.
+#     and NIT Number at level 5 (only PEPL Tender Access reads them); the CEO's view of tenders removed.
 #  3. The role PEPL Tender Access given to exactly the three.
 #  4. Role Profile "PEPL Tender Only" added to each of the three (a user without profiles gets its two roles instead).
 #  5. Open ToDos on a tender / Cost Sheet held by anyone else go to the first of the three.
@@ -15,6 +15,12 @@ CREATE_MISSING_LOGINS = 0  # local bench only: 1 creates the three logins (no e-
 TA = "pepl_os.pepl_governance.tender_access"
 GATED = ["PEPL Tender", "PEPL CST Cost Sheet"]
 PROFILE = "PEPL Tender Only"
+
+
+def roles_of(user):
+    # the System Console sandbox does not allow frappe.get_roles
+    return sorted(frappe.get_all("Has Role", filters={"parent": user, "parenttype": "User"}, pluck="role"))
+
 
 apps = {a.app_name: a.app_version for a in frappe.get_all("Installed Application", fields=["app_name", "app_version"])}
 print("pepl_os " + str(apps.get("pepl_os")) + ", run by " + frappe.session.user)
@@ -51,7 +57,7 @@ if problems:
 else:
     result = frappe.call(TA + ".sync_now")
     print("2. Rights changed: " + (", ".join(result.get("rights")) or "none (already in place)"))
-    print("   Sales Order fields moved to level 1: " + (", ".join(result.get("sales_order_fields")) or "none (already there)"))
+    print("   Sales Order fields moved to level 5: " + (", ".join(result.get("sales_order_fields")) or "none (already there)"))
     role = result.get("role")
     print("3. PEPL Tender Access given to: " + (", ".join(role.get("added")) or "nobody new") + "; taken from: " + (", ".join(role.get("removed")) or "nobody"))
 
@@ -65,14 +71,14 @@ else:
             user.save()
             print("4. " + email + ": " + PROFILE + " added (profiles now " + ", ".join(profiles + [PROFILE]) + ")")
         else:
-            have = frappe.get_roles(user.name)
+            have = roles_of(user.name)
             missing = [r for r in ["PEPL Tender Manager", "Sales User"] if r not in have]
             for r in missing:
                 user.append("roles", {"role": r})
             if missing:
                 user.save()
             print("4. " + email + ": roles set by hand (no Role Profile); added " + (", ".join(missing) or "nothing (already there)"))
-        print("   roles: " + ", ".join(sorted(frappe.get_roles(user.name))))
+        print("   roles: " + ", ".join(roles_of(user.name)))
 
     moved = 0
     for t in frappe.get_all("ToDo", filters={"reference_type": ["in", GATED], "status": "Open"}, fields=["name", "allocated_to"]):
