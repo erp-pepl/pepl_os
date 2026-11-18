@@ -1,6 +1,8 @@
-# PEPL OS v0.65.0 - Check 65: C3b-Q4 Corrective and Preventive Action - a Critical NCR raises a CAPA by itself, a
+# PEPL OS v0.65.0 - Check 65 rev 2: C3b-Q4 Corrective and Preventive Action - a Critical NCR raises a CAPA by itself, a
 # repeated Major NCR on the same item raises one CAPA for all of them, a later NCR joins the open CAPA, and a CAPA
 # closes only with the five-why, the root cause, a Corrective Action and every action done.
+# Rev 2 (18 Nov 2026): the "old" Major NCR is dated 150 days back. Rev 1 dated it 120 days back, which is exactly 90 days
+# before the 30-day-old NCR - inside the window, as the rule says - so the check, not the app, was wrong.
 # Runs on 0.65.0 or later. System Console, Type = Python. Leave "Commit" UNTICKED: everything below, including the
 # System Parameters changes it makes, is undone at the end. Afterwards look at the screens in the browser (see chat).
 VERSION = "0.65.0"
@@ -94,14 +96,14 @@ check(len(todo) == 1 and todo[0].allocated_to == OWNER and todo[0].priority == "
 
 # ---------------- 4. repeated Major NCRs ----------------
 SHAFT = item("CHK65-SHAFT")
-old = ncr(SHAFT, "Major", 120)
+old = ncr(SHAFT, "Major", 150)  # 120 days before "first": outside the 90-day window
 first = ncr(SHAFT, "Major", 30)
-check(not capa_of(old) and not capa_of(first), "4. a Major NCR 30 days ago (and one 120 days ago, outside 90): no CAPA yet")
+check(not capa_of(old) and not capa_of(first), "4. a Major NCR 30 days ago (and one 150 days ago, 120 days before it - outside 90): no CAPA yet")
 second = ncr(SHAFT, "Major", 0)
 c2 = capa_of(second)
 rows = [r.ncr for r in frappe.get_doc(CAPA, c2).ncrs] if c2 else []
 check(bool(c2) and frappe.db.get_value(CAPA, c2, "trigger") == "Repeat Major" and sorted(rows) == sorted([first, second]) and capa_of(first) == c2,
-      "4. the second Major within 90 days raised CAPA " + str(c2) + " for both (" + ", ".join(rows) + "); the 120-day one is left out")
+      "4. the second Major within 90 days raised CAPA " + str(c2) + " for both (" + ", ".join(rows) + "); the 150-day one is left out")
 minor = ncr(SHAFT, "Minor", 0)
 check(not capa_of(minor), "4. a Minor NCR never joins a CAPA")
 third = ncr(SHAFT, "Major", 0)
