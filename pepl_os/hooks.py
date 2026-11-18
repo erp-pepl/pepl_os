@@ -59,6 +59,8 @@ doctype_js = {
 	"Supplier": "public/js/supplier_payments.js",
 	# C2-19: reorder level vs projected stock; "Create Material Request" when below
 	"Item": "public/js/item_reorder.js",
+	# C3b-Q5: Dispatch QC panel and the reason dialog of the dispatch gate
+	"Delivery Note": "public/js/delivery_note_dispatch.js",
 	# C3b-Q2: reason dialog when a reading's instrument is out of calibration (Calibration Gate = Soft Block)
 	"Quality Inspection": "public/js/quality_inspection.js",
 	# C3a-P1: Job Order status panel (quantity, routing progress, delivery, LD)
@@ -90,6 +92,7 @@ HEAT = "pepl_os.pepl_stores.heat"
 INCOMING_QC = "pepl_os.pepl_quality.incoming_qc"
 CALIBRATION = "pepl_os.pepl_quality.calibration"
 NCR = "pepl_os.pepl_quality.ncr"
+DISPATCH = "pepl_os.pepl_quality.dispatch"
 HISTORIC = "pepl_os.pepl_accounts.historic"
 CSM = "pepl_os.pepl_stores.csm"
 PAYMENTS = "pepl_os.pepl_purchase.payments"
@@ -236,8 +239,13 @@ doc_events = {
 	"PEPL Purchase Tracker": {"on_update": f"{LETDOWN}.sync_short_letdowns"},
 	# C2-16 segregation; C3a-X9 CSM consumed by the delivery and the material gate
 	"Delivery Note": {
+		# C3b-Q5: a line keeps only this delivery's own final inspection
+		"before_validate": f"{DISPATCH}.before_validate_delivery",
 		"validate": [CSM_SEGREGATION, f"{CSM_USE}.validate_delivery_note"],
-		"before_submit": f"{CSM_USE}.before_submit_delivery_note",
+		# C3b-Q5: each line that needs a final inspection gets its draft QC Inspection; the dispatch gate
+		"on_update": f"{DISPATCH}.sync_final_inspections",
+		"on_trash": f"{DISPATCH}.on_trash_delivery",
+		"before_submit": [f"{CSM_USE}.before_submit_delivery_note", f"{DISPATCH}.before_submit_delivery"],
 		# C3b-Q3: a customer return (Delivery Note return) raises one NCR per item (QA-NCR-RETURN)
 		"on_submit": [f"{CSM_USE}.on_submit_delivery_note", f"{NCR}.on_delivery_note_submit"],
 		"on_cancel": [f"{CSM_USE}.on_cancel_delivery_note", f"{NCR}.on_delivery_note_cancel"],

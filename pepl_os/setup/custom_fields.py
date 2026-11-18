@@ -847,6 +847,26 @@ CAPA_FIELDS = _chain(
 
 CUSTOM_FIELDS[SYSTEM_PARAMETERS] += CAPA_FIELDS
 
+# C3b-Q5 - the dispatch gate (still on the Quality tab)
+DISPATCH_FIELDS = _chain(
+	[
+		{"fieldname": "custom_dispatch_section", "label": "Dispatch", "fieldtype": "Section Break"},
+		{
+			"fieldname": "custom_dispatch_gate_mode",
+			"label": "Dispatch Gate",
+			"fieldtype": "Select",
+			"options": "Advisory\nSoft Block\nHard Block",
+			"default": "Soft Block",
+			"description": "A Delivery Note line whose final inspection is not submitted and Accepted (items with "
+			"'Inspection Required before Delivery'), or whose item has an open NCR: Advisory = warning; Soft Block = a "
+			"reason is needed (Override Log); Hard Block = the delivery cannot be submitted. To confirm with PEPL.",
+		},
+	],
+	after="custom_capa_target_days",
+)
+
+CUSTOM_FIELDS[SYSTEM_PARAMETERS] += DISPATCH_FIELDS
+
 # CR1 - Accounts & GST: booking PEPL's older Sales Orders and Sales Invoices with their real dates.
 ACCOUNTS_GST_FIELDS = _chain(
 	[
@@ -866,7 +886,7 @@ ACCOUNTS_GST_FIELDS = _chain(
 			"Empty = every document is treated as new.",
 		},
 	],
-	after="custom_capa_target_days",  # after the whole Quality tab (moves with its last field)
+	after="custom_dispatch_gate_mode",  # after the whole Quality tab (moves with its last field)
 )
 
 CUSTOM_FIELDS[SYSTEM_PARAMETERS] += ACCOUNTS_GST_FIELDS

@@ -2,6 +2,20 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.66.0 — Cycle 3b: the dispatch gate on the Delivery Note (C3b-Q5)
+
+- **Final inspection**: an item with ERPNext's "Inspection Required before Delivery" gets, on every save of a draft
+  Delivery Note, its own draft QC Inspection per line (Outgoing, sample size = the line's quantity, the item's
+  inspection plan, the batch); a removed / changed line or a deleted draft delivery takes its unused draft along.
+- **Dispatch gate** (Delivery Note submit, not on returns): a line whose final inspection is not submitted or not
+  Accepted, or whose item has an open NCR (Open / Under Review; an NCR naming a batch only stops that batch). System
+  Parameters > Quality > **Dispatch Gate**: Advisory (warning) / Soft Block (reason, rule QA-DISPATCH, Override Log;
+  default) / Hard Block (refused). A rejected final inspection raises its NCR (C3b-Q3), which also stops the dispatch
+  until it is closed.
+- Delivery Note panel **Dispatch QC**: each line's final inspection, its open NCRs, the gate mode.
+- The CR1 "Accounts & GST" tab follows the whole Quality tab.
+- 10 tests (test_c3b_q5_dispatch_gate.py); Check 66 (docs/checks/check_66_c3b_q5_dispatch_gate.py).
+
 ## 0.65.0 — Cycle 3b: Corrective and Preventive Action with its triggers (C3b-Q4)
 
 - **PEPL CAPA**: item, problem statement, containment, the NCRs it answers, five-why (Why 1 – Why 5) and root cause,
