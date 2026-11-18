@@ -2,6 +2,19 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.71.0 — Cycle 3b Phase 2: the instrument panel (C3b-P4) – Phase 2 panels complete
+
+- PEPL Instrument form panel **"Calibration"**: ID, name, type, status, range, least count and location; whether it
+  is fit to measure today ("calibrated until … (n day(s) left)" green, "due for calibration on … (n day(s) left)"
+  orange, "overdue … - n day(s) overdue" / "never been calibrated" / "not in use (Out of Service)" red) and the
+  frequency; the **last calibration** (result, certificate, agency, record; a Fail in red); the **history** (records by
+  result, the last Fail and what was found); **use**: submitted QC Inspections with a reading taken with it in the last
+  90 days and the latest; **draft QC Inspections** that name it, and when it is not fit, what the Calibration Gate in
+  force will do to them (refuse = red; ask for a reason / warn = orange); and the **next step** (book before the due
+  date, stop using and calibrate, repair after a Fail, waiting for the record while Under Calibration, Scrapped).
+- Button **New Calibration Record** on the instrument (not on a Scrapped one).
+- 5 tests (test_c3b_p4_instrument_panel.py); Check 71 (docs/checks/check_71_c3b_p4_instrument_panel.py).
+
 ## 0.70.0 — Cycle 3b Phase 2: the CAPA panel (C3b-P3)
 
 - PEPL CAPA form panel **"CAPA"** (replaces the five-why / closing panel of C3b-Q4): trigger, item, status, age,
