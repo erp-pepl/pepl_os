@@ -2,6 +2,17 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.68.0 — Cycle 3b Phase 2: the QC Inspection panel (C3b-P1)
+
+- QC Inspection form panel **"QC Inspection"**: what it is (Incoming / In Process / Outgoing, item, sample, receipt or
+  delivery, supplier); one line per characteristic of the plan with its tolerance (e.g. "9.9 - 10.1", "expected
+  Smooth"), the readings typed, **in tolerance** (green) or **OUT** with the values outside (red), "not measured yet"
+  (orange) or "judged by eye"; inline the **instrument** used and its calibration ("calibrated until …", due soon
+  orange, overdue / never calibrated / not in use red, "no instrument named" grey); then "n characteristic(s) still to
+  measure", "Result on submit: Accepted / Rejected" or, once submitted, "Result: …"; and the Calibration Gate in force.
+  An inspection without a plan says so. Quantities and tolerances without ".0".
+- 6 tests (test_c3b_p1_qi_panel.py); Check 68 (docs/checks/check_68_c3b_p1_qi_panel.py).
+
 ## 0.67.1 — Fix to Cycle 3b: document-event handlers return nothing
 
 - Submitting a rejected incoming QC Inspection failed with "'str' object has no attribute 'update'": Frappe merges what
