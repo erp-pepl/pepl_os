@@ -89,6 +89,7 @@ LETDOWN = "pepl_os.pepl_purchase.letdown"
 HEAT = "pepl_os.pepl_stores.heat"
 INCOMING_QC = "pepl_os.pepl_quality.incoming_qc"
 CALIBRATION = "pepl_os.pepl_quality.calibration"
+NCR = "pepl_os.pepl_quality.ncr"
 HISTORIC = "pepl_os.pepl_accounts.historic"
 CSM = "pepl_os.pepl_stores.csm"
 PAYMENTS = "pepl_os.pepl_purchase.payments"
@@ -188,6 +189,9 @@ doc_events = {
 	"Quality Inspection": {
 		"validate": f"{INCOMING_QC}.validate_inspection",
 		"before_submit": f"{CALIBRATION}.before_submit_inspection",
+		# C3b-Q3: a QC Inspection submitted as Rejected raises an NCR (QA-NCR-QI); cancelling it cancels the NCR
+		"on_submit": f"{NCR}.on_inspection_submit",
+		"on_cancel": f"{NCR}.on_inspection_cancel",
 	},
 	# C2-04: customer-supplied material and PEPL material never share a store.
 	# C2-15: heat number -> Batch on receipts, Batch -> heat on issues; the heat number gate
@@ -234,8 +238,9 @@ doc_events = {
 	"Delivery Note": {
 		"validate": [CSM_SEGREGATION, f"{CSM_USE}.validate_delivery_note"],
 		"before_submit": f"{CSM_USE}.before_submit_delivery_note",
-		"on_submit": f"{CSM_USE}.on_submit_delivery_note",
-		"on_cancel": f"{CSM_USE}.on_cancel_delivery_note",
+		# C3b-Q3: a customer return (Delivery Note return) raises one NCR per item (QA-NCR-RETURN)
+		"on_submit": [f"{CSM_USE}.on_submit_delivery_note", f"{NCR}.on_delivery_note_submit"],
+		"on_cancel": [f"{CSM_USE}.on_cancel_delivery_note", f"{NCR}.on_delivery_note_cancel"],
 	},
 	# C2-07: draft the Material Request for bought-out and short raw material
 	# C2-07 Material Request; C3a-X5 draft Job Orders (deleted again on cancel)

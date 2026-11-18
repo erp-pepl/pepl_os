@@ -1,0 +1,391 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-11-18 03:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "source",
+  "severity",
+  "column_break_head",
+  "status",
+  "raised_on",
+  "raised_by_system",
+  "raise_rule",
+  "section_what",
+  "item",
+  "item_name",
+  "qty_affected",
+  "batch_no",
+  "column_break_what",
+  "defect_type",
+  "defect_description",
+  "section_from",
+  "supplier",
+  "purchase_receipt",
+  "quality_inspection",
+  "customer",
+  "delivery_note",
+  "against_delivery_note",
+  "sales_order",
+  "column_break_from",
+  "work_order",
+  "workstation",
+  "rate_date",
+  "pieces_made",
+  "pieces_rejected",
+  "rejection_rate",
+  "section_disposition",
+  "disposition",
+  "disposition_remarks",
+  "column_break_disposition",
+  "estimated_cost",
+  "closed_on",
+  "closed_by",
+  "cancel_reason",
+  "section_sign_off",
+  "required_sign_offs",
+  "sign_offs"
+ ],
+ "fields": [
+  {
+   "fieldname": "source",
+   "fieldtype": "Select",
+   "label": "Source",
+   "options": "Incoming\nIn-Process\nCustomer\nDispatch\nOther",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "severity",
+   "fieldtype": "Select",
+   "label": "Severity",
+   "options": "Minor\nMajor\nCritical",
+   "default": "Major",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "description": "Decides who must sign before the NCR can be closed (System Parameters > Quality > NCR sign-off)."
+  },
+  {
+   "fieldname": "column_break_head",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Open\nUnder Review\nClosed\nCancelled",
+   "default": "Open",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "raised_on",
+   "fieldtype": "Date",
+   "label": "Raised On",
+   "default": "Today",
+   "reqd": 1
+  },
+  {
+   "fieldname": "raised_by_system",
+   "fieldtype": "Check",
+   "label": "Raised by the System",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "raise_rule",
+   "fieldtype": "Data",
+   "label": "Rule",
+   "read_only": 1,
+   "no_copy": 1,
+   "depends_on": "raised_by_system"
+  },
+  {
+   "fieldname": "section_what",
+   "fieldtype": "Section Break",
+   "label": "What is wrong"
+  },
+  {
+   "fieldname": "item",
+   "fieldtype": "Link",
+   "label": "Item",
+   "options": "Item",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "label": "Item Name",
+   "fetch_from": "item.item_name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "qty_affected",
+   "fieldtype": "Float",
+   "label": "Quantity Affected"
+  },
+  {
+   "fieldname": "batch_no",
+   "fieldtype": "Link",
+   "label": "Batch / Heat",
+   "options": "Batch"
+  },
+  {
+   "fieldname": "column_break_what",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "defect_type",
+   "fieldtype": "Data",
+   "label": "Defect Type",
+   "description": "Short name of the defect, e.g. Undersize, Burr, Crack."
+  },
+  {
+   "fieldname": "defect_description",
+   "fieldtype": "Small Text",
+   "label": "Description",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_from",
+   "fieldtype": "Section Break",
+   "label": "Where it came from",
+   "collapsible": 1
+  },
+  {
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "label": "Supplier",
+   "options": "Supplier",
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "purchase_receipt",
+   "fieldtype": "Link",
+   "label": "Purchase Receipt",
+   "options": "Purchase Receipt"
+  },
+  {
+   "fieldname": "quality_inspection",
+   "fieldtype": "Link",
+   "label": "QC Inspection",
+   "options": "Quality Inspection"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer",
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "delivery_note",
+   "fieldtype": "Link",
+   "label": "Delivery Note / Return",
+   "options": "Delivery Note"
+  },
+  {
+   "fieldname": "against_delivery_note",
+   "fieldtype": "Link",
+   "label": "Returned Against",
+   "options": "Delivery Note"
+  },
+  {
+   "fieldname": "sales_order",
+   "fieldtype": "Link",
+   "label": "Sales Order",
+   "options": "Sales Order"
+  },
+  {
+   "fieldname": "column_break_from",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "work_order",
+   "fieldtype": "Link",
+   "label": "Job Order",
+   "options": "Work Order"
+  },
+  {
+   "fieldname": "workstation",
+   "fieldtype": "Link",
+   "label": "Machine",
+   "options": "Workstation"
+  },
+  {
+   "fieldname": "rate_date",
+   "fieldtype": "Date",
+   "label": "Shift Date",
+   "description": "Rejection-rate NCR: the day of the shift entries."
+  },
+  {
+   "fieldname": "pieces_made",
+   "fieldtype": "Float",
+   "label": "Pieces Made",
+   "read_only": 1
+  },
+  {
+   "fieldname": "pieces_rejected",
+   "fieldtype": "Float",
+   "label": "Pieces Rejected",
+   "read_only": 1
+  },
+  {
+   "fieldname": "rejection_rate",
+   "fieldtype": "Percent",
+   "label": "Rejection Rate",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_disposition",
+   "fieldtype": "Section Break",
+   "label": "Disposition and cost"
+  },
+  {
+   "fieldname": "disposition",
+   "fieldtype": "Select",
+   "label": "Disposition",
+   "options": "\nUse As Is\nRework\nScrap\nReturn to Supplier\nConcession\nRegrade",
+   "description": "What is done with the material. Needed to close the NCR."
+  },
+  {
+   "fieldname": "disposition_remarks",
+   "fieldtype": "Small Text",
+   "label": "Disposition Remarks"
+  },
+  {
+   "fieldname": "column_break_disposition",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "estimated_cost",
+   "fieldtype": "Currency",
+   "label": "Cost of the Non-Conformance",
+   "description": "Material, rework and handling, in rupees (Cost of Quality)."
+  },
+  {
+   "fieldname": "closed_on",
+   "fieldtype": "Datetime",
+   "label": "Closed On",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "closed_by",
+   "fieldtype": "Link",
+   "label": "Closed By",
+   "options": "User",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "cancel_reason",
+   "fieldtype": "Small Text",
+   "label": "Reason for Cancelling",
+   "depends_on": "eval:doc.status=='Cancelled'",
+   "no_copy": 1
+  },
+  {
+   "fieldname": "section_sign_off",
+   "fieldtype": "Section Break",
+   "label": "Sign-off"
+  },
+  {
+   "fieldname": "required_sign_offs",
+   "fieldtype": "Small Text",
+   "label": "Required Sign-offs",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "sign_offs",
+   "fieldtype": "Table",
+   "label": "Sign-offs",
+   "options": "PEPL NCR Sign-off",
+   "read_only": 1,
+   "no_copy": 1
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-18 03:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "PEPL Quality",
+ "name": "PEPL NCR",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "print": 1,
+   "export": 1,
+   "report": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "share": 1
+  },
+  {
+   "role": "Quality Manager",
+   "read": 1,
+   "print": 1,
+   "export": 1,
+   "report": 1,
+   "write": 1,
+   "create": 1,
+   "email": 1,
+   "share": 1
+  },
+  {
+   "role": "Manufacturing Manager",
+   "read": 1,
+   "print": 1,
+   "export": 1,
+   "report": 1,
+   "write": 1,
+   "create": 1,
+   "email": 1
+  },
+  {
+   "role": "Manufacturing User",
+   "read": 1,
+   "print": 1,
+   "export": 1,
+   "report": 1,
+   "write": 1,
+   "create": 1
+  },
+  {
+   "role": "Stock User",
+   "read": 1,
+   "print": 1,
+   "export": 1,
+   "report": 1,
+   "write": 1,
+   "create": 1
+  },
+  {
+   "role": "Sales User",
+   "read": 1,
+   "print": 1,
+   "export": 1,
+   "report": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1,
+ "autoname": "NCR-.YYYY.-.#####",
+ "naming_rule": "Expression (old style)",
+ "title_field": "item",
+ "search_fields": "item,severity,status,source"
+}

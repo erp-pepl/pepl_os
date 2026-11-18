@@ -2,6 +2,27 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.64.0 — Cycle 3b: Non-Conformance Reports with auto-raise and the severity sign-off matrix (C3b-Q3)
+
+- **PEPL NCR**: source (Incoming / In-Process / Customer / Dispatch / Other), severity (Minor / Major / Critical),
+  item, quantity, batch, defect type and description, where it came from (supplier, receipt, QC Inspection, customer,
+  return and original delivery, Sales Order, Job Order, machine), disposition (Use As Is / Rework / Scrap / Return to
+  Supplier / Concession / Regrade), cost (for Cost of Quality). Status Open → Under Review → Closed, or Cancelled with a
+  reason.
+- **Severity sign-off matrix** (System Parameters > Quality, one role per line; defaults Minor: Quality Manager; Major:
+  + Manufacturing Manager; Critical: + PEPL CEO, to confirm with PEPL): "Sign off" on the NCR signs for every required
+  role the user holds (the CEO can sign with view-only access). Closing needs a disposition and every signature;
+  signatures cannot be removed; a Closed or Cancelled NCR cannot be changed; only a Quality Manager reopens a Closed
+  one (Under Review).
+- **Raised by the system** (severity "NCR: Severity When Raised by the System", default Major; never stops the
+  triggering document): QA-NCR-QI a QC Inspection submitted Rejected (Incoming / In Process / Outgoing); QA-NCR-RETURN
+  a customer return, one NCR per item ("NCR: Raise on Customer Return"); QA-NCR-RATE an item's rejected pieces on one
+  day's submitted shift entries above "NCR: Rejection Rate Threshold %" (5) with at least "NCR: Minimum Pieces" (20),
+  re-checked on every shift-entry submit / cancel. Cancelling the inspection / return / entry cancels an unsigned
+  Open NCR. Each system NCR gives the Quality Notification Owner a ToDo (QA-NCR-OPEN), closed with the NCR.
+- The CR1 "Accounts & GST" tab follows the whole Quality tab. Role access matrix: NCR.
+- 12 tests (test_c3b_q3_ncr.py); Check 64 (docs/checks/check_64_c3b_q3_ncr.py).
+
 ## 0.63.0 — Cycle 3b: instruments and calibration (C3b-Q2)
 
 - **PEPL Instrument** (one record per gauge / instrument, named by its ID): type, status (Active / Under Calibration /

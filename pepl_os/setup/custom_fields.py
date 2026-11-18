@@ -738,6 +738,71 @@ CALIBRATION_FIELDS = _chain(
 
 CUSTOM_FIELDS[SYSTEM_PARAMETERS] += CALIBRATION_FIELDS
 
+# C3b-Q3 - NCR: severity sign-off matrix and the auto-raise rules (still on the Quality tab)
+NCR_FIELDS = _chain(
+	[
+		{"fieldname": "custom_ncr_section", "label": "Non-Conformance (NCR)", "fieldtype": "Section Break"},
+		{
+			"fieldname": "custom_ncr_signoff_minor",
+			"label": "NCR Sign-off: Minor",
+			"fieldtype": "Small Text",
+			"default": "Quality Manager",
+			"description": "Roles that must sign a Minor NCR before it can be closed, one per line. To confirm with "
+			"PEPL (severity sign-off matrix).",
+		},
+		{
+			"fieldname": "custom_ncr_signoff_major",
+			"label": "NCR Sign-off: Major",
+			"fieldtype": "Small Text",
+			"default": "Quality Manager\nManufacturing Manager",
+			"description": "Roles that must sign a Major NCR, one per line.",
+		},
+		{
+			"fieldname": "custom_ncr_signoff_critical",
+			"label": "NCR Sign-off: Critical",
+			"fieldtype": "Small Text",
+			"default": "Quality Manager\nManufacturing Manager\nPEPL CEO",
+			"description": "Roles that must sign a Critical NCR, one per line.",
+		},
+		{"fieldname": "custom_ncr_column", "fieldtype": "Column Break"},
+		{
+			"fieldname": "custom_ncr_auto_severity",
+			"label": "NCR: Severity When Raised by the System",
+			"fieldtype": "Select",
+			"options": "Minor\nMajor\nCritical",
+			"default": "Major",
+			"description": "Severity given to an NCR the system raises (rejected inspection, customer return, high "
+			"rejection rate). Quality can change it on the NCR.",
+		},
+		{
+			"fieldname": "custom_ncr_on_customer_return",
+			"label": "NCR: Raise on Customer Return",
+			"fieldtype": "Check",
+			"default": "1",
+			"description": "A submitted customer return (Delivery Note return) raises one NCR per item.",
+		},
+		{
+			"fieldname": "custom_ncr_rejection_rate_percent",
+			"label": "NCR: Rejection Rate Threshold %",
+			"fieldtype": "Float",
+			"default": "5",
+			"description": "An item whose rejected pieces on one day's shift entries are above this % of all pieces "
+			"made raises an NCR. 0 = off. To confirm with PEPL.",
+		},
+		{
+			"fieldname": "custom_ncr_rejection_min_pieces",
+			"label": "NCR: Minimum Pieces",
+			"fieldtype": "Int",
+			"default": "20",
+			"description": "The rejection-rate rule only looks at a day with at least this many pieces made (good + "
+			"rejected) of the item, so 1 bad piece out of 3 does not raise an NCR.",
+		},
+	],
+	after="custom_calibration_gate_mode",
+)
+
+CUSTOM_FIELDS[SYSTEM_PARAMETERS] += NCR_FIELDS
+
 # CR1 - Accounts & GST: booking PEPL's older Sales Orders and Sales Invoices with their real dates.
 ACCOUNTS_GST_FIELDS = _chain(
 	[
@@ -757,7 +822,7 @@ ACCOUNTS_GST_FIELDS = _chain(
 			"Empty = every document is treated as new.",
 		},
 	],
-	after="custom_calibration_gate_mode",  # after the Quality tab (C3b-Q2 moved its end)
+	after="custom_ncr_rejection_min_pieces",  # after the whole Quality tab (moves with its last field)
 )
 
 CUSTOM_FIELDS[SYSTEM_PARAMETERS] += ACCOUNTS_GST_FIELDS

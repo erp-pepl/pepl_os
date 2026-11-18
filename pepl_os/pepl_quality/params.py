@@ -2,12 +2,13 @@
 
 import frappe
 
-from pepl_os.pepl_quality import calibration, incoming_qc
+from pepl_os.pepl_quality import calibration, incoming_qc, ncr
 
 
 def validate_quality_params(doc, method=None):
 	errors = []
 	errors += incoming_qc.validate_params(doc)  # C3b-Q1
 	errors += calibration.validate_params(doc)  # C3b-Q2
+	errors += ncr.validate_params(doc)  # C3b-Q3
 	if errors:
 		frappe.throw("<br>".join(errors), title=frappe._("Check the Quality settings"))

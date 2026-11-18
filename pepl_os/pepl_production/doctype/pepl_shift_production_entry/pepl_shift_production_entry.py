@@ -4,6 +4,7 @@
 from frappe.model.document import Document
 
 from pepl_os.pepl_production import machine_week, oee, spr
+from pepl_os.pepl_quality import ncr
 
 
 class PEPLShiftProductionEntry(Document):
@@ -17,6 +18,7 @@ class PEPLShiftProductionEntry(Document):
 		spr.on_submit(self)
 		oee.on_entry_change(self)  # C3a-X3
 		machine_week.on_entry_change(self)  # C3a-X4
+		ncr.on_entry_change(self)  # C3b-Q3: rejection rate above the threshold -> NCR (never stops the entry)
 
 	def before_cancel(self):
 		spr.before_cancel(self)
@@ -25,3 +27,4 @@ class PEPLShiftProductionEntry(Document):
 		spr.on_cancel(self)
 		oee.on_entry_change(self)  # C3a-X3
 		machine_week.on_entry_change(self)  # C3a-X4
+		ncr.on_entry_change(self)  # C3b-Q3: rejection rate above the threshold -> NCR (never stops the entry)
