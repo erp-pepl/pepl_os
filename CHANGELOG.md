@@ -2,6 +2,13 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.64.1 — Fix to C3b-Q3: the system can always cancel its own NCR
+
+- When a customer return, a QC Inspection or a shift entry is cancelled, its unsigned Open NCR is cancelled even if a
+  record the NCR links to (customer, delivery, receipt …) was renamed or removed since: the system's status change
+  skips link checks, as raising the NCR already did. Found by CI #69 (the cancel was refused on a missing customer
+  and the NCR stayed Open; on the bench, with real records, Check 64 passed 22/0). Regression test.
+
 ## 0.64.0 — Cycle 3b: Non-Conformance Reports with auto-raise and the severity sign-off matrix (C3b-Q3)
 
 - **PEPL NCR**: source (Incoming / In-Process / Customer / Dispatch / Other), severity (Minor / Major / Critical),

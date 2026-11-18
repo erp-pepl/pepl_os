@@ -205,8 +205,11 @@ class TestNCR(PEPLTestCase):
 			("Customer", 8, "PEPL-T-DN-0001"),
 		)
 		self.assertIn("returned 8 ", rows[0].defect_description)
+		# regression 0.64.1 (CI #69): the return, delivery and customer named here do not exist on the site; the
+		# system still cancels its NCR (the cancel used to be refused on the missing links and stayed Open)
 		ncr.on_delivery_note_cancel(dn)
 		self.assertEqual(frappe.db.get_value(ncr.NCR, rows[0].name, "status"), ncr.CANCELLED)
+		self.assertFalse(_todo(rows[0].name))
 		set_param(ncr.RETURN_FIELD, 0)
 		ncr.on_delivery_note_submit(self._return("PEPL-T-RET-0002"))
 		self.assertFalse(_ncrs(delivery_note="PEPL-T-RET-0002"))

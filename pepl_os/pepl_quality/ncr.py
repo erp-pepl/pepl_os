@@ -282,6 +282,9 @@ def cancel_auto(rule, key, reason):
 		doc.status = CANCELLED
 		doc.cancel_reason = reason
 		doc.flags.ignore_permissions = True
+		# 0.64.1: the system only changes the status here; a linked record renamed or removed since the NCR was
+		# raised must not stop it (CI #69: the cancel was refused on a missing customer and the NCR stayed Open)
+		doc.flags.ignore_links = True
 		doc.save()
 		cancelled.append(name)
 	return cancelled
