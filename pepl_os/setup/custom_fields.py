@@ -803,6 +803,50 @@ NCR_FIELDS = _chain(
 
 CUSTOM_FIELDS[SYSTEM_PARAMETERS] += NCR_FIELDS
 
+# C3b-Q4 - CAPA triggers and closing (still on the Quality tab)
+CAPA_FIELDS = _chain(
+	[
+		{
+			"fieldname": "custom_capa_section",
+			"label": "Corrective Action (CAPA)",
+			"fieldtype": "Section Break",
+		},
+		{
+			"fieldname": "custom_capa_repeat_count",
+			"label": "CAPA: Repeat Major Count",
+			"fieldtype": "Int",
+			"default": "2",
+			"description": "A CAPA is raised by itself when an item has this many Major (or Critical) NCRs without a CAPA "
+			"within the window below. A Critical NCR always raises one. 2 to 10. To confirm with PEPL.",
+		},
+		{
+			"fieldname": "custom_capa_repeat_window_days",
+			"label": "CAPA: Repeat Window (Days)",
+			"fieldtype": "Int",
+			"default": "90",
+			"description": "How far back the repeated Major NCRs are counted. 1 to 730.",
+		},
+		{"fieldname": "custom_capa_column", "fieldtype": "Column Break"},
+		{
+			"fieldname": "custom_capa_whys_required",
+			"label": "CAPA: Whys Required",
+			"fieldtype": "Int",
+			"default": "5",
+			"description": "How many of the five whys must be answered (with the root cause) before a CAPA can close. 1 to 5.",
+		},
+		{
+			"fieldname": "custom_capa_target_days",
+			"label": "CAPA: Target Days",
+			"fieldtype": "Int",
+			"default": "30",
+			"description": "A new CAPA's target date = raised on + this many days, unless one is entered. 1 to 365.",
+		},
+	],
+	after="custom_ncr_rejection_min_pieces",
+)
+
+CUSTOM_FIELDS[SYSTEM_PARAMETERS] += CAPA_FIELDS
+
 # CR1 - Accounts & GST: booking PEPL's older Sales Orders and Sales Invoices with their real dates.
 ACCOUNTS_GST_FIELDS = _chain(
 	[
@@ -822,7 +866,7 @@ ACCOUNTS_GST_FIELDS = _chain(
 			"Empty = every document is treated as new.",
 		},
 	],
-	after="custom_ncr_rejection_min_pieces",  # after the whole Quality tab (moves with its last field)
+	after="custom_capa_target_days",  # after the whole Quality tab (moves with its last field)
 )
 
 CUSTOM_FIELDS[SYSTEM_PARAMETERS] += ACCOUNTS_GST_FIELDS

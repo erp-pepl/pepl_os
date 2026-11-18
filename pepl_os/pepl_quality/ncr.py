@@ -28,6 +28,7 @@ from frappe.utils import cint, cstr, flt, now_datetime
 
 from pepl_os.common import alerts, params
 from pepl_os.pepl_production.job_order_panel import qty_text
+from pepl_os.pepl_quality import capa
 
 NCR = "PEPL NCR"
 QI = "Quality Inspection"
@@ -179,7 +180,8 @@ def _check_signatures(doc, before):
 
 
 def on_update_ncr(doc):
-	"""PEPL NCR on_update: the Quality ToDo of a system-raised NCR follows its status."""
+	"""PEPL NCR on_update: the CAPA triggers (C3b-Q4); the Quality ToDo of a system-raised NCR follows its status."""
+	capa.on_ncr_update(doc)
 	if doc.status in (CLOSED, CANCELLED):
 		alerts.close_one(OPEN_RULE, NCR, doc.name)
 	elif cint(doc.raised_by_system):

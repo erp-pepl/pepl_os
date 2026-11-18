@@ -2,6 +2,23 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.65.0 — Cycle 3b: Corrective and Preventive Action with its triggers (C3b-Q4)
+
+- **PEPL CAPA**: item, problem statement, containment, the NCRs it answers, five-why (Why 1 – Why 5) and root cause,
+  actions (Correction / Corrective Action / Preventive Action, who, due, done on, evidence), owner and target date.
+  Status Open → In Progress (as soon as work is entered) → Closed, or Cancelled with a reason.
+- **Triggers** (on every NCR save; never stop the NCR): a Critical NCR raises a CAPA; a Major NCR raises one when the
+  item has "CAPA: Repeat Major Count" (2) Major / Critical NCRs without a CAPA within "CAPA: Repeat Window (Days)"
+  (90) – one CAPA for all of them; a Major or Critical NCR of an item with an open CAPA joins it. Minor NCRs never.
+  The NCR shows its CAPA. A system CAPA gives its owner (default the Quality Notification Owner) a High ToDo
+  (QA-CAPA-OPEN), closed with the CAPA.
+- **Closing** needs the first "CAPA: Whys Required" (5) whys and the root cause, at least one Corrective Action and every
+  action done (Done On not in the future); the form panel shows five-why progress and what still stops closing. A
+  Closed / Cancelled CAPA cannot be changed; only a Quality Manager reopens a Closed one. Target date = raised on +
+  "CAPA: Target Days" (30). The effectiveness check before final closure follows in C3b-B3.
+- The CR1 "Accounts & GST" tab follows the whole Quality tab. Role access matrix: CAPA.
+- 9 tests (test_c3b_q4_capa.py); Check 65 (docs/checks/check_65_c3b_q4_capa.py).
+
 ## 0.64.1 — Fix to C3b-Q3: the system can always cancel its own NCR
 
 - When a customer return, a QC Inspection or a shift entry is cancelled, its unsigned Open NCR is cancelled even if a

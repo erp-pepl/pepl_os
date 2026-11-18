@@ -1,0 +1,300 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-11-18 18:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "trigger",
+  "item",
+  "item_name",
+  "column_break_head",
+  "status",
+  "capa_owner",
+  "raised_on",
+  "target_date",
+  "raised_by_system",
+  "section_problem",
+  "problem_statement",
+  "containment",
+  "ncrs",
+  "section_why",
+  "why_1",
+  "why_2",
+  "why_3",
+  "column_break_why",
+  "why_4",
+  "why_5",
+  "root_cause",
+  "five_why_status",
+  "section_actions",
+  "actions",
+  "section_close",
+  "closed_on",
+  "closed_by",
+  "column_break_close",
+  "cancel_reason"
+ ],
+ "fields": [
+  {
+   "fieldname": "trigger",
+   "fieldtype": "Select",
+   "label": "Raised For",
+   "options": "Manual\nCritical NCR\nRepeat Major",
+   "default": "Manual",
+   "read_only": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "item",
+   "fieldtype": "Link",
+   "label": "Item",
+   "options": "Item",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "label": "Item Name",
+   "fetch_from": "item.item_name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_head",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Open\nIn Progress\nClosed\nCancelled",
+   "default": "Open",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "capa_owner",
+   "fieldtype": "Link",
+   "label": "CAPA Owner",
+   "options": "User",
+   "in_standard_filter": 1,
+   "description": "Leads the CAPA. Empty: the Quality Notification Owner."
+  },
+  {
+   "fieldname": "raised_on",
+   "fieldtype": "Date",
+   "label": "Raised On",
+   "default": "Today",
+   "reqd": 1
+  },
+  {
+   "fieldname": "target_date",
+   "fieldtype": "Date",
+   "label": "Target Date",
+   "in_list_view": 1,
+   "description": "Empty: Raised On + 'CAPA: Target Days'."
+  },
+  {
+   "fieldname": "raised_by_system",
+   "fieldtype": "Check",
+   "label": "Raised by the System",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "section_problem",
+   "fieldtype": "Section Break",
+   "label": "Problem"
+  },
+  {
+   "fieldname": "problem_statement",
+   "fieldtype": "Small Text",
+   "label": "Problem Statement",
+   "reqd": 1
+  },
+  {
+   "fieldname": "containment",
+   "fieldtype": "Small Text",
+   "label": "Containment (done at once)",
+   "description": "e.g. stock on hand sorted, supplier informed."
+  },
+  {
+   "fieldname": "ncrs",
+   "fieldtype": "Table",
+   "label": "NCRs",
+   "options": "PEPL CAPA NCR"
+  },
+  {
+   "fieldname": "section_why",
+   "fieldtype": "Section Break",
+   "label": "Five-why"
+  },
+  {
+   "fieldname": "why_1",
+   "fieldtype": "Small Text",
+   "label": "Why 1",
+   "description": "Why did the problem happen?"
+  },
+  {
+   "fieldname": "why_2",
+   "fieldtype": "Small Text",
+   "label": "Why 2",
+   "description": "Why did that happen?"
+  },
+  {
+   "fieldname": "why_3",
+   "fieldtype": "Small Text",
+   "label": "Why 3",
+   "description": "Why did that happen?"
+  },
+  {
+   "fieldname": "column_break_why",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "why_4",
+   "fieldtype": "Small Text",
+   "label": "Why 4",
+   "description": "Why did that happen?"
+  },
+  {
+   "fieldname": "why_5",
+   "fieldtype": "Small Text",
+   "label": "Why 5",
+   "description": "Why did that happen?"
+  },
+  {
+   "fieldname": "root_cause",
+   "fieldtype": "Small Text",
+   "label": "Root Cause"
+  },
+  {
+   "fieldname": "five_why_status",
+   "fieldtype": "Data",
+   "label": "Five-why",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "section_actions",
+   "fieldtype": "Section Break",
+   "label": "Actions"
+  },
+  {
+   "fieldname": "actions",
+   "fieldtype": "Table",
+   "label": "Actions",
+   "options": "PEPL CAPA Action",
+   "description": "At least one Corrective Action; every action needs Done On before the CAPA can close."
+  },
+  {
+   "fieldname": "section_close",
+   "fieldtype": "Section Break",
+   "label": "Closing"
+  },
+  {
+   "fieldname": "closed_on",
+   "fieldtype": "Datetime",
+   "label": "Closed On",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "closed_by",
+   "fieldtype": "Link",
+   "label": "Closed By",
+   "options": "User",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "column_break_close",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "cancel_reason",
+   "fieldtype": "Small Text",
+   "label": "Reason for Cancelling",
+   "depends_on": "eval:doc.status=='Cancelled'",
+   "no_copy": 1
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-18 18:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "PEPL Quality",
+ "name": "PEPL CAPA",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "print": 1,
+   "export": 1,
+   "report": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "share": 1
+  },
+  {
+   "role": "Quality Manager",
+   "read": 1,
+   "print": 1,
+   "export": 1,
+   "report": 1,
+   "write": 1,
+   "create": 1,
+   "email": 1,
+   "share": 1
+  },
+  {
+   "role": "Manufacturing Manager",
+   "read": 1,
+   "print": 1,
+   "export": 1,
+   "report": 1,
+   "write": 1,
+   "create": 1,
+   "email": 1
+  },
+  {
+   "role": "Manufacturing User",
+   "read": 1,
+   "print": 1,
+   "export": 1,
+   "report": 1,
+   "write": 1
+  },
+  {
+   "role": "Stock User",
+   "read": 1,
+   "print": 1,
+   "export": 1,
+   "report": 1
+  },
+  {
+   "role": "Purchase Manager",
+   "read": 1,
+   "print": 1,
+   "export": 1,
+   "report": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1,
+ "autoname": "CAPA-.YYYY.-.#####",
+ "naming_rule": "Expression (old style)",
+ "title_field": "item",
+ "search_fields": "item,status,trigger"
+}

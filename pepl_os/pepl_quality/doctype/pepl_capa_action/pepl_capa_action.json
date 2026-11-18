@@ -1,0 +1,80 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-11-18 18:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "action_type",
+  "description",
+  "responsible",
+  "due_date",
+  "done_on",
+  "evidence",
+  "remarks"
+ ],
+ "fields": [
+  {
+   "fieldname": "action_type",
+   "fieldtype": "Select",
+   "label": "Type",
+   "options": "Correction\nCorrective Action\nPreventive Action",
+   "reqd": 1,
+   "in_list_view": 1,
+   "columns": 2
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Action",
+   "reqd": 1,
+   "in_list_view": 1,
+   "columns": 3
+  },
+  {
+   "fieldname": "responsible",
+   "fieldtype": "Link",
+   "label": "Responsible",
+   "options": "User",
+   "in_list_view": 1,
+   "columns": 2
+  },
+  {
+   "fieldname": "due_date",
+   "fieldtype": "Date",
+   "label": "Due",
+   "in_list_view": 1,
+   "columns": 1
+  },
+  {
+   "fieldname": "done_on",
+   "fieldtype": "Date",
+   "label": "Done On",
+   "in_list_view": 1,
+   "columns": 1
+  },
+  {
+   "fieldname": "evidence",
+   "fieldtype": "Attach",
+   "label": "Evidence"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-18 18:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "PEPL Quality",
+ "name": "PEPL CAPA Action",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "istable": 1,
+ "editable_grid": 1
+}

@@ -43,6 +43,7 @@
   "closed_on",
   "closed_by",
   "cancel_reason",
+  "capa",
   "section_sign_off",
   "required_sign_offs",
   "sign_offs"
@@ -293,6 +294,16 @@
    "no_copy": 1
   },
   {
+   "fieldname": "capa",
+   "fieldtype": "Link",
+   "label": "CAPA",
+   "options": "PEPL CAPA",
+   "read_only": 1,
+   "no_copy": 1,
+   "in_standard_filter": 1,
+   "description": "The corrective action this NCR belongs to: raised by itself for a Critical NCR or repeated Major NCRs of the item."
+  },
+  {
    "fieldname": "section_sign_off",
    "fieldtype": "Section Break",
    "label": "Sign-off"
@@ -315,7 +326,7 @@
  ],
  "index_web_pages_for_search": 0,
  "links": [],
- "modified": "2026-11-18 03:00:00.000000",
+ "modified": "2026-11-18 18:00:00.000000",
  "modified_by": "Administrator",
  "module": "PEPL Quality",
  "name": "PEPL NCR",
