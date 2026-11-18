@@ -2,6 +2,18 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.70.0 — Cycle 3b Phase 2: the CAPA panel (C3b-P3)
+
+- PEPL CAPA form panel **"CAPA"** (replaces the five-why / closing panel of C3b-Q4): trigger, item, status, age,
+  "by the system" and the owner (open red when the target has passed, orange otherwise; Closed green, Cancelled grey);
+  **Target** with days left (orange within 7 days), "due today" or "OVERDUE by n day(s)" (red); once closed "Closed on
+  … by … - target met" (green) or "- n day(s) after the target" (orange); the **NCRs** with severity and status;
+  **Containment** ("not recorded" orange); **Five-why** "n of m whys answered, root cause given / missing · next: Why
+  k", or "complete · root cause: …" (green); **Actions** summary by type, done / open / overdue, and one line per open
+  action with who and when ("no one responsible", "no due date" orange; overdue red); then **To close: …**, **Ready
+  to close** or **Cancelled: reason**. The effectiveness check comes with C3b-B3.
+- 6 tests (test_c3b_p3_capa_panel.py); Check 70 (docs/checks/check_70_c3b_p3_capa_panel.py).
+
 ## 0.69.0 — Cycle 3b Phase 2: the NCR panel (C3b-P2)
 
 - PEPL NCR form panel **"NCR"** (replaces the Sign-off panel; the **Sign off** button stays): severity, status, source
