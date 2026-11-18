@@ -2,7 +2,7 @@
 
 import frappe
 
-from pepl_os.pepl_quality import calibration, capa, dispatch, incoming_qc, ncr, scorecard
+from pepl_os.pepl_quality import calibration, capa, config, dispatch, incoming_qc, ncr, scorecard
 
 
 def validate_quality_params(doc, method=None):
@@ -15,3 +15,4 @@ def validate_quality_params(doc, method=None):
 	errors += scorecard.validate_params(doc)  # C3b-Q6
 	if errors:
 		frappe.throw("<br>".join(errors), title=frappe._("Check the Quality settings"))
+	config.warn_unheld_roles(doc)  # C3b-C1

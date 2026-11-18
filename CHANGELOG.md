@@ -2,6 +2,21 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.72.0 — Cycle 3b Phase 3: Quality configuration (C3b-C1)
+
+- Report **PEPL Quality Settings** – the sheet confirmed with PEPL's Quality Manager: every setting on System
+  Parameters → Quality (incoming QC classes and gate, calibration alert days and gate, the NCR severity sign-off
+  matrix, severity of system NCRs, customer-return rule, rejection-rate threshold and minimum pieces, CAPA repeat
+  count / window / whys / target days, dispatch gate, vendor score weights) with value, default and status ("Default,
+  to confirm with PEPL" orange / "Changed from default" green; empty incoming stock classes "to set with PEPL"); the
+  Quality Notification Owner (or the fallback it uses) and the Vendor Score Period; **the sign-off matrix in practice**:
+  for each role the severities it signs and the users who hold it (Administrator not counted) – a role nobody holds is
+  red, "… NCRs can never be closed"; the two ERPNext Stock Settings QC actions (Warn expected; anything else red); the
+  master data: items inspected on receipt / before delivery and those without an inspection plan, instruments not
+  scrapped and those overdue or never calibrated.
+- Saving a change to the sign-off matrix with a role nobody holds shows an orange warning (the save goes on).
+- 4 tests (test_c3b_c1_configure.py); Check 72 (docs/checks/check_72_c3b_c1_configure.py).
+
 ## 0.71.0 — Cycle 3b Phase 2: the instrument panel (C3b-P4) – Phase 2 panels complete
 
 - PEPL Instrument form panel **"Calibration"**: ID, name, type, status, range, least count and location; whether it
