@@ -2,6 +2,20 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.69.0 — Cycle 3b Phase 2: the NCR panel (C3b-P2)
+
+- PEPL NCR form panel **"NCR"** (replaces the Sign-off panel; the **Sign off** button stays): severity, status, source
+  and age ("raised 08-11-2026 (10 days ago) by the system (QA-NCR-RATE)", red for an open Critical, orange for other
+  open NCRs, green Closed, grey Cancelled); **What** (quantity and unit without ".0", item, batch, defect); **From**
+  (QC Inspection, receipt, supplier, Delivery Note / return, customer, Job Order, machine, the day's rejection rate);
+  **Disposition and cost** ("not chosen yet" orange; Rework / Scrap / Return to Supplier / Regrade without a cost shows
+  "cost not entered yet (about … at the item's valuation rate)", orange; the hint is never written to the NCR);
+  **Signed** / **Still to sign** per role; the **CAPA** (status, target, OVERDUE by n days in red, five-why progress,
+  missing root cause / Corrective Action / open actions), or for a Major NCR without one how many Major / Critical
+  NCRs on the item within the window raise one; the **dispatch hold** on the item (or batch) with the gate in force;
+  and **To close: …** / **Ready to close** / **Closed on … by …** / **Cancelled: reason**.
+- 6 tests (test_c3b_p2_ncr_panel.py); Check 69 (docs/checks/check_69_c3b_p2_ncr_panel.py).
+
 ## 0.68.0 — Cycle 3b Phase 2: the QC Inspection panel (C3b-P1)
 
 - QC Inspection form panel **"QC Inspection"**: what it is (Incoming / In Process / Outgoing, item, sample, receipt or
