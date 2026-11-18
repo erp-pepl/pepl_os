@@ -93,6 +93,7 @@ INCOMING_QC = "pepl_os.pepl_quality.incoming_qc"
 CALIBRATION = "pepl_os.pepl_quality.calibration"
 NCR = "pepl_os.pepl_quality.ncr"
 DISPATCH = "pepl_os.pepl_quality.dispatch"
+SCORECARD = "pepl_os.pepl_quality.scorecard"
 HISTORIC = "pepl_os.pepl_accounts.historic"
 CSM = "pepl_os.pepl_stores.csm"
 PAYMENTS = "pepl_os.pepl_purchase.payments"
@@ -193,8 +194,9 @@ doc_events = {
 		"validate": f"{INCOMING_QC}.validate_inspection",
 		"before_submit": f"{CALIBRATION}.before_submit_inspection",
 		# C3b-Q3: a QC Inspection submitted as Rejected raises an NCR (QA-NCR-QI); cancelling it cancels the NCR
-		"on_submit": f"{NCR}.on_inspection_submit",
-		"on_cancel": f"{NCR}.on_inspection_cancel",
+		# C3b-Q6: an incoming lot updates its supplier's quality and composite scores at once
+		"on_submit": [f"{NCR}.on_inspection_submit", f"{SCORECARD}.on_inspection_change"],
+		"on_cancel": [f"{NCR}.on_inspection_cancel", f"{SCORECARD}.on_inspection_change"],
 	},
 	# C2-04: customer-supplied material and PEPL material never share a store.
 	# C2-15: heat number -> Batch on receipts, Batch -> heat on issues; the heat number gate
@@ -309,6 +311,8 @@ scheduler_events = {
 		"pepl_os.pepl_production.job_work.daily_job_work_alerts",
 		# C3b-Q2: instruments due / overdue / never calibrated -> one ToDo each to Quality (QA-CAL-DUE)
 		f"{CALIBRATION}.daily_calibration_alerts",
+		# C3b-Q6: every supplier's quality score (incoming lots accepted) and composite score
+		f"{SCORECARD}.daily_vendor_scores",
 		# CR2: the Tender Access role and the Sales Order tender fields follow the list in site_config.json
 		f"{TENDER_ACCESS}.daily_sync",
 	],

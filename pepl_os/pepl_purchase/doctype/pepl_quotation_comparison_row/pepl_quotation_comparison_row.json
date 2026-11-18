@@ -25,6 +25,7 @@
   "last_rates",
   "delivery_score",
   "quality_score",
+  "composite_score",
   "section_award",
   "awarded_qty",
   "award_reason",
@@ -174,6 +175,12 @@
    "read_only": 1
   },
   {
+   "fieldname": "composite_score",
+   "fieldtype": "Percent",
+   "label": "Composite Score",
+   "read_only": 1
+  },
+  {
    "fieldname": "section_award",
    "fieldtype": "Section Break",
    "label": "Award"
@@ -217,7 +224,7 @@
  ],
  "index_web_pages_for_search": 0,
  "links": [],
- "modified": "2026-09-29 13:00:00.000000",
+ "modified": "2026-11-18 20:00:00.000000",
  "modified_by": "Administrator",
  "module": "PEPL Purchase",
  "name": "PEPL Quotation Comparison Row",

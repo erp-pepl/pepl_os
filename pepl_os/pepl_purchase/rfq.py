@@ -22,6 +22,7 @@ from frappe.utils import getdate, today
 
 from pepl_os.pepl_purchase.material_request import rm_group_of
 from pepl_os.pepl_purchase.supplier_approval import APPROVED_STATES
+from pepl_os.pepl_quality import scorecard
 
 RFQ = "Request for Quotation"
 NO_GROUP = ""  # lines whose item has no RM group
@@ -62,15 +63,19 @@ def supplier_card(supplier):
 			"custom_delivery_score",
 			"custom_delivery_scored_lines",
 			"custom_quality_score",
+			"custom_quality_scored_lots",
+			"custom_composite_score",
 		],
 		as_dict=True,
 	)
+	delivery, quality, overall = scorecard.card_scores(s)  # C3b-Q6
 	return {
 		"supplier": s.name,
 		"supplier_name": s.supplier_name,
 		"state": s.custom_approval_state or "Not Approved",
-		"delivery_score": s.custom_delivery_score if s.custom_delivery_scored_lines else None,
-		"quality_score": s.custom_quality_score or None,  # quality scoring arrives with the Quality cycle
+		"delivery_score": delivery,
+		"quality_score": quality,
+		"composite_score": overall,
 		"has_email": bool(s.email_id),
 	}
 

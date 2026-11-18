@@ -867,6 +867,36 @@ DISPATCH_FIELDS = _chain(
 
 CUSTOM_FIELDS[SYSTEM_PARAMETERS] += DISPATCH_FIELDS
 
+# C3b-Q6 - vendor scorecard weights (still on the Quality tab)
+VENDOR_SCORE_FIELDS = _chain(
+	[
+		{
+			"fieldname": "custom_vendor_score_section",
+			"label": "Vendor Scorecard",
+			"fieldtype": "Section Break",
+		},
+		{
+			"fieldname": "custom_vendor_weight_delivery",
+			"label": "Vendor Score Weight: Delivery %",
+			"fieldtype": "Float",
+			"default": "50",
+			"description": "Share of the delivery score in a supplier's composite score. Delivery + Quality = 100. "
+			"To confirm with PEPL.",
+		},
+		{"fieldname": "custom_vendor_score_column", "fieldtype": "Column Break"},
+		{
+			"fieldname": "custom_vendor_weight_quality",
+			"label": "Vendor Score Weight: Quality %",
+			"fieldtype": "Float",
+			"default": "50",
+			"description": "Share of the quality score (incoming inspections accepted) in the composite score.",
+		},
+	],
+	after="custom_dispatch_gate_mode",
+)
+
+CUSTOM_FIELDS[SYSTEM_PARAMETERS] += VENDOR_SCORE_FIELDS
+
 # CR1 - Accounts & GST: booking PEPL's older Sales Orders and Sales Invoices with their real dates.
 ACCOUNTS_GST_FIELDS = _chain(
 	[
@@ -886,7 +916,7 @@ ACCOUNTS_GST_FIELDS = _chain(
 			"Empty = every document is treated as new.",
 		},
 	],
-	after="custom_dispatch_gate_mode",  # after the whole Quality tab (moves with its last field)
+	after="custom_vendor_weight_quality",  # after the whole Quality tab (moves with its last field)
 )
 
 CUSTOM_FIELDS[SYSTEM_PARAMETERS] += ACCOUNTS_GST_FIELDS
@@ -1006,6 +1036,39 @@ CUSTOM_FIELDS["Supplier"] = _chain(
 			"fieldname": "custom_quality_score",
 			"label": "Quality Score (%)",
 			"fieldtype": "Percent",
+			"read_only": 1,
+			"no_copy": 1,
+			"description": "Incoming QC Inspections Accepted, as a % of all the supplier's incoming inspections in the "
+			"Vendor Score Period. Updated every morning and at each inspection (C3b-Q6).",
+		},
+		# C3b-Q6 - vendor scorecard
+		{
+			"fieldname": "custom_quality_scored_lots",
+			"label": "Lots Inspected",
+			"fieldtype": "Int",
+			"read_only": 1,
+			"no_copy": 1,
+			"description": "How many incoming inspections the quality score is based on. 0 means no score yet.",
+		},
+		{
+			"fieldname": "custom_supplier_ncrs",
+			"label": "NCRs in the Period",
+			"fieldtype": "Int",
+			"read_only": 1,
+			"no_copy": 1,
+		},
+		{
+			"fieldname": "custom_composite_score",
+			"label": "Composite Score (%)",
+			"fieldtype": "Percent",
+			"read_only": 1,
+			"no_copy": 1,
+			"description": "Delivery and quality scores weighted by the Vendor Score Weights in System Parameters.",
+		},
+		{
+			"fieldname": "custom_scores_updated_on",
+			"label": "Scores Updated On",
+			"fieldtype": "Date",
 			"read_only": 1,
 			"no_copy": 1,
 		},

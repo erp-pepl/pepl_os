@@ -71,7 +71,7 @@ pepl.rfq_by_rm_group = async function (frm) {
 				label: __("Approved suppliers (untick to leave one out)"),
 				columns: 1,
 				options: g.suppliers.map((s) => ({
-					label: `${esc(s.supplier_name || s.supplier)} · ${__(s.state)} · ${__("Delivery")} ${score(s.delivery_score)} · ${__("Quality")} ${score(s.quality_score)}${s.has_email ? "" : " · " + __("no e-mail on file, the RFQ will not be mailed to them")}`,
+					label: `${esc(s.supplier_name || s.supplier)} · ${__(s.state)} · ${__("Delivery")} ${score(s.delivery_score)} · ${__("Quality")} ${score(s.quality_score)} · ${__("Overall")} ${score(s.composite_score)}${s.has_email ? "" : " · " + __("no e-mail on file, the RFQ will not be mailed to them")}`,
 					value: s.supplier,
 					checked: 1,
 				})),

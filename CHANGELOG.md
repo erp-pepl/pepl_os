@@ -2,6 +2,21 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.67.0 — Cycle 3b: vendor scorecard (C3b-Q6) – Phase 1 foundations complete
+
+- **Quality score** per supplier = incoming QC Inspections submitted as Accepted ÷ all its submitted incoming QC
+  Inspections (lots) in the Vendor Score Period; no lot = no score yet. Also on the Supplier: **Lots Inspected**,
+  **NCRs in the Period** (not cancelled), **Composite Score** = delivery and quality weighted by System Parameters >
+  Quality > **Vendor Score Weight: Delivery % / Quality %** (50 / 50, must add up to 100; one score missing = the
+  other alone), **Scores Updated On**.
+- Updated at once when an incoming QC Inspection of the supplier is submitted or cancelled, every morning by the job
+  "Vendor quality and composite scores" (PEPL Job Run), and on "Run now" (run_vendor_scores_now: Quality / Purchase
+  Manager).
+- The RFQ supplier list (Material Request) shows Delivery · Quality · Overall; the Quotation Comparison rows carry the
+  Composite Score. A score with nothing behind it now shows empty instead of 0 %.
+- The CR1 "Accounts & GST" tab follows the whole Quality tab.
+- 7 tests (test_c3b_q6_vendor_scorecard.py); Check 67 (docs/checks/check_67_c3b_q6_vendor_scorecard.py).
+
 ## 0.66.0 — Cycle 3b: the dispatch gate on the Delivery Note (C3b-Q5)
 
 - **Final inspection**: an item with ERPNext's "Inspection Required before Delivery" gets, on every save of a draft

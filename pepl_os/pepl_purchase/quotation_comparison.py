@@ -20,6 +20,7 @@ from frappe.utils import add_days, cint, flt, fmt_money, getdate, today
 
 from pepl_os.common import params
 from pepl_os.common.overrides import MIN_REASON_LENGTH, log_override
+from pepl_os.pepl_quality import scorecard
 
 DOCTYPE = "PEPL Quotation Comparison"
 RFQ = "Request for Quotation"
@@ -106,7 +107,14 @@ def load_rows(doc):
 		supplier = frappe.db.get_value(
 			"Supplier",
 			q.supplier,
-			["payment_terms", "custom_delivery_score", "custom_quality_score"],
+			[
+				"payment_terms",
+				"custom_delivery_score",
+				"custom_delivery_scored_lines",
+				"custom_quality_score",
+				"custom_quality_scored_lots",
+				"custom_composite_score",
+			],
 			as_dict=True,
 		)
 		doc.append(
@@ -128,8 +136,10 @@ def load_rows(doc):
 				"promised_date": promised_date(q.lead_time_days, line.schedule_date),
 				"payment_terms": supplier.payment_terms,
 				"last_rates": _rates_text(last_po_rates(line.item_code, q.supplier, doc.name)),
-				"delivery_score": supplier.custom_delivery_score,
-				"quality_score": supplier.custom_quality_score,
+				# C3b-Q6: delivery, quality and composite; empty where the supplier has nothing to score yet
+				"delivery_score": scorecard.card_scores(supplier)[0],
+				"quality_score": scorecard.card_scores(supplier)[1],
+				"composite_score": scorecard.card_scores(supplier)[2],
 				"warehouse": line.warehouse,
 				"material_request": line.material_request,
 				"material_request_item": line.material_request_item,
