@@ -2,6 +2,20 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.74.0 — Cycle 3b Phase 5: Cost of Quality (C3b-B2)
+
+- Report **PEPL Cost of Quality** (filters From / To, default this month; By Month or By Item): **Rejection** =
+  pieces rejected on submitted shift entries × the made item's cost a piece (Item Valuation Rate, else its stock
+  valuation rate); **Scrap Recovered** = submitted Scrap Weighments with source Rejection (by item, shared over the
+  entry's rejected pieces), taken off; **NCR Rework** = cost of NCRs with disposition Rework; **NCR Other
+  (internal)** = cost of every other non-customer NCR; **Customer (external)** = cost of NCRs with source Customer;
+  **Cost of Quality** = rejection − scrap + NCR rework + NCR other + customer. Cancelled NCRs and NCRs raised by the
+  rejection-rate rule (their pieces are already under Rejection) are left out. "Not priced" lists rejected pieces of
+  items without a cost a piece and NCRs whose disposition needs a cost but have none. Summary (total, rejection net of
+  scrap, customer) and a bar chart by month.
+- coq.month_total() feeds the Command Centre card "Cost of Quality (month)" (next release).
+- 3 tests (test_c3b_b2_cost_of_quality.py); Check 74 (docs/checks/check_74_c3b_b2_cost_of_quality.py).
+
 ## 0.73.0 — Cycle 3b Phase 5: CAPA effectiveness verification (C3b-B3)
 
 - New setting **CAPA: Verification After (Days)** (System Parameters → Quality, default 90, 0 to 365; 0 = no check).
