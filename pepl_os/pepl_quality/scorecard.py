@@ -151,17 +151,19 @@ def run_vendor_scores_now():
 
 
 def on_inspection_change(doc, method=None):
-	"""doc_events: Quality Inspection on_submit / on_cancel. An incoming lot updates its supplier's scores at once."""
+	"""doc_events: Quality Inspection on_submit / on_cancel. An incoming lot updates its supplier's scores at once.
+
+	Returns nothing: Frappe merges what the handlers of one event return, and a dict after another handler's text
+	stopped the submit (CI #73, fixed 0.67.1)."""
 	supplier = doc.get("custom_supplier")
 	if doc.inspection_type != "Incoming" or not supplier or not frappe.db.exists("Supplier", supplier):
-		return None
+		return
 	frappe.db.savepoint("pepl_vendor_score")
 	try:
-		return update_supplier(supplier)
+		update_supplier(supplier)
 	except Exception:
 		frappe.db.rollback(save_point="pepl_vendor_score")
 		frappe.log_error(title=f"PEPL: quality score not updated for {supplier}")
-		return None
 
 
 def card_scores(supplier_row):

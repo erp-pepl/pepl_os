@@ -335,15 +335,15 @@ def _inspection_values(qi):
 
 
 def on_inspection_submit(doc, method=None):
-	"""doc_events: Quality Inspection on_submit."""
+	"""doc_events: Quality Inspection on_submit. Document-event handlers return nothing (0.67.1)."""
 	if doc.status == "Accepted":
-		return None
-	return _safely(doc.name, raise_ncr, RULE_QI, {"quality_inspection": doc.name}, _inspection_values(doc))
+		return
+	_safely(doc.name, raise_ncr, RULE_QI, {"quality_inspection": doc.name}, _inspection_values(doc))
 
 
 def on_inspection_cancel(doc, method=None):
 	"""doc_events: Quality Inspection on_cancel."""
-	return _safely(
+	_safely(
 		doc.name,
 		cancel_auto,
 		RULE_QI,
@@ -392,15 +392,15 @@ def _raise_returns(dn):
 def on_delivery_note_submit(doc, method=None):
 	"""doc_events: Delivery Note on_submit. A customer return raises its NCRs."""
 	if not cint(doc.get("is_return")) or not params.is_enabled(RETURN_FIELD, 1):
-		return None
-	return _safely(doc.name, _raise_returns, doc)
+		return
+	_safely(doc.name, _raise_returns, doc)
 
 
 def on_delivery_note_cancel(doc, method=None):
 	"""doc_events: Delivery Note on_cancel."""
 	if not cint(doc.get("is_return")):
-		return None
-	return _safely(
+		return
+	_safely(
 		doc.name,
 		cancel_auto,
 		RULE_RETURN,

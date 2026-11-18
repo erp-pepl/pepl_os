@@ -2,6 +2,17 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.67.1 — Fix to Cycle 3b: document-event handlers return nothing
+
+- Submitting a rejected incoming QC Inspection failed with "'str' object has no attribute 'update'": Frappe merges what
+  all handlers of one event return; the NCR rule returned the NCR's name (text) and the vendor scorecard then returned
+  a dict. Found by CI #73 and by Check 67 on the bench (stopped at the rejected lot).
+- The eight Cycle 3b handlers that returned a value now return nothing (incoming QC sync and parameter change, final
+  inspection sync, the four NCR rules, the scorecard); the results tests need come from separate helpers
+  (incoming_qc.make_inspections / apply_parameter_change, dispatch.make_final_inspections). No behaviour change.
+- Guard test (test_doc_event_handlers.py): every pepl_os document-event handler in hooks.py (67) is read and must not
+  return a value. Check 67 unchanged.
+
 ## 0.67.0 — Cycle 3b: vendor scorecard (C3b-Q6) – Phase 1 foundations complete
 
 - **Quality score** per supplier = incoming QC Inspections submitted as Accepted ÷ all its submitted incoming QC

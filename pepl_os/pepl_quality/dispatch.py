@@ -83,7 +83,12 @@ def _make_inspection(doc, row):
 
 
 def sync_final_inspections(doc, method=None):
-	"""doc_events: Delivery Note on_update (draft). One draft final inspection per line that needs one."""
+	"""doc_events: Delivery Note on_update (draft). Returns nothing (0.67.1)."""
+	make_final_inspections(doc)
+
+
+def make_final_inspections(doc):
+	"""One draft final inspection per line that needs one. Returns the names made."""
 	if doc.docstatus != 0 or cint(doc.get("is_return")):
 		return []
 	made = []

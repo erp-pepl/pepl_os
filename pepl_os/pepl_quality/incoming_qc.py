@@ -160,7 +160,13 @@ def apply_classes(added=(), removed=()):
 
 
 def on_parameters_update(doc, method=None):
-	"""doc_events: PEPL System Parameters on_update. A changed class list ticks / unticks the items."""
+	"""doc_events: PEPL System Parameters on_update. A changed class list ticks / unticks the items.
+	Returns nothing: Frappe merges what document-event handlers return (0.67.1)."""
+	apply_parameter_change(doc)
+
+
+def apply_parameter_change(doc):
+	"""(ticked, unticked) after a change of "Incoming QC: Stock Classes", or None when the list did not change."""
 	before = doc.get_doc_before_save()
 	old = set(stock_classes(before.get(CLASSES_FIELD) if before else ""))
 	new = set(stock_classes(doc.get(CLASSES_FIELD)))
@@ -265,7 +271,12 @@ def _remove_unused_drafts(doc):
 
 
 def sync_inspections(doc, method=None):
-	"""doc_events: Purchase Receipt on_update (draft). One draft QC Inspection per line that needs inspection."""
+	"""doc_events: Purchase Receipt on_update (draft). Returns nothing (0.67.1)."""
+	make_inspections(doc)
+
+
+def make_inspections(doc):
+	"""One draft QC Inspection per line that needs inspection. Returns the names made."""
 	if doc.docstatus != 0 or doc.get("is_return"):
 		return []
 	made = []
