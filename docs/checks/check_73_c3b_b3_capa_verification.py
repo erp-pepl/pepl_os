@@ -2,6 +2,7 @@
 # future-date effectiveness check ("Awaiting Verification", ToDo for its owner); Effective only from the due day and
 # not while a new Major / Critical NCR came in since; Not Effective sends it back to In Progress; the CAPA and NCR
 # panels show the check.
+# Rev 2: no tuple unpacking (rev 1 stopped at "FIRST, NAME = ...": the System Console cannot unpack).
 # Runs on 0.73.0 or later. System Console, Type = Python. Leave "Commit" UNTICKED: everything below, including the
 # System Parameters change it makes, is undone at the end. The pop-ups after Execute are the refusals it provokes on
 # purpose. Afterwards look at a CAPA in the browser (see chat).
@@ -91,7 +92,7 @@ def complete_capa(code):
     doc.root_cause = "No collet change interval"
     doc.append("actions", {"action_type": "Corrective Action", "description": "Collet in the PM list", "done_on": today})
     doc.save()
-    return first.name, doc.name
+    return [first.name, doc.name]
 
 
 def close(name):
@@ -102,7 +103,9 @@ def close(name):
 
 
 # ---------------- 2. actions complete: ready ----------------
-FIRST, NAME = complete_capa("SHAFT")
+PAIR = complete_capa("SHAFT")  # no "a, b = ..." in the System Console: it has no unpacking guard
+FIRST = PAIR[0]
+NAME = PAIR[1]
 rows = show(NAME)
 check(rows[-1].get("text") == "Ready: set the Status to Closed and save - the effectiveness check is then due in 90 day(s)", "2. 'Ready: ... the effectiveness check is then due in 90 day(s)'")
 
@@ -155,7 +158,8 @@ check(doc.status == "Closed" and doc.verification_result == "Effective" and bool
 check(find(show(NAME), "Verified effective on ").get("colour") == "green", "6. 'Verified effective on ... by ...' (green)")
 
 # ---------------- 7. a new NCR since the actions were complete ----------------
-FIRST2, NAME2 = complete_capa("PIN")
+PAIR2 = complete_capa("PIN")
+NAME2 = PAIR2[1]
 close(NAME2)
 frappe.db.set_value(CAPA, NAME2, "verification_due_on", today)
 again = ncr(frappe.db.get_value(CAPA, NAME2, "item"), "Major")
