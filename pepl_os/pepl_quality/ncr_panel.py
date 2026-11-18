@@ -165,6 +165,14 @@ def capa_row(doc):
 			}
 		if c.status == capa.CANCELLED:
 			return {"text": _("CAPA {0}: Cancelled").format(c.name), "colour": "gray"}
+		if c.status == capa.AWAITING:
+			due = c.get("verification_due_on")
+			return {
+				"text": _("CAPA {0}: Awaiting Verification · effectiveness check due {1}").format(
+					c.name, formatdate(due) if due else "-"
+				),
+				"colour": "red" if capa.verification_overdue(c) else "orange",
+			}
 		text = _("CAPA {0}: {1}").format(c.name, _(c.status))
 		late = c.target_date and date_diff(today(), c.target_date) > 0
 		if c.target_date:

@@ -54,6 +54,7 @@ class TestCAPAPanel(PEPLTestCase):
 		set_param(capa.WINDOW_FIELD, 90)
 		set_param(capa.WHYS_FIELD, 5)
 		set_param(capa.TARGET_FIELD, 30)
+		set_param(capa.VERIFY_FIELD, 0)  # closing closes at once; the effectiveness check is tested in C3b-B3
 		for severity, field in ncr.SIGNOFF_FIELDS.items():
 			set_param(field, ncr.SIGNOFF_DEFAULTS[severity])
 		make_user(SETTER, ["Manufacturing User"])

@@ -29,6 +29,15 @@
   "five_why_status",
   "section_actions",
   "actions",
+  "section_verification",
+  "actions_completed_on",
+  "verification_due_on",
+  "verification_count",
+  "column_break_verification",
+  "verification_result",
+  "verified_on",
+  "verified_by",
+  "verification_remarks",
   "section_close",
   "closed_on",
   "closed_by",
@@ -70,7 +79,7 @@
    "fieldname": "status",
    "fieldtype": "Select",
    "label": "Status",
-   "options": "Open\nIn Progress\nClosed\nCancelled",
+   "options": "Open\nIn Progress\nAwaiting Verification\nClosed\nCancelled",
    "default": "Open",
    "reqd": 1,
    "in_list_view": 1,
@@ -193,6 +202,69 @@
    "description": "At least one Corrective Action; every action needs Done On before the CAPA can close."
   },
   {
+   "fieldname": "section_verification",
+   "fieldtype": "Section Break",
+   "label": "Effectiveness Verification",
+   "collapsible": 0
+  },
+  {
+   "fieldname": "actions_completed_on",
+   "fieldtype": "Datetime",
+   "label": "Actions Completed On",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "verification_due_on",
+   "fieldtype": "Date",
+   "label": "Effectiveness Check Due On",
+   "read_only": 1,
+   "no_copy": 1,
+   "in_list_view": 0,
+   "description": "Actions Completed On + 'CAPA: Verification After (Days)'. On or after this day a Quality Manager presses 'Verify Effectiveness'."
+  },
+  {
+   "fieldname": "verification_count",
+   "fieldtype": "Int",
+   "label": "Times Found Not Effective",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "column_break_verification",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "verification_result",
+   "fieldtype": "Select",
+   "label": "Verification Result",
+   "options": "\nEffective\nNot Effective",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "verified_on",
+   "fieldtype": "Date",
+   "label": "Verified On",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "verified_by",
+   "fieldtype": "Link",
+   "label": "Verified By",
+   "options": "User",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "verification_remarks",
+   "fieldtype": "Small Text",
+   "label": "Verification Log",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
    "fieldname": "section_close",
    "fieldtype": "Section Break",
    "label": "Closing"
@@ -226,7 +298,7 @@
  ],
  "index_web_pages_for_search": 0,
  "links": [],
- "modified": "2026-11-18 18:00:00.000000",
+ "modified": "2026-11-19 02:00:00.000000",
  "modified_by": "Administrator",
  "module": "PEPL Quality",
  "name": "PEPL CAPA",

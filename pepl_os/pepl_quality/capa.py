@@ -6,7 +6,13 @@ A CAPA goes after the root cause of one or more NCRs of an item:
   * status Open → In Progress → Closed, or Cancelled (with a reason). Closing needs the five-why complete (the first
     "CAPA: Whys Required" whys and the root cause), at least one Corrective Action and every action done. A Closed or
     Cancelled CAPA cannot be changed; a Quality Manager reopens a Closed one (In Progress).
-    (The effectiveness check on a future date before final closure comes with C3b-B3.)
+  * C3b-B3 - effectiveness verification: with "CAPA: Verification After (Days)" above 0, a CAPA whose actions are
+    complete is not closed at once. Setting it to Closed (or Awaiting Verification) checks the closing rules, puts it
+    "Awaiting Verification" and schedules the effectiveness check on (today + those days); the CAPA owner gets a ToDo
+    for that day (QA-CAPA-VERIFY). On or after that day a Quality Manager presses "Verify Effectiveness":
+    Effective -> Closed (refused while a Major / Critical NCR was raised on the item since the actions were completed);
+    Not Effective -> back to In Progress, counted, to add actions and close again (a new check is scheduled).
+    "Not Effective" may be recorded at any time. 0 days = closing closes at once (no check).
 
 Triggers (on every save of an NCR that is not cancelled and has no CAPA yet; never stops the NCR):
   * Critical NCR → a CAPA (trigger "Critical NCR");
@@ -29,10 +35,13 @@ OWNER_FIELD = "custom_quality_notification_owner"
 NCR_LINK = "capa"
 
 OPEN, IN_PROGRESS, CLOSED, CANCELLED = "Open", "In Progress", "Closed", "Cancelled"
+AWAITING = "Awaiting Verification"
 DONE_STATES = (CLOSED, CANCELLED)
+EFFECTIVE, NOT_EFFECTIVE = "Effective", "Not Effective"
 CRITICAL_TRIGGER, REPEAT_TRIGGER, MANUAL_TRIGGER = "Critical NCR", "Repeat Major", "Manual"
 CORRECTION, CORRECTIVE, PREVENTIVE = "Correction", "Corrective Action", "Preventive Action"
 OPEN_RULE = "QA-CAPA-OPEN"
+VERIFY_RULE = "QA-CAPA-VERIFY"
 REOPEN_ROLES = ("Quality Manager", "System Manager")
 WHY_FIELDS = ("why_1", "why_2", "why_3", "why_4", "why_5")
 LOCKED_FIELDS = ("item", "problem_statement", "containment", *WHY_FIELDS, "root_cause")
@@ -41,12 +50,21 @@ WINDOW_FIELD = "custom_capa_repeat_window_days"
 COUNT_FIELD = "custom_capa_repeat_count"
 WHYS_FIELD = "custom_capa_whys_required"
 TARGET_FIELD = "custom_capa_target_days"
-RANGES = {WINDOW_FIELD: (1, 730), COUNT_FIELD: (2, 10), WHYS_FIELD: (1, 5), TARGET_FIELD: (1, 365)}
+VERIFY_FIELD = "custom_capa_verification_days"
+VERIFY_DEFAULT = 90
+RANGES = {
+	WINDOW_FIELD: (1, 730),
+	COUNT_FIELD: (2, 10),
+	WHYS_FIELD: (1, 5),
+	TARGET_FIELD: (1, 365),
+	VERIFY_FIELD: (0, 365),
+}
 LABELS = {
 	WINDOW_FIELD: "CAPA: Repeat Window (Days)",
 	COUNT_FIELD: "CAPA: Repeat Major Count",
 	WHYS_FIELD: "CAPA: Whys Required",
 	TARGET_FIELD: "CAPA: Target Days",
+	VERIFY_FIELD: "CAPA: Verification After (Days)",
 }
 DEFAULTS = {WINDOW_FIELD: 90, COUNT_FIELD: 2, WHYS_FIELD: 5, TARGET_FIELD: 30}
 
@@ -56,6 +74,14 @@ DEFAULTS = {WINDOW_FIELD: 90, COUNT_FIELD: 2, WHYS_FIELD: 5, TARGET_FIELD: 30}
 
 def setting(field):
 	return params.get_int(field, DEFAULTS[field]) or DEFAULTS[field]
+
+
+def verification_days():
+	"""Days from actions complete to the effectiveness check; 0 = no check (closing closes at once)."""
+	value = params.get(VERIFY_FIELD, VERIFY_DEFAULT)
+	if value in (None, ""):
+		return VERIFY_DEFAULT
+	return min(max(cint(value), 0), 365)
 
 
 def validate_params(doc):
@@ -101,7 +127,7 @@ def closing_gaps(doc):
 def validate_capa(doc):
 	before = None if doc.is_new() else doc.get_doc_before_save()
 	old_status = before.status if before else None
-	if before and old_status in DONE_STATES and doc.status == old_status:
+	if before and old_status in (*DONE_STATES, AWAITING) and doc.status == old_status:
 		changed = [f for f in LOCKED_FIELDS if cstr(before.get(f)) != cstr(doc.get(f))]
 		if changed or len(doc.get("actions") or []) != len(before.get("actions") or []):
 			frappe.throw(
@@ -116,6 +142,13 @@ def validate_capa(doc):
 		doc.closed_by = None
 	if before and old_status == CANCELLED and doc.status != CANCELLED:
 		frappe.throw(_("A cancelled CAPA stays cancelled. Raise a new one."))
+	if old_status == AWAITING and doc.status not in (AWAITING, CANCELLED) and not doc.flags.pepl_verification:
+		frappe.throw(
+			_(
+				"This CAPA is awaiting its effectiveness check: a Quality Manager records the result with "
+				"'Verify Effectiveness' (Effective closes it, Not Effective sends it back to In Progress)."
+			)
+		)
 	for row in doc.get("actions") or []:
 		if row.done_on and getdate(row.done_on) > getdate(today()):
 			frappe.throw(_("Action {0}: Done On cannot be in the future.").format(row.idx))
@@ -133,10 +166,26 @@ def validate_capa(doc):
 	)
 	if doc.status == OPEN and (filled or any(doc.get("actions") or [])):
 		doc.status = IN_PROGRESS
-	if doc.status == CLOSED and old_status != CLOSED:
+	if doc.status in (CLOSED, AWAITING) and old_status not in (CLOSED, AWAITING):
 		gaps = closing_gaps(doc)
 		if gaps:
 			frappe.throw(_("The CAPA cannot be closed yet: {0}.").format("; ".join(gaps)))
+		days = verification_days()
+		if days or doc.status == AWAITING:
+			doc.status = AWAITING
+			doc.actions_completed_on = now_datetime()
+			doc.verification_due_on = add_days(today(), days)
+			doc.verification_result = None
+			frappe.msgprint(
+				_(
+					"Actions complete. The effectiveness check is due on {0}; the CAPA closes when a Quality "
+					"Manager verifies it as effective."
+				).format(frappe.utils.formatdate(doc.verification_due_on)),
+				alert=True,
+			)
+		else:
+			doc.actions_completed_on = now_datetime()
+	if doc.status == CLOSED and old_status != CLOSED:
 		doc.closed_on = now_datetime()
 		doc.closed_by = frappe.session.user
 	if doc.status == CANCELLED and old_status != CANCELLED and len((doc.cancel_reason or "").strip()) < 10:
@@ -148,9 +197,23 @@ def on_update_capa(doc):
 	for row in doc.get("ncrs") or []:
 		if row.ncr and frappe.db.get_value(NCR, row.ncr, NCR_LINK) != doc.name:
 			frappe.db.set_value(NCR, row.ncr, NCR_LINK, doc.name, update_modified=False)
-	if doc.status in DONE_STATES:
+	if doc.status != AWAITING:
+		alerts.close_one(VERIFY_RULE, CAPA, doc.name)
+	if doc.status in (*DONE_STATES, AWAITING):
 		alerts.close_one(OPEN_RULE, CAPA, doc.name)
-	elif cint(doc.raised_by_system):
+	if doc.status == AWAITING:
+		alerts.raise_todo(
+			VERIFY_RULE,
+			CAPA,
+			doc.name,
+			_("Verify the effectiveness of CAPA {0} on {1} (due {2}): did the problem come back?").format(
+				doc.name, doc.item, frappe.utils.formatdate(doc.verification_due_on)
+			),
+			allocated_to=doc.capa_owner,
+			priority="Medium",
+			due_date=doc.verification_due_on,
+		)
+	elif doc.status not in DONE_STATES and cint(doc.raised_by_system):
 		alerts.raise_todo(
 			OPEN_RULE,
 			CAPA,
@@ -286,3 +349,81 @@ def get_capa_state(capa):
 		"five_why_complete": complete,
 		"closing_gaps": closing_gaps(doc),
 	}
+
+
+# Effectiveness verification (C3b-B3) ---------------------------------------------------------------------------
+
+
+def ncrs_since_completion(doc):
+	"""Major / Critical NCRs (not cancelled) on the CAPA's item entered after its actions were complete."""
+	if not doc.get("actions_completed_on") or not doc.item:
+		return []
+	return frappe.get_all(
+		NCR,
+		filters={
+			"item": doc.item,
+			"severity": ["in", ("Major", "Critical")],
+			"status": ["!=", "Cancelled"],
+			"creation": [">=", doc.actions_completed_on],
+		},
+		pluck="name",
+		order_by="creation asc",
+	)
+
+
+def verification_overdue(doc, as_of=None):
+	return (
+		doc.status == AWAITING
+		and doc.get("verification_due_on")
+		and getdate(doc.verification_due_on) < getdate(as_of or today())
+	)
+
+
+@frappe.whitelist()
+def verify_capa(capa, result, remarks):
+	"""Record the effectiveness check. Effective (on or after the due day) closes the CAPA; Not Effective sends it
+	back to In Progress. Quality Manager only."""
+	frappe.only_for(REOPEN_ROLES)
+	doc = frappe.get_doc(CAPA, capa)
+	if doc.status != AWAITING:
+		frappe.throw(_("CAPA {0} is {1}, not awaiting verification.").format(doc.name, _(doc.status)))
+	if result not in (EFFECTIVE, NOT_EFFECTIVE):
+		frappe.throw(_("The result is Effective or Not Effective."))
+	remarks = (remarks or "").strip()
+	if len(remarks) < 10:
+		frappe.throw(
+			_("Say what was checked (at least 10 characters), e.g. lots inspected since and their result.")
+		)
+	if result == EFFECTIVE:
+		if getdate(today()) < getdate(doc.verification_due_on):
+			frappe.throw(
+				_(
+					"The effectiveness check is due on {0}; the CAPA can be verified as effective from then."
+				).format(frappe.utils.formatdate(doc.verification_due_on))
+			)
+		since = ncrs_since_completion(doc)
+		if since:
+			frappe.throw(
+				_(
+					"Major / Critical NCR(s) {0} were raised on {1} since the actions were completed: the CAPA was "
+					"not effective. Record Not Effective and add actions."
+				).format(", ".join(since), doc.item)
+			)
+	line = _("{0}: {1} - {2} ({3})").format(
+		frappe.utils.formatdate(today()), _(result), remarks, frappe.session.user
+	)
+	doc.verification_remarks = ((doc.verification_remarks or "") + "\n" + line).strip()
+	doc.verification_result = result
+	doc.verified_on = today()
+	doc.verified_by = frappe.session.user
+	if result == EFFECTIVE:
+		doc.status = CLOSED
+	else:
+		doc.status = IN_PROGRESS
+		doc.verification_count = cint(doc.verification_count) + 1
+		doc.actions_completed_on = None
+		doc.verification_due_on = None
+	doc.flags.pepl_verification = True
+	doc.flags.ignore_permissions = True
+	doc.save()
+	return {"status": doc.status, "result": result}

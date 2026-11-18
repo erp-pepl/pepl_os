@@ -841,6 +841,16 @@ CAPA_FIELDS = _chain(
 			"default": "30",
 			"description": "A new CAPA's target date = raised on + this many days, unless one is entered. 1 to 365.",
 		},
+		# C3b-B3 - effectiveness verification before final closure
+		{
+			"fieldname": "custom_capa_verification_days",
+			"label": "CAPA: Verification After (Days)",
+			"fieldtype": "Int",
+			"default": "90",
+			"description": "A CAPA whose actions are complete waits this many days for its effectiveness check "
+			"('Awaiting Verification'); a Quality Manager then verifies it Effective (closed) or Not Effective (back "
+			"to In Progress). 0 = closing closes at once, no check. 0 to 365. To confirm with PEPL.",
+		},
 	],
 	after="custom_ncr_rejection_min_pieces",
 )
@@ -862,7 +872,7 @@ DISPATCH_FIELDS = _chain(
 			"reason is needed (Override Log); Hard Block = the delivery cannot be submitted. To confirm with PEPL.",
 		},
 	],
-	after="custom_capa_target_days",
+	after="custom_capa_verification_days",
 )
 
 CUSTOM_FIELDS[SYSTEM_PARAMETERS] += DISPATCH_FIELDS

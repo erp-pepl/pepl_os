@@ -9,12 +9,16 @@ One panel ("CAPA") at the top of the PEPL CAPA form, in this order:
   "Actions: 3 (Correction 1, Corrective Action 1, Preventive Action 1) · 1 done · 2 open, 1 overdue"
   "Corrective Action: replace collet · ravi@... · due 10-11-2026 - OVERDUE by 8 day(s)"     (one line per open action)
   "To close: no Corrective Action; 2 action(s) not done"  /  "Ready to close: ..."  /  "Cancelled: reason"
-(The effectiveness check before final closure is added to this panel by C3b-B3.)
+C3b-B3 adds the effectiveness check:
+  "Actions completed on 12-11-2026 - target met"  ·  "Effectiveness check 10-02-2027: 83 day(s) left"
+  (red when overdue, or when a Major / Critical NCR was raised on the item since the actions were completed)
+  "To close: Verify Effectiveness on or after 10-02-2027"  ·  "Verified effective on ... by ..."  ·
+  "Found not effective 1 time(s), last on ...: <remarks>"
 """
 
 import frappe
 from frappe import _
-from frappe.utils import date_diff, formatdate, getdate, today
+from frappe.utils import cint, date_diff, formatdate, getdate, today
 
 from pepl_os.pepl_quality import capa
 
@@ -57,9 +61,21 @@ def header_row(doc):
 		colour = "green"
 	elif doc.status == capa.CANCELLED:
 		colour = "gray"
+	elif doc.status == capa.AWAITING:
+		colour = "red" if capa.verification_overdue(doc) else "orange"
 	else:
 		colour = "red" if doc.target_date and date_diff(today(), doc.target_date) > 0 else "orange"
 	return {"text": text, "colour": colour}
+
+
+def _against_target(doc, done_on):
+	"""(" - target met" or " - n day(s) after the target", colour) for the day the actions were complete."""
+	if not done_on or not doc.target_date:
+		return "", "green"
+	late = date_diff(getdate(done_on), doc.target_date)
+	if late > 0:
+		return " - " + _("{0} day(s) after the target").format(late), "orange"
+	return " - " + _("target met"), "green"
 
 
 def target_row(doc):
@@ -68,15 +84,15 @@ def target_row(doc):
 	if doc.status == capa.CLOSED:
 		closed = getdate(doc.closed_on) if doc.closed_on else None
 		text = _("Closed on {0} by {1}").format(formatdate(closed) if closed else "-", doc.closed_by or "-")
-		if closed and doc.target_date:
-			late = date_diff(closed, doc.target_date)
-			if late > 0:
-				return {
-					"text": text + " - " + _("{0} day(s) after the target").format(late),
-					"colour": "orange",
-				}
-			return {"text": text + " - " + _("target met"), "colour": "green"}
-		return {"text": text, "colour": "green"}
+		suffix, colour = _against_target(doc, doc.get("actions_completed_on") or closed)
+		return {"text": text + suffix, "colour": colour}
+	if doc.status == capa.AWAITING:
+		done = doc.get("actions_completed_on")
+		suffix, colour = _against_target(doc, done)
+		return {
+			"text": _("Actions completed on {0}").format(formatdate(getdate(done)) if done else "-") + suffix,
+			"colour": colour,
+		}
 	if not doc.target_date:
 		return {"text": _("Target: not set"), "colour": "orange"}
 	text, colour = due_text(doc.target_date)
@@ -162,9 +178,54 @@ def action_rows(doc):
 	return rows
 
 
+def verification_row(doc):
+	"""The effectiveness check: when it is due, what it found (C3b-B3)."""
+	if doc.status == capa.AWAITING and doc.get("verification_due_on"):
+		text, colour = due_text(doc.verification_due_on)
+		text = _("Effectiveness check {0}").format(text)
+		since = capa.ncrs_since_completion(doc)
+		if since:
+			text += " · " + _(
+				"Major / Critical NCR(s) since the actions were completed: {0} - not effective"
+			).format(", ".join(since))
+			colour = "red"
+		return {"text": text, "colour": colour}
+	if doc.status == capa.CLOSED and doc.get("verification_result") == capa.EFFECTIVE:
+		return {
+			"text": _("Verified effective on {0} by {1}").format(
+				formatdate(doc.verified_on) if doc.verified_on else "-", doc.verified_by or "-"
+			),
+			"colour": "green",
+		}
+	if is_open(doc) and cint(doc.get("verification_count")):
+		last = ((doc.get("verification_remarks") or "").strip().splitlines() or [""])[-1]
+		return {
+			"text": _("Found not effective {0} time(s), last: {1}").format(
+				cint(doc.verification_count), last[:160]
+			),
+			"colour": "red",
+		}
+	return None
+
+
 def closing_row(doc):
 	if doc.status == capa.CLOSED:
 		return None
+	if doc.status == capa.AWAITING:
+		due = doc.get("verification_due_on")
+		if due and date_diff(due, today()) <= 0:
+			return {
+				"text": _(
+					"To close: press Verify Effectiveness (Effective closes it; Not Effective reopens it)"
+				),
+				"colour": "red" if capa.verification_overdue(doc) else "orange",
+			}
+		return {
+			"text": _("To close: Verify Effectiveness on or after {0}").format(
+				formatdate(due) if due else "-"
+			),
+			"colour": "gray",
+		}
 	if doc.status == capa.CANCELLED:
 		return {
 			"text": _("Cancelled: {0}").format((doc.cancel_reason or "").strip() or "-"),
@@ -173,13 +234,21 @@ def closing_row(doc):
 	gaps = capa.closing_gaps(doc)
 	if gaps:
 		return {"text": _("To close: {0}").format("; ".join(gaps)), "colour": "orange"}
+	days = capa.verification_days()
+	if days:
+		return {
+			"text": _(
+				"Ready: set the Status to Closed and save - the effectiveness check is then due in {0} day(s)"
+			).format(days),
+			"colour": "green",
+		}
 	return {"text": _("Ready to close: set the Status to Closed and save"), "colour": "green"}
 
 
 def panel_rows(doc):
 	rows = [header_row(doc), target_row(doc), ncr_row(doc), containment_row(doc), five_why_row(doc)]
 	rows += action_rows(doc)
-	rows.append(closing_row(doc))
+	rows += [verification_row(doc), closing_row(doc)]
 	return [r for r in rows if r]
 
 

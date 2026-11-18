@@ -2,6 +2,26 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.73.0 — Cycle 3b Phase 5: CAPA effectiveness verification (C3b-B3)
+
+- New setting **CAPA: Verification After (Days)** (System Parameters → Quality, default 90, 0 to 365; 0 = no check).
+- A CAPA whose closing rules are met is no longer closed at once: setting it to **Closed** (or Awaiting Verification)
+  puts it **Awaiting Verification**, records Actions Completed On and schedules the **Effectiveness Check Due On**
+  (+ the setting's days); the CAPA owner gets a ToDo for that day (QA-CAPA-VERIFY) and the open-CAPA ToDo closes.
+  While it waits, the five-why, root cause and actions are locked and its status changes only through the check (or
+  Cancelled).
+- **Verify Effectiveness** (button, Quality Manager): Effective – only from the due day, and refused while a Major /
+  Critical NCR was entered on the item since the actions were completed – closes the CAPA; Not Effective (any time)
+  sends it back to In Progress, counts it ("Times Found Not Effective") and clears the check; closing again schedules
+  a new one. Every result goes to the Verification Log with what was checked (at least 10 characters).
+- CAPA panel: "Actions completed on … - target met / n day(s) after the target", "Effectiveness check …: n day(s)
+  left" (red when overdue or when a new NCR came in), "To close: Verify Effectiveness on or after …" / "press Verify
+  Effectiveness", "Verified effective on … by …", "Found not effective n time(s), last: …", and "Ready: … the
+  effectiveness check is then due in n day(s)". NCR panel: "CAPA …: Awaiting Verification · effectiveness check due …".
+- Q4 and P3 tests pin the setting to 0 (they test closing itself); 7 tests (test_c3b_b3_capa_verification.py);
+  Check 73 (docs/checks/check_73_c3b_b3_capa_verification.py). On a site with the check on, Checks 65 and 70 (which
+  close a CAPA directly) now stop at Awaiting Verification – expected.
+
 ## 0.72.0 — Cycle 3b Phase 3: Quality configuration (C3b-C1)
 
 - Report **PEPL Quality Settings** – the sheet confirmed with PEPL's Quality Manager: every setting on System
