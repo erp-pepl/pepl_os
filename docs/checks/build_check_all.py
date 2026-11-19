@@ -11,6 +11,7 @@ the same as when it runs alone), rolls everything back after each check, and the
 
 import json
 import pathlib
+import re
 import sys
 
 # Usage (WSL, from the app folder):
@@ -26,7 +27,7 @@ CYCLES = {
 		"high": 49,
 		"count": 27,
 		"name": "Cycle 3a",
-		"head": "# PEPL OS v0.51.0 - Check ALL rev 4 (Cycle 3a): runs Checks 23 to 49 (unchanged) in the background and "
+		"head": "# PEPL OS v0.51.0 - Check ALL rev 5 (Cycle 3a): runs Checks 23 to 49 (unchanged) in the background and "
 		"writes the",
 		"default": "# Choose which checks to run (both included). Default: 29 to 49 (23 to 28 already passed on the demo "
 		"site).\nFIRST = 29\nLAST = 49\n",
@@ -36,7 +37,7 @@ CYCLES = {
 		"high": 78,
 		"count": 17,
 		"name": "Cycle 3b",
-		"head": "# PEPL OS v0.78.0 - Check ALL rev 1 (Cycle 3b): runs Checks 60 and 63 to 78 (unchanged) in the background "
+		"head": "# PEPL OS v0.78.0 - Check ALL rev 2 (Cycle 3b): runs Checks 60 and 63 to 78 (unchanged) in the background "
 		"and writes the",
 		"default": "# Choose which checks to run (both included). Default: 60 to 78 (61 and 62 are CR1 / CR2, not run).\n"
 		"FIRST = 60\nLAST = 78\n",
@@ -49,8 +50,8 @@ assert len(checks) == C["count"], len(checks)
 
 # ------------------------------------------------------------------ inner script (runs in the background job)
 inner_head = """# PEPL OS - Check ALL (CYCLE_NAME), background part. Started from check_all_CYCLE_CODE.py; do not run this by hand.
-FIRST = int("ALL_FIRST_VALUE")
-LAST = int("ALL_LAST_VALUE")
+ALL_FIRST = int("ALL_FIRST_VALUE")
+ALL_LAST = int("ALL_LAST_VALUE")
 ALL_TITLE = "ALL_TITLE_VALUE"
 ALL_STARTED = frappe.utils.now_datetime()
 ALL_RESULTS = []
@@ -62,7 +63,7 @@ def all_seconds(since):
 
 
 def all_note(status):
-    lines = [ALL_TITLE, "Status: " + status, "Site pepl_os version: " + ALL_VERSION, "Checks chosen: " + str(FIRST) + " to " + str(LAST), ""]
+    lines = [ALL_TITLE, "Status: " + status, "Site pepl_os version: " + ALL_VERSION, "Checks chosen: " + str(ALL_FIRST) + " to " + str(ALL_LAST), ""]
     bad = []
     for row in ALL_RESULTS:
         lines.append(("OK    " if not row[3] else "FAIL  ") + "Check " + str(row[0]) + ": " + str(row[2]) + " passed, " + str(row[3]) + " failed  (" + str(row[4]) + " s)  " + row[1])
@@ -95,11 +96,13 @@ for path in checks:
 	body = path.read_text(encoding="utf-8").rstrip("\n").split("\n")
 	assert not any("\t" in line for line in body), path
 	assert not any('"""' in line or "'''" in line for line in body), path
+	# rev 5: the runner keeps its own names (ALL_*); a check must not use them (Check 73 set FIRST to an NCR name)
+	assert not any(re.match(r"\s*ALL_\w*\s*=", line) for line in body), path
 	indented = "\n".join(("        " + line) if line.strip() else "" for line in body)
 	parts.append(f'''# =====================================================================================================
 # Check {number}: {title}
 # =====================================================================================================
-if FIRST <= {number} <= LAST:
+if ALL_FIRST <= {number} <= ALL_LAST:
     print("CHECK {number}  ({title})")
     ALL_T = frappe.utils.now_datetime()
     passed = []
@@ -123,6 +126,8 @@ outer = [
 	+ """
 # results to a Note. System Console, Type = Python. Leave "Commit" UNTICKED.
 #
+# rev 5 (3a) / rev 2 (3b), 19 Nov 2026: the runner's own range is ALL_FIRST / ALL_LAST. Before, Check 73 (which has
+# a variable FIRST of its own) overwrote the runner's FIRST and the run stopped after Check 73.
 # rev 4: the job is packed with json.dumps (frappe.as_json is not offered in the System Console).
 # rev 3: the Note title is made from frappe.utils.now() (rev 2 used strftime, which the System Console refuses).
 # Why rev 2: Frappe Cloud stops a web request after 120 seconds, and the System Console only shows its output when
