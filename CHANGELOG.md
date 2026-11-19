@@ -2,6 +2,20 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.75.0 — Cycle 3b Phase 4: the Quality Command Centre (C3b-CC)
+
+- Workspace **Quality Command Centre** (Quality Manager, Manufacturing Manager, PEPL CEO, System Manager) with the
+  six cards of the quotation: **Open NCRs by Severity** (block: Critical · Major · Minor of the NCRs Open or Under
+  Review, each opening its list), **CAPAs Overdue for Verification** (Awaiting Verification, check day passed),
+  **Instruments Due Within 30 Days** (Active, due on or before today + 30, overdue included), **First-Pass Yield (7
+  days)** (good ÷ (good + rejected) on the shift entries of the 7 days before today), **Customer Rejections (30
+  days)** (customer NCRs raised in 30 days, not cancelled), **Cost of Quality (month)** (the report's total for this
+  month, in ₹). Every number card opens the list or report behind it.
+- Shortcuts: NCRs to sign or close, CAPAs in progress, Awaiting verification, Inspections to finish, Never
+  calibrated, Cost of Quality; link cards Inspection, Non-Conformance, Instruments, Reports; sidebar.
+- The "Open NCRs by Severity" block is installed on every migrate.
+- 8 tests (test_c3b_cc_command_centre.py); Check 75 (docs/checks/check_75_c3b_cc_command_centre.py).
+
 ## 0.74.0 — Cycle 3b Phase 5: Cost of Quality (C3b-B2)
 
 - Report **PEPL Cost of Quality** (filters From / To, default this month; By Month or By Item): **Rejection** =

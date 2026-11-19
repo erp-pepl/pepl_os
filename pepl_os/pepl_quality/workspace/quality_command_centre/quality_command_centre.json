@@ -1,0 +1,269 @@
+{
+ "app": "pepl_os",
+ "charts": [],
+ "content": "[{\"id\": \"hdr\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Quality Command Centre</b></span>\", \"col\": 12}}, {\"id\": \"ncrs\", \"type\": \"custom_block\", \"data\": {\"custom_block_name\": \"Open NCRs by Severity\", \"col\": 4}}, {\"id\": \"card0\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"CAPAs Overdue for Verification\", \"col\": 4}}, {\"id\": \"card1\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Instruments Due Within 30 Days\", \"col\": 4}}, {\"id\": \"card2\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"First-Pass Yield (7 days)\", \"col\": 4}}, {\"id\": \"card3\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Customer Rejections (30 days)\", \"col\": 4}}, {\"id\": \"card4\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Cost of Quality (month)\", \"col\": 4}}, {\"id\": \"sc_hdr\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h5\\\"><b>Today's work</b></span>\", \"col\": 12}}, {\"id\": \"sc0\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"NCRs to sign or close\", \"col\": 4}}, {\"id\": \"sc1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"CAPAs in progress\", \"col\": 4}}, {\"id\": \"sc2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Awaiting verification\", \"col\": 4}}, {\"id\": \"sc3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Inspections to finish\", \"col\": 4}}, {\"id\": \"sc4\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Never calibrated\", \"col\": 4}}, {\"id\": \"sc5\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Cost of Quality\", \"col\": 4}}, {\"id\": \"spacer\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"card_links0\", \"type\": \"card\", \"data\": {\"card_name\": \"Inspection\", \"col\": 3}}, {\"id\": \"card_links1\", \"type\": \"card\", \"data\": {\"card_name\": \"Non-Conformance\", \"col\": 3}}, {\"id\": \"card_links2\", \"type\": \"card\", \"data\": {\"card_name\": \"Instruments\", \"col\": 3}}, {\"id\": \"card_links3\", \"type\": \"card\", \"data\": {\"card_name\": \"Reports\", \"col\": 3}}]",
+ "creation": "2026-11-19 12:00:00.000000",
+ "custom_blocks": [
+  {
+   "custom_block_name": "PEPL Open NCRs by Severity",
+   "label": "Open NCRs by Severity"
+  }
+ ],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "quality",
+ "idx": 0,
+ "indicator_color": "green",
+ "is_hidden": 0,
+ "label": "Quality Command Centre",
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Inspection",
+   "link_count": 3,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "QC Inspection",
+   "link_count": 0,
+   "link_to": "Quality Inspection",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Inspection Plan",
+   "link_count": 0,
+   "link_to": "Quality Inspection Template",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Characteristic",
+   "link_count": 0,
+   "link_to": "Quality Inspection Parameter",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Non-Conformance",
+   "link_count": 3,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "NCR",
+   "link_count": 0,
+   "link_to": "PEPL NCR",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "CAPA",
+   "link_count": 0,
+   "link_to": "PEPL CAPA",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Override Log",
+   "link_count": 0,
+   "link_to": "PEPL Override Log",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Instruments",
+   "link_count": 2,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Instrument",
+   "link_count": 0,
+   "link_to": "PEPL Instrument",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Calibration Record",
+   "link_count": 0,
+   "link_to": "PEPL Calibration Record",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Reports",
+   "link_count": 2,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Cost of Quality",
+   "link_count": 0,
+   "link_to": "PEPL Cost of Quality",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Quality Settings",
+   "link_count": 0,
+   "link_to": "PEPL Quality Settings",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2026-11-19 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "PEPL Quality",
+ "name": "Quality Command Centre",
+ "number_cards": [
+  {
+   "label": "CAPAs Overdue for Verification",
+   "number_card_name": "PEPL CAPAs Overdue for Verification"
+  },
+  {
+   "label": "Instruments Due Within 30 Days",
+   "number_card_name": "PEPL Instruments Due Within 30 Days"
+  },
+  {
+   "label": "First-Pass Yield (7 days)",
+   "number_card_name": "PEPL First-Pass Yield 7 Days"
+  },
+  {
+   "label": "Customer Rejections (30 days)",
+   "number_card_name": "PEPL Customer Rejections 30 Days"
+  },
+  {
+   "label": "Cost of Quality (month)",
+   "number_card_name": "PEPL Cost of Quality Month"
+  }
+ ],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "restrict_to_domain": "",
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Quality Manager"
+  },
+  {
+   "role": "Manufacturing Manager"
+  },
+  {
+   "role": "PEPL CEO"
+  }
+ ],
+ "sequence_id": 46.0,
+ "shortcuts": [
+  {
+   "label": "NCRs to sign or close",
+   "link_to": "PEPL NCR",
+   "type": "DocType",
+   "doc_view": "List",
+   "stats_filter": "[[\"PEPL NCR\", \"status\", \"in\", [\"Open\", \"Under Review\"]]]",
+   "format": "{} open",
+   "color": "Orange"
+  },
+  {
+   "label": "CAPAs in progress",
+   "link_to": "PEPL CAPA",
+   "type": "DocType",
+   "doc_view": "List",
+   "stats_filter": "[[\"PEPL CAPA\", \"status\", \"in\", [\"Open\", \"In Progress\"]]]",
+   "format": "{} open",
+   "color": "Orange"
+  },
+  {
+   "label": "Awaiting verification",
+   "link_to": "PEPL CAPA",
+   "type": "DocType",
+   "doc_view": "List",
+   "stats_filter": "[[\"PEPL CAPA\", \"status\", \"=\", \"Awaiting Verification\"]]",
+   "format": "{} waiting",
+   "color": "Blue"
+  },
+  {
+   "label": "Inspections to finish",
+   "link_to": "Quality Inspection",
+   "type": "DocType",
+   "doc_view": "List",
+   "stats_filter": "[[\"Quality Inspection\", \"docstatus\", \"=\", 0]]",
+   "format": "{} drafts",
+   "color": "Orange"
+  },
+  {
+   "label": "Never calibrated",
+   "link_to": "PEPL Instrument",
+   "type": "DocType",
+   "doc_view": "List",
+   "stats_filter": "[[\"PEPL Instrument\", \"calibration_state\", \"=\", \"Never Calibrated\"]]",
+   "format": "{} never",
+   "color": "Red"
+  },
+  {
+   "label": "Cost of Quality",
+   "link_to": "PEPL Cost of Quality",
+   "type": "Report",
+   "doc_view": "",
+   "format": "",
+   "color": "Grey",
+   "stats_filter": ""
+  }
+ ],
+ "title": "Quality Command Centre",
+ "type": "Workspace"
+}
