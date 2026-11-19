@@ -2,6 +2,12 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.77.1 — Fix to C3b-B4 tests: a drawing revision needs its Drawing File (CI #84)
+
+- pepl_sales makes Drawing File mandatory on every PEPL Product Drawing Revision; the B4 tests made revisions without
+  one and CI #84 stopped in setUp (MandatoryError: drawing_file). The tests and Check 77 (rev 2) now attach a file to
+  every revision. No change to the app.
+
 ## 0.77.0 — Cycle 3b Phase 5: drawing-revision mid-production alert (C3b-B4) – Phase 5 builds complete
 
 - Every Job Order (Work Order) records **Drawing Revision** – the item's Product Master current drawing revision when it

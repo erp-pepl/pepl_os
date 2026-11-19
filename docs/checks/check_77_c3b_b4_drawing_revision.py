@@ -1,9 +1,9 @@
-# PEPL OS v0.77.0 - Check 77: C3b-B4 drawing-revision mid-production alert - a Job Order records the drawing revision it
+# PEPL OS v0.77.1 - Check 77 (rev 2: every drawing revision has its Drawing File, which pepl_sales requires): C3b-B4 drawing-revision mid-production alert - a Job Order records the drawing revision it
 # is made to; a new current revision on the Product Master flags the open Job Orders of the item (Drawing Change, ToDo
 # PRD-DRAWING-REV); a Production / Quality Manager acknowledges what the job is made to from now.
-# Runs on 0.77.0 or later. System Console, Type = Python. Everything below is undone at the end: the last lines roll
+# Runs on 0.77.1 or later. System Console, Type = Python. Everything below is undone at the end: the last lines roll
 # back, even if "Commit" were ticked. The pop-ups after Execute are the refusals it provokes on purpose.
-VERSION = "0.77.0"
+VERSION = "0.77.1"
 WO = "Work Order"
 PRODUCT = "PEPL Product Master"
 PANEL = "pepl_os.pepl_quality.drawing.get_drawing_panel"
@@ -61,17 +61,18 @@ boms = frappe.get_all("BOM", filters={"is_default": 1, "is_active": 1, "docstatu
 check(len(boms) == 1, "2. an item with a default BOM on this site: " + (str(boms[0].item) if boms else "none - make one first"))
 ITEM = boms[0].item
 BOM = boms[0].name
+DRAWING = frappe.get_doc({"doctype": "File", "file_name": "chk77-drawing-" + RUN + ".txt", "content": "CHK77 drawing", "is_private": 1}).insert().file_url
 existing = frappe.db.get_value(PRODUCT, {"linked_item": ITEM, "status": ["!=", "Obsolete"]}, "name")
 if existing:
     product = frappe.get_doc(PRODUCT, existing)
     for row in product.drawing_revisions:
         row.is_current = 0
-    product.append("drawing_revisions", {"revision": "CHK77-A", "issue_date": frappe.utils.add_days(frappe.utils.today(), -30), "is_current": 1})
+    product.append("drawing_revisions", {"revision": "CHK77-A", "issue_date": frappe.utils.add_days(frappe.utils.today(), -30), "is_current": 1, "drawing_file": DRAWING})
     product.save()
     print("INFO  using Product Master " + existing + " of " + ITEM + " (its revisions are put back by the roll-back)")
 else:
     product = frappe.get_doc({"doctype": PRODUCT, "product_name": "CHK77 " + ITEM, "product_type": "Single Component", "status": "Active", "linked_item": ITEM,
-                              "drawing_revisions": [{"revision": "CHK77-A", "issue_date": frappe.utils.add_days(frappe.utils.today(), -30), "is_current": 1}]}).insert()
+                              "drawing_revisions": [{"revision": "CHK77-A", "issue_date": frappe.utils.add_days(frappe.utils.today(), -30), "is_current": 1, "drawing_file": DRAWING}]}).insert()
 wo = frappe.get_doc({"doctype": WO, "production_item": ITEM, "bom_no": BOM, "qty": 5, "company": company, "skip_transfer": 1,
                      "planned_start_date": frappe.utils.now(), "fg_warehouse": frappe.db.get_value("Item Default", {"parent": ITEM}, "default_warehouse")
                      or frappe.db.get_value("Warehouse", {"company": company, "warehouse_name": "FG Stores", "is_group": 0}, "name")})
@@ -86,7 +87,7 @@ check(data.get("rows")[0].get("text") == "Made to drawing Rev CHK77-A · current
 product = frappe.get_doc(PRODUCT, product.name)
 for row in product.drawing_revisions:
     row.is_current = 0
-product.append("drawing_revisions", {"revision": "CHK77-B", "issue_date": frappe.utils.today(), "is_current": 1, "change_description": "Hole moved 2 mm"})
+product.append("drawing_revisions", {"revision": "CHK77-B", "issue_date": frappe.utils.today(), "is_current": 1, "change_description": "Hole moved 2 mm", "drawing_file": DRAWING})
 product.save()
 alert = frappe.db.get_value(WO, wo.name, "custom_drawing_alert") or ""
 print("INFO  Drawing Change: " + alert)

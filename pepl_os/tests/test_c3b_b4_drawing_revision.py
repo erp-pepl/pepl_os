@@ -5,7 +5,7 @@ from frappe.utils import now_datetime
 
 from pepl_os.pepl_quality import drawing
 from pepl_os.pepl_stores import stock_tree as st
-from pepl_os.tests.factories import TEST_COMPANY, make_job_card, make_work_order, make_workstation
+from pepl_os.tests.factories import TEST_COMPANY, make_file, make_job_card, make_work_order, make_workstation
 from pepl_os.tests.utils import PEPLTestCase, make_user, set_param
 
 MILL = "T-DRW MILL-01"
@@ -46,7 +46,14 @@ class TestDrawingRevision(PEPLTestCase):
 				"product_type": "Single Component",
 				"status": "Active",
 				"linked_item": self.item,
-				"drawing_revisions": [{"revision": "A", "issue_date": "2026-01-10", "is_current": 1}],
+				"drawing_revisions": [
+					{
+						"revision": "A",
+						"issue_date": "2026-01-10",
+						"is_current": 1,
+						"drawing_file": make_file("t-drw-rev-a.pdf"),
+					}
+				],
 			}
 		).insert(ignore_permissions=True)
 
@@ -56,7 +63,13 @@ class TestDrawingRevision(PEPLTestCase):
 			row.is_current = 0
 		doc.append(
 			"drawing_revisions",
-			{"revision": revision, "issue_date": "2026-11-19", "is_current": 1, "change_description": change},
+			{
+				"revision": revision,
+				"issue_date": "2026-11-19",
+				"is_current": 1,
+				"change_description": change,
+				"drawing_file": make_file(f"t-drw-rev-{revision.lower()}.pdf"),
+			},
 		)
 		doc.save(ignore_permissions=True)
 		return doc
