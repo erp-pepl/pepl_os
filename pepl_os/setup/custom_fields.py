@@ -1353,6 +1353,70 @@ CUSTOM_FIELDS["Work Order"] = [
 		"description": "Set when PEPL OS drafted this Job Order on submit of the Sales Order; cancelling the "
 		"Sales Order deletes it while it is still a draft.",
 	},
+	# C3b-B4 - drawing-revision mid-production alert
+	{
+		"fieldname": "custom_drawing_section",
+		"label": "Drawing",
+		"fieldtype": "Section Break",
+		"insert_after": "custom_auto_from_sales_order",
+		"collapsible": 1,
+	},
+	{
+		"fieldname": "custom_drawing_revision",
+		"label": "Drawing Revision",
+		"fieldtype": "Data",
+		"insert_after": "custom_drawing_section",
+		"read_only": 1,
+		"no_copy": 1,
+		"description": "The drawing revision this job is made to (the Product Master's current revision when the Job "
+		"Order was made, or what was decided after a drawing change).",
+	},
+	{
+		"fieldname": "custom_drawing_alert",
+		"label": "Drawing Change",
+		"fieldtype": "Small Text",
+		"insert_after": "custom_drawing_revision",
+		"read_only": 1,
+		"no_copy": 1,
+	},
+	{
+		"fieldname": "custom_drawing_alert_on",
+		"label": "Drawing Changed On",
+		"fieldtype": "Datetime",
+		"insert_after": "custom_drawing_alert",
+		"read_only": 1,
+		"no_copy": 1,
+	},
+	{
+		"fieldname": "custom_drawing_column",
+		"fieldtype": "Column Break",
+		"insert_after": "custom_drawing_alert_on",
+	},
+	{
+		"fieldname": "custom_drawing_decision",
+		"label": "Decision",
+		"fieldtype": "Small Text",
+		"insert_after": "custom_drawing_column",
+		"read_only": 1,
+		"no_copy": 1,
+	},
+	{
+		"fieldname": "custom_drawing_acknowledged_by",
+		"label": "Acknowledged By",
+		"fieldtype": "Link",
+		"options": "User",
+		"insert_after": "custom_drawing_decision",
+		"read_only": 1,
+		"no_copy": 1,
+	},
+	{
+		"fieldname": "custom_drawing_acknowledged_on",
+		"label": "Acknowledged On",
+		"fieldtype": "Datetime",
+		"insert_after": "custom_drawing_acknowledged_by",
+		"read_only": 1,
+		"no_copy": 1,
+	},
 ]
 
 # C3a-X1 - Job Card time logs posted by a Shift Production Entry

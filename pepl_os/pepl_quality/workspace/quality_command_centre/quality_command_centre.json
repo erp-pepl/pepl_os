@@ -1,7 +1,7 @@
 {
  "app": "pepl_os",
  "charts": [],
- "content": "[{\"id\": \"hdr\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Quality Command Centre</b></span>\", \"col\": 12}}, {\"id\": \"ncrs\", \"type\": \"custom_block\", \"data\": {\"custom_block_name\": \"Open NCRs by Severity\", \"col\": 4}}, {\"id\": \"card0\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"CAPAs Overdue for Verification\", \"col\": 4}}, {\"id\": \"card1\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Instruments Due Within 30 Days\", \"col\": 4}}, {\"id\": \"card2\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"First-Pass Yield (7 days)\", \"col\": 4}}, {\"id\": \"card3\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Customer Rejections (30 days)\", \"col\": 4}}, {\"id\": \"card4\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Cost of Quality (month)\", \"col\": 4}}, {\"id\": \"sc_hdr\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h5\\\"><b>Today's work</b></span>\", \"col\": 12}}, {\"id\": \"sc0\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"NCRs to sign or close\", \"col\": 4}}, {\"id\": \"sc1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"CAPAs in progress\", \"col\": 4}}, {\"id\": \"sc2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Awaiting verification\", \"col\": 4}}, {\"id\": \"sc3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Inspections to finish\", \"col\": 4}}, {\"id\": \"sc4\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Never calibrated\", \"col\": 4}}, {\"id\": \"sc5\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Cost of Quality\", \"col\": 4}}, {\"id\": \"sc6\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Lots offered, awaiting IC\", \"col\": 4}}, {\"id\": \"spacer\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"card_links0\", \"type\": \"card\", \"data\": {\"card_name\": \"Inspection\", \"col\": 3}}, {\"id\": \"card_links1\", \"type\": \"card\", \"data\": {\"card_name\": \"Non-Conformance\", \"col\": 3}}, {\"id\": \"card_links2\", \"type\": \"card\", \"data\": {\"card_name\": \"Instruments\", \"col\": 3}}, {\"id\": \"card_links3\", \"type\": \"card\", \"data\": {\"card_name\": \"Reports\", \"col\": 3}}]",
+ "content": "[{\"id\": \"hdr\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Quality Command Centre</b></span>\", \"col\": 12}}, {\"id\": \"ncrs\", \"type\": \"custom_block\", \"data\": {\"custom_block_name\": \"Open NCRs by Severity\", \"col\": 4}}, {\"id\": \"card0\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"CAPAs Overdue for Verification\", \"col\": 4}}, {\"id\": \"card1\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Instruments Due Within 30 Days\", \"col\": 4}}, {\"id\": \"card2\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"First-Pass Yield (7 days)\", \"col\": 4}}, {\"id\": \"card3\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Customer Rejections (30 days)\", \"col\": 4}}, {\"id\": \"card4\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Cost of Quality (month)\", \"col\": 4}}, {\"id\": \"sc_hdr\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h5\\\"><b>Today's work</b></span>\", \"col\": 12}}, {\"id\": \"sc0\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"NCRs to sign or close\", \"col\": 4}}, {\"id\": \"sc1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"CAPAs in progress\", \"col\": 4}}, {\"id\": \"sc2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Awaiting verification\", \"col\": 4}}, {\"id\": \"sc3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Inspections to finish\", \"col\": 4}}, {\"id\": \"sc4\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Never calibrated\", \"col\": 4}}, {\"id\": \"sc5\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Cost of Quality\", \"col\": 4}}, {\"id\": \"sc6\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Lots offered, awaiting IC\", \"col\": 4}}, {\"id\": \"sc7\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Job Orders with a drawing change\", \"col\": 4}}, {\"id\": \"spacer\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"card_links0\", \"type\": \"card\", \"data\": {\"card_name\": \"Inspection\", \"col\": 3}}, {\"id\": \"card_links1\", \"type\": \"card\", \"data\": {\"card_name\": \"Non-Conformance\", \"col\": 3}}, {\"id\": \"card_links2\", \"type\": \"card\", \"data\": {\"card_name\": \"Instruments\", \"col\": 3}}, {\"id\": \"card_links3\", \"type\": \"card\", \"data\": {\"card_name\": \"Reports\", \"col\": 3}}]",
  "creation": "2026-11-19 12:00:00.000000",
  "custom_blocks": [
   {
@@ -173,7 +173,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-11-19 12:30:00.000000",
+ "modified": "2026-11-19 13:00:00.000000",
  "modified_by": "Administrator",
  "module": "PEPL Quality",
  "name": "Quality Command Centre",
@@ -282,6 +282,15 @@
    "format": "",
    "color": "Grey",
    "stats_filter": ""
+  },
+  {
+   "label": "Job Orders with a drawing change",
+   "link_to": "Work Order",
+   "type": "DocType",
+   "doc_view": "List",
+   "stats_filter": "[[\"Work Order\", \"custom_drawing_alert\", \"is\", \"set\"], [\"Work Order\", \"custom_drawing_acknowledged_on\", \"is\", \"not set\"]]",
+   "format": "{} to acknowledge",
+   "color": "Red"
   }
  ],
  "title": "Quality Command Centre",

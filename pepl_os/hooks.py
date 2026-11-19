@@ -241,6 +241,10 @@ doc_events = {
 	},
 	# C2-15: a heat-tracked item's Batch carries its heat number
 	"Batch": {"validate": f"{HEAT}.validate_batch"},
+	# C3b-B4: the drawing revision a Job Order is made to; a new revision flags the open Job Orders
+	"Work Order": {"validate": "pepl_os.pepl_quality.drawing.stamp_revision"},
+	"PEPL Product Master": {"on_update": "pepl_os.pepl_quality.drawing.on_product_update"},
+	"PEPL Shift Production Entry": {"validate": "pepl_os.pepl_quality.drawing.warn_shift_entry"},
 	# C2-14: a PO closed short logs a Short letdown; re-opened, it is removed
 	"PEPL Purchase Tracker": {"on_update": f"{LETDOWN}.sync_short_letdowns"},
 	# C2-16 segregation; C3a-X9 CSM consumed by the delivery and the material gate

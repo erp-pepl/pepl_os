@@ -2,6 +2,25 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.77.0 — Cycle 3b Phase 5: drawing-revision mid-production alert (C3b-B4) – Phase 5 builds complete
+
+- Every Job Order (Work Order) records **Drawing Revision** – the item's Product Master current drawing revision when it
+  is saved (new section "Drawing" on the Job Order).
+- When a Product Master's **current drawing revision changes** (e.g. Rev B → Rev C; not the first revision ever set),
+  every open Job Order of its item (draft or submitted, not Completed / Stopped / Closed / Cancelled) made to another
+  revision is flagged: **Drawing Change** "Drawing changed from Rev B to Rev C on … (Product …): <Change Description>",
+  and the Production Notification Owner gets one High ToDo per Job Order (PRD-DRAWING-REV). Never stops the Product
+  Master.
+- Job Order panel **"Drawing"**: green "Made to drawing Rev … · current Rev …", red while a change waits; button
+  **Acknowledge Drawing Change** (Manufacturing Manager, PEPL Production Manager, Quality Manager): from now the job is
+  made to the new revision or the one it was made to, and what was checked or agreed (10+ characters) – recorded
+  (Decision, Acknowledged By / On), the flag cleared, the ToDo closed.
+- A shift entry on a Job Order with an unacknowledged drawing change shows an orange warning (not stopped).
+- Quality Command Centre shortcut "Job Orders with a drawing change".
+- 4 tests (test_c3b_b4_drawing_revision.py); Check 77 (docs/checks/check_77_c3b_b4_drawing_revision.py) – the first
+  Check that rolls back by itself at the end (frappe.db.rollback()), so nothing can be saved even if Commit is ticked.
+- docs/checks/cleanup_check74_leftovers.py: one-off removal of Check 74's records that stayed on the bench.
+
 ## 0.76.0 — Cycle 3b Phase 5: inspection-lot management (C3b-B1)
 
 - New DocType **PEPL Inspection Lot** (LOT-.YYYY.-.#####): one lot of a Sales Order line inspected by an outside agency
