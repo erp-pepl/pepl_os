@@ -2,6 +2,29 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.76.0 — Cycle 3b Phase 5: inspection-lot management (C3b-B1)
+
+- New DocType **PEPL Inspection Lot** (LOT-.YYYY.-.#####): one lot of a Sales Order line inspected by an outside agency
+  (RITES, RDSO, DGQA / AHQ, the consignee; empty agency / type taken from the order's tender). Status follows what is
+  recorded: Draft → **Lot Requested** (lot number asked for, lot number from the agency) → **Proof Scheduled** →
+  **Proof Passed / Failed** (when a proof / prototype inspection is required) → **Offered** (bulk lot: date, quantity,
+  heats) → **Inspected** (IC: accepted, rejected, IC / Inspection Note number and date, inspecting officer, IC copy)
+  or **Rejected** (nothing accepted); Cancelled with a reason. Links to the order's letters (PEPL Generated Documents:
+  lot request, proof schedule request, bulk lot offer).
+- Rules: the item must be on the order; the lots of an order line cannot exceed its ordered quantity; no proof
+  result without its date; no offer before the proof Passed (when required), above the lot size, or – for an item
+  inspected before delivery – without PEPL's own final inspection submitted and Accepted; no inspection before the
+  offer; accepted + rejected = offered; IC number and date for an accepted quantity; an inspected lot is locked.
+- A rejected quantity raises one NCR (QA-NCR-LOT, source Dispatch, linked to the lot; NCR field Inspection Lot);
+  cancelling the lot takes back an unsigned one.
+- **Dispatch gate (C3b-Q5) counts the IC:** a Delivery Note line of an order inspected by an agency (it has a lot, or
+  its tender says Inspection Required = Yes) may ship only what the order line's ICs accepted less what was already
+  delivered; the "Dispatch QC" panel shows "agency ICs accepted …, delivered …, left to ship …".
+- Panel "Inspection Lot" (the steps ✓ / ·, the order line: lots, IC accepted, delivered, and what comes next);
+  Sales Order button Create → Inspection Lot; the Item field lists only the order's items. Quality Command Centre:
+  link Inspection Lot and shortcut "Lots offered, awaiting IC"; Role Access Matrix row.
+- 5 tests (test_c3b_b1_inspection_lot.py); Check 76 (docs/checks/check_76_c3b_b1_inspection_lot.py).
+
 ## 0.75.0 — Cycle 3b Phase 4: the Quality Command Centre (C3b-CC)
 
 - Workspace **Quality Command Centre** (Quality Manager, Manufacturing Manager, PEPL CEO, System Manager) with the

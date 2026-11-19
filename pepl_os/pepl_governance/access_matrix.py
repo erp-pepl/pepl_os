@@ -67,6 +67,7 @@ MATRIX_DOCTYPES = (
 	("Quality", "PEPL Calibration Record", "Calibration Record"),
 	("Quality", "PEPL NCR", "Non-Conformance Report (NCR)"),
 	("Quality", "PEPL CAPA", "Corrective and Preventive Action (CAPA)"),
+	("Quality", "PEPL Inspection Lot", "Inspection Lot (agency inspection, IC)"),
 	("Accounts", "Payment Entry", "Payment Entry"),
 	("Accounts", "Journal Entry", "Journal Entry"),
 	("Accounts", "PEPL Company Document", "Company Documents (PAN, GST, Udyam)"),

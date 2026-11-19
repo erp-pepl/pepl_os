@@ -1,0 +1,406 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "autoname": "LOT-.YYYY.-.#####",
+ "naming_rule": "Expression (old style)",
+ "creation": "2026-11-19 12:30:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "sales_order",
+  "customer",
+  "sector",
+  "item",
+  "item_name",
+  "column_break_head",
+  "status",
+  "inspection_agency",
+  "inspection_type",
+  "so_qty",
+  "stock_uom",
+  "section_request",
+  "lot_qty",
+  "requested_on",
+  "column_break_request",
+  "lot_no",
+  "lot_request_document",
+  "section_proof",
+  "proof_required",
+  "proof_scheduled_on",
+  "proof_schedule_document",
+  "column_break_proof",
+  "proof_result",
+  "proof_remarks",
+  "section_offer",
+  "offered_on",
+  "offered_qty",
+  "batches",
+  "column_break_offer",
+  "internal_inspection",
+  "offer_document",
+  "section_ic",
+  "inspected_on",
+  "inspector",
+  "accepted_qty",
+  "rejected_qty",
+  "column_break_ic",
+  "ic_number",
+  "ic_date",
+  "ic_attachment",
+  "ncr",
+  "section_close",
+  "remarks",
+  "column_break_close",
+  "cancelled",
+  "cancel_reason"
+ ],
+ "fields": [
+  {
+   "fieldname": "sales_order",
+   "fieldtype": "Link",
+   "label": "Sales Order",
+   "options": "Sales Order",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer",
+   "fetch_from": "sales_order.customer",
+   "read_only": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "sector",
+   "fieldtype": "Data",
+   "label": "Sector",
+   "fetch_from": "sales_order.custom_sector",
+   "read_only": 1
+  },
+  {
+   "fieldname": "item",
+   "fieldtype": "Link",
+   "label": "Item",
+   "options": "Item",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "label": "Item Name",
+   "fetch_from": "item.item_name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_head",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Draft\nLot Requested\nProof Scheduled\nProof Passed\nProof Failed\nOffered\nInspected\nRejected\nCancelled",
+   "default": "Draft",
+   "read_only": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "no_copy": 1,
+   "description": "Set by the dates and results below."
+  },
+  {
+   "fieldname": "inspection_agency",
+   "fieldtype": "Data",
+   "label": "Inspection Agency",
+   "description": "e.g. RITES, RDSO, DGQA / AHQ, the consignee. Empty: from the tender's Inspection Agency."
+  },
+  {
+   "fieldname": "inspection_type",
+   "fieldtype": "Data",
+   "label": "Inspection Type"
+  },
+  {
+   "fieldname": "so_qty",
+   "fieldtype": "Float",
+   "label": "Ordered Quantity",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "stock_uom",
+   "fieldtype": "Data",
+   "label": "Unit",
+   "fetch_from": "item.stock_uom",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_request",
+   "fieldtype": "Section Break",
+   "label": "1. Lot request"
+  },
+  {
+   "fieldname": "lot_qty",
+   "fieldtype": "Float",
+   "label": "Lot Size",
+   "reqd": 1,
+   "in_list_view": 1,
+   "description": "Quantity of this lot. All lots of the order line together cannot exceed the ordered quantity."
+  },
+  {
+   "fieldname": "requested_on",
+   "fieldtype": "Date",
+   "label": "Lot Number Requested On"
+  },
+  {
+   "fieldname": "column_break_request",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "lot_no",
+   "fieldtype": "Data",
+   "label": "Lot Number (from the Agency)",
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "lot_request_document",
+   "fieldtype": "Link",
+   "label": "Lot Request Letter",
+   "options": "PEPL Generated Document"
+  },
+  {
+   "fieldname": "section_proof",
+   "fieldtype": "Section Break",
+   "label": "2. Proof (prototype) inspection"
+  },
+  {
+   "fieldname": "proof_required",
+   "fieldtype": "Check",
+   "label": "Proof Inspection Required",
+   "description": "A first lot or a new item: the agency passes a proof / prototype sample before the bulk lot is offered."
+  },
+  {
+   "fieldname": "proof_scheduled_on",
+   "fieldtype": "Date",
+   "label": "Proof Scheduled On",
+   "depends_on": "proof_required"
+  },
+  {
+   "fieldname": "proof_schedule_document",
+   "fieldtype": "Link",
+   "label": "Proof Schedule Request",
+   "options": "PEPL Generated Document",
+   "depends_on": "proof_required"
+  },
+  {
+   "fieldname": "column_break_proof",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "proof_result",
+   "fieldtype": "Select",
+   "label": "Proof Result",
+   "options": "\nPassed\nFailed",
+   "depends_on": "proof_required"
+  },
+  {
+   "fieldname": "proof_remarks",
+   "fieldtype": "Small Text",
+   "label": "Proof Remarks",
+   "depends_on": "proof_required"
+  },
+  {
+   "fieldname": "section_offer",
+   "fieldtype": "Section Break",
+   "label": "3. Bulk lot offer"
+  },
+  {
+   "fieldname": "offered_on",
+   "fieldtype": "Date",
+   "label": "Offered On"
+  },
+  {
+   "fieldname": "offered_qty",
+   "fieldtype": "Float",
+   "label": "Quantity Offered"
+  },
+  {
+   "fieldname": "batches",
+   "fieldtype": "Small Text",
+   "label": "Heats / Batches Offered"
+  },
+  {
+   "fieldname": "column_break_offer",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "internal_inspection",
+   "fieldtype": "Link",
+   "label": "PEPL Final Inspection",
+   "options": "Quality Inspection",
+   "description": "PEPL's own final inspection of the lot (needed for items inspected before delivery)."
+  },
+  {
+   "fieldname": "offer_document",
+   "fieldtype": "Link",
+   "label": "Bulk Lot Offer Letter",
+   "options": "PEPL Generated Document"
+  },
+  {
+   "fieldname": "section_ic",
+   "fieldtype": "Section Break",
+   "label": "4. Inspection by the agency"
+  },
+  {
+   "fieldname": "inspected_on",
+   "fieldtype": "Date",
+   "label": "Inspected On"
+  },
+  {
+   "fieldname": "inspector",
+   "fieldtype": "Data",
+   "label": "Inspecting Officer"
+  },
+  {
+   "fieldname": "accepted_qty",
+   "fieldtype": "Float",
+   "label": "Accepted",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "rejected_qty",
+   "fieldtype": "Float",
+   "label": "Rejected"
+  },
+  {
+   "fieldname": "column_break_ic",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "ic_number",
+   "fieldtype": "Data",
+   "label": "IC / Inspection Note Number",
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "ic_date",
+   "fieldtype": "Date",
+   "label": "IC Date"
+  },
+  {
+   "fieldname": "ic_attachment",
+   "fieldtype": "Attach",
+   "label": "IC Copy"
+  },
+  {
+   "fieldname": "ncr",
+   "fieldtype": "Link",
+   "label": "NCR (rejected quantity)",
+   "options": "PEPL NCR",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "section_close",
+   "fieldtype": "Section Break",
+   "label": "Remarks"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  },
+  {
+   "fieldname": "column_break_close",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "cancelled",
+   "fieldtype": "Check",
+   "label": "Cancelled",
+   "no_copy": 1
+  },
+  {
+   "fieldname": "cancel_reason",
+   "fieldtype": "Small Text",
+   "label": "Reason for Cancelling",
+   "depends_on": "cancelled",
+   "no_copy": 1
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-19 12:30:00.000000",
+ "modified_by": "Administrator",
+ "module": "PEPL Quality",
+ "name": "PEPL Inspection Lot",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "print": 1,
+   "export": 1,
+   "report": 1,
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "share": 1
+  },
+  {
+   "role": "Quality Manager",
+   "print": 1,
+   "export": 1,
+   "report": 1,
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "email": 1,
+   "share": 1
+  },
+  {
+   "role": "Manufacturing Manager",
+   "print": 1,
+   "export": 1,
+   "report": 1,
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "email": 1
+  },
+  {
+   "role": "Sales Manager",
+   "print": 1,
+   "export": 1,
+   "report": 1,
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "email": 1
+  },
+  {
+   "role": "Sales User",
+   "print": 1,
+   "export": 1,
+   "report": 1,
+   "read": 1
+  },
+  {
+   "role": "Stock User",
+   "print": 1,
+   "export": 1,
+   "report": 1,
+   "read": 1
+  }
+ ],
+ "search_fields": "sales_order,item,lot_no,ic_number",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "item",
+ "track_changes": 1
+}

@@ -28,6 +28,7 @@
   "delivery_note",
   "against_delivery_note",
   "sales_order",
+  "inspection_lot",
   "column_break_from",
   "work_order",
   "workstation",
@@ -205,6 +206,13 @@
    "options": "Sales Order"
   },
   {
+   "fieldname": "inspection_lot",
+   "fieldtype": "Link",
+   "label": "Inspection Lot",
+   "options": "PEPL Inspection Lot",
+   "read_only": 1
+  },
+  {
    "fieldname": "column_break_from",
    "fieldtype": "Column Break"
   },
@@ -326,7 +334,7 @@
  ],
  "index_web_pages_for_search": 0,
  "links": [],
- "modified": "2026-11-18 18:00:00.000000",
+ "modified": "2026-11-19 12:30:00.000000",
  "modified_by": "Administrator",
  "module": "PEPL Quality",
  "name": "PEPL NCR",

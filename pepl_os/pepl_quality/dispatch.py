@@ -9,6 +9,8 @@ Final inspection (QC Inspection of type Outgoing):
 The gate (Delivery Note submit, not on returns), "Dispatch Gate" in System Parameters:
   * a line whose final inspection is not submitted or not Accepted, and
   * a line whose item has an open NCR (Open / Under Review; when the NCR names a batch, only that batch)
+  * (C3b-B1) a line of an order inspected by an outside agency that would ship more than the agency's ICs of that
+    order line accepted (less what was already delivered)
   are gaps. Advisory = warning; Soft Block = a reason is needed (rule QA-DISPATCH, Override Log); Hard Block = the
   delivery is refused. A rejected final inspection raises its NCR by itself (C3b-Q3), so it also blocks until closed.
 """
@@ -149,6 +151,9 @@ def delivery_gaps(doc):
 			shown = ", ".join(f"{n.name} ({_(n.severity)})" for n in ncrs[:3])
 			more = _(" and {0} more").format(len(ncrs) - 3) if len(ncrs) > 3 else ""
 			gaps.append((row, _("open NCR {0}{1}").format(shown, more)))
+	from pepl_os.pepl_quality import inspection_lot  # C3b-B1 (imports this module)
+
+	gaps += inspection_lot.ic_gaps(doc)
 	return gaps
 
 
@@ -223,6 +228,24 @@ def get_dispatch_panel(delivery_note):
 			rows.append(
 				{"text": _("{0}: open {1} NCR {2}").format(label, _(n.severity), n.name), "colour": "red"}
 			)
+	from pepl_os.pepl_quality import inspection_lot  # C3b-B1
+
+	short = {r.name for r, _what in inspection_lot.ic_gaps(doc)}
+	for row in doc.items:
+		so = row.get("against_sales_order")
+		if not so or not inspection_lot.needs_agency_inspection(so, row.item_code):
+			continue
+		label = _("Line {0} {1}").format(row.idx, row.item_code)
+		cleared = inspection_lot.ic_accepted(so, row.item_code)
+		shipped = inspection_lot.delivered_before(so, row.item_code, doc.name)
+		rows.append(
+			{
+				"text": _("{0}: agency ICs accepted {1}, delivered {2}, left to ship {3}").format(
+					label, qty_text(cleared), qty_text(shipped), qty_text(max(cleared - shipped, 0))
+				),
+				"colour": "red" if row.name in short else "green",
+			}
+		)
 	if not rows:
 		return None
 	if doc.docstatus == 0:

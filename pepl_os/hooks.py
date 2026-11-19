@@ -52,7 +52,11 @@ doctype_js = {
 	"Stock Entry": "public/js/stock_entry.js",
 	# C2-16: "CSM Balance" button once the order holds customer-supplied material
 	# C3a-X11: LD terms and today's LD exposure on a submitted order
-	"Sales Order": ["public/js/csm_sales_order.js", "public/js/sales_order_ld.js"],
+	"Sales Order": [
+		"public/js/csm_sales_order.js",
+		"public/js/sales_order_ld.js",
+		"public/js/sales_order_lots.js",
+	],
 	# C2-17: payment-priority panel ("Rank #4 this week · MSME due in 6 days")
 	"Purchase Invoice": "public/js/purchase_invoice.js",
 	# C3a-P3: job work outstanding on a job worker
