@@ -1,6 +1,8 @@
 # PEPL OS v0.70.0 - Check 70: C3b-P3 the CAPA panel - status, age and owner, target (days left / due today /
 # overdue), the NCRs, containment, five-why completeness (next why), each open action with who and when (overdue in
 # red), what still stops closing, and how closing compared with the target.
+# Rev 2 (19 Nov 2026): sets "CAPA: Verification After (Days)" to 0 for the run (since 0.73.0 a CAPA otherwise
+# waits for its effectiveness check instead of closing).
 # Runs on 0.70.0 or later. System Console, Type = Python. Leave "Commit" UNTICKED: everything below is undone at the end.
 # Afterwards look at a CAPA in the browser (see chat).
 VERSION = "0.70.0"
@@ -28,6 +30,10 @@ RUN = frappe.utils.now().replace("-", "").replace(":", "").replace(" ", "").repl
 print("INFO  run " + RUN + " (all test names end with it)")
 today = frappe.utils.today()
 WHYS = int(frappe.db.get_single_value("PEPL System Parameters", "custom_capa_whys_required") or 5)
+if frappe.get_meta("PEPL System Parameters").get_field("custom_capa_verification_days"):  # rev 2: B3 check off for the run
+    rev2 = frappe.get_doc("PEPL System Parameters")
+    rev2.set("custom_capa_verification_days", 0)
+    rev2.save()
 print("INFO  CAPA: Whys Required on this site = " + str(WHYS))
 
 # ---------------- 1. installed ----------------

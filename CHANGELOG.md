@@ -2,6 +2,25 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.78.0 — Cycle 3b Phase 6: testing and handover (C3b-T1)
+
+- **Cycle 3b health check** (PEPL System Health → "Download Cycle 3b health check", System Manager; read-only Excel):
+  1 Settings and people (what will not work as it is, the Quality owner, settings at their default for information),
+  2 Inspection (stale drafts, receipt / delivery lines without their inspection, inspected items without a plan,
+  rejected inspections without an NCR), 3 Instruments (overdue, never calibrated), 4 NCR and CAPA (open > 30 days,
+  Critical without a CAPA, costed disposition without a cost, CAPA past target, effectiveness check overdue), 5 Lots
+  and dispatch (offered > 15 days without an IC, delivered beyond the ICs), 6 Drawing changes not acknowledged after
+  2 days, 7 Scheduled jobs, 8 Usage (information).
+- **Check 78** end to end: two rejected incoming lots → two Major NCRs → one CAPA (repeat Major) → Awaiting
+  Verification → Effective → closed; NCRs dispositioned, costed, signed, closed; a rejected final inspection holds the
+  shafts until its NCR is closed; the Command Centre and the Cost of Quality follow. Rolls back by itself.
+- **Check ALL (Cycle 3b)**: `docs/checks/check_all_c3b.py` – Checks 60 and 63 – 78 as a background job, results in a
+  Note; `build_check_all.py` now builds either cycle (3a output unchanged). Check 63's indentation is spaces now (the
+  builder refuses tabs); Check 65 rev 3 and Check 70 rev 2 set "CAPA: Verification After (Days)" to 0 for their run.
+- **UAT set-up** `docs/checks/setup_c3b_uat.py` (demo only, Commit ticked) and the guides: `docs/cycle3b_handover.md`,
+  `docs/cycle3b_quality_manager_uat.md`, `docs/cycle3b_manuals_annex.md`, `docs/cycle3b_pepl_inputs.md`.
+- 5 tests (test_c3b_t1_health_check.py).
+
 ## 0.77.1 — Fix to C3b-B4 tests: a drawing revision needs its Drawing File (CI #84)
 
 - pepl_sales makes Drawing File mandatory on every PEPL Product Drawing Revision; the B4 tests made revisions without

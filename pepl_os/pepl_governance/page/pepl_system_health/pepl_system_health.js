@@ -27,6 +27,13 @@ frappe.pages["pepl-system-health"].on_page_load = function (wrapper) {
 				"_blank"
 			);
 		});
+		// C3b-T1: is the Quality chain set up and doing its job on live records?
+		page.add_inner_button(__("Download Cycle 3b health check"), () => {
+			window.open(
+				"/api/method/pepl_os.pepl_quality.health_check.download_health_check?since=2026-07-01",
+				"_blank"
+			);
+		});
 	}
 	render(page);
 };

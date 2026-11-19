@@ -13,16 +13,42 @@ import json
 import pathlib
 import sys
 
-# Usage (WSL, from the app folder):  python3 docs/checks/build_check_all.py . docs/checks/check_all_c3a.py
+# Usage (WSL, from the app folder):
+#   python3 docs/checks/build_check_all.py . docs/checks/check_all_c3a.py          (Cycle 3a, Checks 23-49)
+#   python3 docs/checks/build_check_all.py . docs/checks/check_all_c3b.py c3b      (Cycle 3b, Checks 60, 63-78)
 
 repo = pathlib.Path(sys.argv[1])
 out = pathlib.Path(sys.argv[2])
-checks = sorted(repo.glob("docs/checks/check_[2-4][0-9]_c3a_*.py"))
-checks = [c for c in checks if 23 <= int(c.name.split("_")[1]) <= 49]
-assert len(checks) == 27, len(checks)
+CYCLE = sys.argv[3] if len(sys.argv) > 3 else "c3a"
+CYCLES = {
+	"c3a": {
+		"low": 23,
+		"high": 49,
+		"count": 27,
+		"name": "Cycle 3a",
+		"head": "# PEPL OS v0.51.0 - Check ALL rev 4 (Cycle 3a): runs Checks 23 to 49 (unchanged) in the background and "
+		"writes the",
+		"default": "# Choose which checks to run (both included). Default: 29 to 49 (23 to 28 already passed on the demo "
+		"site).\nFIRST = 29\nLAST = 49\n",
+	},
+	"c3b": {
+		"low": 60,
+		"high": 78,
+		"count": 17,
+		"name": "Cycle 3b",
+		"head": "# PEPL OS v0.78.0 - Check ALL rev 1 (Cycle 3b): runs Checks 60 and 63 to 78 (unchanged) in the background "
+		"and writes the",
+		"default": "# Choose which checks to run (both included). Default: 60 to 78 (61 and 62 are CR1 / CR2, not run).\n"
+		"FIRST = 60\nLAST = 78\n",
+	},
+}
+C = CYCLES[CYCLE]
+checks = sorted(repo.glob(f"docs/checks/check_[0-9][0-9]_{CYCLE}_*.py"))
+checks = [c for c in checks if C["low"] <= int(c.name.split("_")[1]) <= C["high"]]
+assert len(checks) == C["count"], len(checks)
 
 # ------------------------------------------------------------------ inner script (runs in the background job)
-inner_head = """# PEPL OS - Check ALL (Cycle 3a), background part. Started from check_all_c3a.py; do not run this by hand.
+inner_head = """# PEPL OS - Check ALL (CYCLE_NAME), background part. Started from check_all_CYCLE_CODE.py; do not run this by hand.
 FIRST = int("ALL_FIRST_VALUE")
 LAST = int("ALL_LAST_VALUE")
 ALL_TITLE = "ALL_TITLE_VALUE"
@@ -62,7 +88,7 @@ all_note("RUNNING")
 
 """
 
-parts = [inner_head]
+parts = [inner_head.replace("CYCLE_NAME", C["name"]).replace("CYCLE_CODE", CYCLE)]
 for path in checks:
 	number = int(path.name.split("_")[1])
 	title = path.name[:-3]
@@ -93,7 +119,8 @@ inner = "".join(parts)
 
 # ------------------------------------------------------------------ outer script (pasted into the System Console)
 outer = [
-	"""# PEPL OS v0.51.0 - Check ALL rev 4 (Cycle 3a): runs Checks 23 to 49 (unchanged) in the background and writes the
+	C["head"]
+	+ """
 # results to a Note. System Console, Type = Python. Leave "Commit" UNTICKED.
 #
 # rev 4: the job is packed with json.dumps (frappe.as_json is not offered in the System Console).
@@ -104,10 +131,9 @@ outer = [
 # Each check is undone (rollback) as soon as it has run, so every check starts from the untouched site, exactly
 # as when it is run on its own. The only thing saved is the result Note.
 #
-# Choose which checks to run (both included). Default: 29 to 49 (23 to 28 already passed on the demo site).
-FIRST = 29
-LAST = 49
-
+"""
+	+ C["default"]
+	+ """
 ALL_TITLE = "PEPL Check ALL " + frappe.utils.now()[:19]
 INNER_LINES = [
 """
@@ -115,8 +141,8 @@ INNER_LINES = [
 for line in inner.split("\n"):
 	outer.append("    " + json.dumps(line) + ",\n")
 outer.append("""]
-if FIRST < 23 or LAST > 49 or FIRST > LAST:
-    print("FIRST and LAST must be between 23 and 49, FIRST not after LAST. Nothing was queued.")
+if FIRST < LOW_VALUE or LAST > HIGH_VALUE or FIRST > LAST:
+    print("FIRST and LAST must be between LOW_VALUE and HIGH_VALUE, FIRST not after LAST. Nothing was queued.")
 else:
     inner = "\\n".join(INNER_LINES)
     inner = inner.replace("ALL_FIRST_VALUE", str(FIRST), 1).replace("ALL_LAST_VALUE", str(LAST), 1).replace("ALL_TITLE_VALUE", ALL_TITLE, 1)
@@ -133,5 +159,6 @@ else:
     print("Its first lines say  Status: RUNNING - Check NN done  while it runs and  Status: FINISHED  at the end.")
     print("If no Note with this title appears within 3 minutes, the background workers are not running: tell me.")
 """)
-out.write_text("".join(outer), encoding="utf-8")
+text = "".join(outer).replace("LOW_VALUE", str(C["low"])).replace("HIGH_VALUE", str(C["high"]))
+out.write_text(text, encoding="utf-8")
 print(out, out.stat().st_size, "bytes,", len(checks), "checks")

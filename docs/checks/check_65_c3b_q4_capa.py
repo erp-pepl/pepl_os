@@ -3,6 +3,8 @@
 # closes only with the five-why, the root cause, a Corrective Action and every action done.
 # Rev 2 (18 Nov 2026): the "old" Major NCR is dated 150 days back. Rev 1 dated it 120 days back, which is exactly 90 days
 # before the 30-day-old NCR - inside the window, as the rule says - so the check, not the app, was wrong.
+# Rev 3 (19 Nov 2026): sets "CAPA: Verification After (Days)" to 0 for the run - since 0.73.0 (C3b-B3) a CAPA
+# otherwise waits for its effectiveness check instead of closing.
 # Runs on 0.65.0 or later. System Console, Type = Python. Leave "Commit" UNTICKED: everything below, including the
 # System Parameters changes it makes, is undone at the end. Afterwards look at the screens in the browser (see chat).
 VERSION = "0.65.0"
@@ -74,7 +76,7 @@ check(bool(frappe.get_meta(PARAMS).get_field("custom_capa_repeat_count")),
 
 # ---------------- 2. settings for this run ----------------
 values = {"enable_operational_todos": 1, "custom_capa_repeat_count": 2, "custom_capa_repeat_window_days": 90, "custom_capa_whys_required": 5,
-          "custom_capa_target_days": 30}
+          "custom_capa_target_days": 30, "custom_capa_verification_days": 0}  # rev 3: closing closes at once (B3 check off)
 if not frappe.db.get_single_value(PARAMS, "custom_quality_notification_owner"):
     values["custom_quality_notification_owner"] = "Administrator"
 set_params(values)
