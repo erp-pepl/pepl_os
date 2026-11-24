@@ -173,6 +173,23 @@ class TestProfileLock(PEPLTestCase):
 		self.assertIn(ap.STOCK_VIEWER, self._have())
 		self.assertFalse(frappe.get_doc("Role Profile", self.PROFILE).is_locked)
 
+	def test_new_profile_with_a_lock_left_by_a_failed_migrate_is_created(self):
+		# 0.79.2 regression: a failed migrate rolled the insert back but left the profile's lock file on disk.
+		name = "PEPL Test CR3 Locked New"
+		stale = frappe.get_doc({"doctype": "Role Profile", "role_profile": name})
+		stale.name = name
+		stale.lock()
+		try:
+			roles.save_profile(
+				frappe.get_doc(
+					{"doctype": "Role Profile", "role_profile": name, "roles": [{"role": "Stock User"}]}
+				)
+			)
+			self.assertTrue(frappe.db.exists("Role Profile", name))
+			self.assertFalse(frappe.get_doc("Role Profile", name).is_locked)
+		finally:
+			stale.unlock()
+
 	def test_users_of_the_profile_follow_at_once(self):
 		field = (
 			frappe.get_all(

@@ -2,6 +2,16 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.79.2 — Fix to CR3: a lock file left by the failed migrate stopped the next one (bench, 24 Nov 2026)
+
+- The failed 0.79.0 migrate had inserted the new Role Profile PEPL Stores Manager (Frappe locks a saved profile with a
+  lock file until a worker updates its users) and was then rolled back: the profile was gone, its lock file stayed
+  (Frappe keeps it 3 hours). The 0.79.1 migrate inserted it again and was refused with DocumentLockedError, because
+  `save_profile` released locks only on profiles that already existed and took a profile built from a dict for an
+  existing one.
+- `roles.save_profile` now names the profile first, decides new / existing from the database, and releases any lock
+  before and after saving, for both. 1 regression test (TestProfileLock). Check 79 rev 3 needs 0.79.2.
+
 ## 0.79.1 — Fix to CR3: migrate stopped with DocumentLockedError on a Role Profile (bench, 24 Nov 2026)
 
 - Saving a Role Profile makes Frappe queue the update of its users and lock the profile until a background worker has

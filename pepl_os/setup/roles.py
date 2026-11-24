@@ -138,15 +138,18 @@ def ensure_roles():
 def save_profile(profile):
 	"""Save (or insert) a Role Profile and bring its users' roles up to date now.
 
-	Frappe's Role Profile.on_update queues the update of its users and locks the profile until a background worker
-	has run that job. A second save of the same profile in one migrate then fails with DocumentLockedError
-	(bench, 24 Nov 2026: the v0_79 patch took Stock User out of PEPL Quality Manager, then ensure_role_profiles added
-	PEPL Stock Viewer to it). So a lock left by such a queued update is released first, and the users are updated
-	here at once; the queued job, when a worker runs it, only repeats that (harmless).
+	Frappe's Role Profile.on_update queues the update of its users and locks the profile (a lock file) until a
+	background worker has run that job. Two cases stopped a migrate with DocumentLockedError (bench, 24 Nov 2026):
+	* a second save of the same profile in one migrate (the v0_79 patch took Stock User out of PEPL Quality Manager,
+	  then ensure_role_profiles added PEPL Stock Viewer) - 0.79.1;
+	* a lock file left by a migrate that failed: the new profile's insert was rolled back but its lock file stayed
+	  on disk (Frappe keeps it 3 hours), so inserting it again was refused - 0.79.2.
+	So any lock is released before and after, new or existing, and the users are updated here at once; the queued
+	job, when a worker runs it, only repeats that (harmless).
 	"""
-	is_new = profile.is_new()
-	if not is_new:
-		profile.unlock()
+	profile.name = profile.name or profile.role_profile
+	is_new = not frappe.db.exists("Role Profile", profile.name)
+	profile.unlock()
 	profile.flags.ignore_permissions = True
 	if is_new:
 		profile.insert()
