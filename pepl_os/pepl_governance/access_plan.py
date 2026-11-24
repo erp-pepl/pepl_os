@@ -219,6 +219,7 @@ def set_right(doctype, role, permlevel, if_owner, ptype, value):
 		return False
 	doc = frappe.get_doc("Custom DocPerm", name)
 	doc.set(ptype, value)
+	doc.flags.ignore_links = True  # a rule may name a role that no longer exists on the site
 	doc.save(ignore_permissions=True)  # leaves a Permission Log, like Role Permission Manager
 	return True
 
@@ -428,6 +429,9 @@ def ensure_report_roles():
 			own = frappe.get_all("Has Role", filters={"parent": report, "parenttype": "Report"}, pluck="role")
 			if not own:
 				continue  # a report without roles is open to everyone; a Custom Role would close it
+			# Only roles that exist: some PEPL reports list "PEPL Production Manager", a profile name, not a role
+			# (it never matched anyone). Copying it made the insert fail (bench, 24 Nov 2026).
+			own = [r for r in own if frappe.db.exists("Role", r)]
 			doc = frappe.new_doc("Custom Role")
 			doc.report = report
 			doc.ref_doctype = frappe.db.get_value("Report", report, "ref_doctype")
@@ -440,12 +444,16 @@ def ensure_report_roles():
 		for role in missing:
 			doc.append("roles", {"role": role})
 		doc.flags.ignore_permissions = True
+		doc.flags.ignore_links = True  # a row added by hand may name a role since removed
 		doc.save() if name else doc.insert()
 		changed.append(report)
 	return changed
 
 
 def ensure_workspace_roles():
+	"""Add the new roles to the PEPL command centres. The role rows are inserted directly; the workspace itself is not
+	saved: in developer mode Frappe would write a saved standard workspace back into the app's files, and its link
+	check would refuse "PEPL Production Manager" (a profile name, not a role) listed on the Production Command Centre."""
 	changed = []
 	for workspace, roles in WORKSPACE_ROLES.items():
 		if not frappe.db.exists("Workspace", workspace):
@@ -455,11 +463,15 @@ def ensure_workspace_roles():
 		missing = [r for r in roles if r not in have and frappe.db.exists("Role", r)]
 		if not missing:
 			continue
+		idx = len(doc.roles)
 		for role in missing:
-			doc.append("roles", {"role": role})
-		doc.flags.ignore_permissions = True
-		doc.save()
+			idx += 1
+			row = doc.append("roles", {"role": role})
+			row.idx = idx
+			row.db_insert()
 		changed.append(workspace)
+	if changed:
+		frappe.clear_cache()
 	return changed
 
 

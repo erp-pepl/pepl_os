@@ -2,6 +2,18 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.79.3 — Fix to CR3: a report role that is not a role stopped the migrate (bench, 24 Nov 2026)
+
+- Seven Production reports and the Production Command Centre list "PEPL Production Manager" among their roles; it is
+  a Role Profile name, not a role (it never opened anything for anyone). CR3 copies a report's roles into a Custom
+  Role before adding the new roles, and Frappe refused the copy: "Could not find Row #4: Role: PEPL Production
+  Manager" (LinkValidationError).
+- Only roles that exist are copied into a Custom Role, and no permission rule or Custom Role that CR3 changes is
+  stopped any more by a role that does not exist on the site. The command centres get the new roles as role rows
+  only: the workspace is no longer saved (in developer mode Frappe would write it back into the app's files, and its
+  link check refused the same "PEPL Production Manager"). 2 regression tests. Check 79
+  rev 4 needs 0.79.3.
+
 ## 0.79.2 — Fix to CR3: a lock file left by the failed migrate stopped the next one (bench, 24 Nov 2026)
 
 - The failed 0.79.0 migrate had inserted the new Role Profile PEPL Stores Manager (Frappe locks a saved profile with a

@@ -371,6 +371,33 @@ class TestReportsAndSetup(PEPLTestCase):
 			self.assertIn("Stock User", have)  # the report's own roles stay
 			self.assertIn(ap.STOCK_VIEWER, have)
 
+	def test_report_listing_a_role_that_does_not_exist_gets_its_custom_role(self):
+		# 0.79.3 regression: PEPL Bottleneck lists "PEPL Production Manager" (a profile name, not a role); copying
+		# it into the Custom Role made the insert fail (LinkValidationError, bench 24 Nov 2026).
+		if not frappe.db.exists("Report", "PEPL Bottleneck"):
+			return
+		self.assertFalse(frappe.db.exists("Role", "PEPL Production Manager"))
+		name = frappe.db.get_value("Custom Role", {"report": "PEPL Bottleneck"})
+		self.assertTrue(name)
+		have = set(
+			frappe.get_all("Has Role", filters={"parent": name, "parenttype": "Custom Role"}, pluck="role")
+		)
+		self.assertIn(ap.OPS_VIEWER, have)
+		self.assertIn("Manufacturing Manager", have)
+		self.assertNotIn("PEPL Production Manager", have)
+
+	def test_command_centres_open_for_the_new_roles(self):
+		for workspace, wanted in ap.WORKSPACE_ROLES.items():
+			if not frappe.db.exists("Workspace", workspace):
+				continue
+			have = set(
+				frappe.get_all(
+					"Has Role", filters={"parent": workspace, "parenttype": "Workspace"}, pluck="role"
+				)
+			)
+			for role in wanted:
+				self.assertIn(role, have, f"{workspace} / {role}")
+
 	def test_every_check_79_example_holds(self):
 		results = ap.example_results()
 		self.assertGreaterEqual(len(results), 20)
