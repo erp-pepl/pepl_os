@@ -931,6 +931,75 @@ ACCOUNTS_GST_FIELDS = _chain(
 
 CUSTOM_FIELDS[SYSTEM_PARAMETERS] += ACCOUNTS_GST_FIELDS
 
+# CR3 - PEPL's access plan (Access Planning Pack, 24 Nov 2026): who cancels, who makes BOMs, who exports.
+ACCESS_FIELDS = _chain(
+	[
+		{"fieldname": "custom_access_tab", "label": "Access", "fieldtype": "Tab Break"},
+		{
+			"fieldname": "custom_access_rules_section",
+			"label": "Who May Cancel, Make BOMs and Export",
+			"fieldtype": "Section Break",
+			"description": "Re-applied on every deploy: a right given by hand in Role Permission Manager against "
+			"these rules is taken away again. Switching a rule off stops that; it does not give rights back.",
+		},
+		{
+			"fieldname": "custom_cancel_only_by_hod",
+			"label": "Cancel Only by the Department Head",
+			"fieldtype": "Check",
+			"default": "1",
+			"description": "Submitted records (orders, receipts, issues, invoices, Job Orders, inspections …) are "
+			"cancelled only by the head of their department (Purchase / Stores / Production / Quality / Sales / "
+			"Accounts Manager role) and the System Manager.",
+		},
+		{
+			"fieldname": "custom_bom_by_production_manager_only",
+			"label": "BOMs Made Only by the Production Manager",
+			"fieldtype": "Check",
+			"default": "1",
+			"description": "The Foreman (Manufacturing User) opens BOMs but cannot create, change, submit or cancel "
+			"them.",
+		},
+		{
+			"fieldname": "custom_restrict_export_to_ceo",
+			"label": "Export to Excel Only by the CEO",
+			"fieldtype": "Check",
+			"default": "1",
+			"description": "Only the PEPL CEO (and the System Manager) can export lists and reports. Blank import "
+			"templates still download. Tender data: only the tender users (CR2).",
+		},
+		{
+			"fieldname": "custom_export_also_allowed_roles",
+			"label": "Roles That May Also Export",
+			"fieldtype": "Small Text",
+			"description": "One role per line, e.g. Accounts Manager. After adding a role here, give it Export in "
+			"Role Permission Manager where it needs it.",
+		},
+		{
+			"fieldname": "custom_cancellation_summary_section",
+			"label": "Cancellation Summary",
+			"fieldtype": "Section Break",
+		},
+		{
+			"fieldname": "custom_cancellation_summary",
+			"label": "Cancellation Summary E-mail",
+			"fieldtype": "Select",
+			"options": "Daily\nWeekly\nOff",
+			"default": "Daily",
+			"description": "Daily: each morning, the records cancelled the day before. Weekly: each Monday, the week "
+			"before. Nothing is sent when nothing was cancelled.",
+		},
+		{
+			"fieldname": "custom_cancellation_summary_to",
+			"label": "Cancellation Summary To",
+			"fieldtype": "Small Text",
+			"description": "One e-mail address per line. Empty = every login with the PEPL CEO role.",
+		},
+	],
+	after="custom_historic_booking_before",  # after the whole Accounts & GST tab
+)
+
+CUSTOM_FIELDS[SYSTEM_PARAMETERS] += ACCESS_FIELDS
+
 # C3b-Q1 - QC Inspection (ERPNext Quality Inspection): made with the receipt; its supplier.
 CUSTOM_FIELDS["Quality Inspection"] = [
 	{

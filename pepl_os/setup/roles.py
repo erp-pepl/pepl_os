@@ -16,6 +16,11 @@ PEPL_ROLES = (
 	"PEPL Kiosk",  # C3a-B1: the shop-floor kiosk device (web pages only, no Desk)
 	# CR2: given by pepl_os to exactly the users in site_config.json pepl_tender_access_users (never in a profile)
 	"PEPL Tender Access",
+	# CR3 (PEPL's access plan, 24 Nov 2026): rights in pepl_os.pepl_governance.access_plan.VIEW_GRANTS
+	"PEPL Stock Viewer",  # stock, receipts, deliveries: view only (Quality, the Production & Quality Viewer)
+	"PEPL Quality Executive",  # inspects and raises NCRs; never signs off, closes or cancels
+	"PEPL Production Quality Viewer",  # production and quality records: view only
+	"PEPL Sales Invoicing",  # raises Sales Invoices without the rest of Accounts (Decision 11)
 )
 NO_DESK_ROLES = ("PEPL Kiosk",)
 ROLE_HOME_PAGES = {"PEPL Kiosk": "kiosk"}  # C3a-B1: the page a kiosk login opens
@@ -34,20 +39,28 @@ ROLE_HOME_PAGES = {"PEPL Kiosk": "kiosk"}  # C3a-B1: the page a kiosk login open
 #   Engineering *            product master, drawings, vendor approval (pepl_sales)
 ROLE_PROFILES = {
 	# Cycle 2 onwards
+	# CR3 Decision 1: new Items only by the holders of "PEPL Item Master" (Item Manager left this profile).
 	"PEPL Purchase Manager": (
 		"Purchase Manager",
 		"Purchase User",
 		"Purchase Master Manager",
-		"Item Manager",
 		"Stock User",
 	),
 	"PEPL Stores": ("Stock User", "PEPL Weighment"),
+	# CR3 Decision 3: the Stores HOD - stock correction after a count (Stock Reconciliation), cycle count and
+	# reorder review approval, cancels stores records (Decision 4).
+	"PEPL Stores Manager": ("Stock Manager", "Stock User", "PEPL Weighment"),
 	"PEPL Production Manager": ("Manufacturing Manager", "Manufacturing User", "Stock User"),
 	"PEPL Foreman": ("Manufacturing User",),
 	# C3a-B1: the login of a kiosk tablet beside the machines (operators sign in on it with code + PIN)
 	"PEPL Kiosk": ("PEPL Kiosk",),
-	"PEPL Quality Manager": ("Quality Manager", "Stock User"),
+	# CR3 Decision 8: Quality sees stock but does not post it (Stock User left this profile).
+	"PEPL Quality Manager": ("Quality Manager", "PEPL Stock Viewer"),
+	"PEPL Quality Executive": ("PEPL Quality Executive", "PEPL Stock Viewer"),
 	"PEPL Accounts": ("Accounts Manager", "Accounts User"),
+	# CR3 Decision 4: accounts staff. Books bills, invoices, payments and journals; the Accounts HOD (PEPL Accounts)
+	# cancels them.
+	"PEPL Accountant": ("Accounts User",),
 	# View-everything access for PEPL CEO is granted by pepl_os.setup.permissions.grant_ceo_view.
 	# CR2: the CEO no longer sees tenders (only the Tender Access users do)
 	"PEPL CEO": ("PEPL CEO",),
@@ -59,7 +72,16 @@ ROLE_PROFILES = {
 	"PEPL Sales Executive": ("Sales User",),
 	"PEPL Tender Only": ("PEPL Tender Manager", "Sales User"),
 	"PEPL Engineering": ("Engineering Manager", "Engineering User"),
+	# CR3: view only, for people who follow production and quality without working on it.
+	"PEPL Production & Quality Viewer": ("PEPL Production Quality Viewer", "PEPL Stock Viewer"),
+	# CR3 add-on profiles: given on top of a person's job profile, for one named right PEPL gave to named people.
+	"PEPL Item Master": ("Item Manager",),  # Decision 1: makes new Items (and Warehouses, Item Groups, UOMs)
+	"PEPL Supplier Master": ("Purchase Master Manager",),  # Decision 2: adds Suppliers and buying prices
+	"PEPL Sales Invoicing": ("PEPL Sales Invoicing",),  # Decision 11: raises Sales Invoices
 }
+
+# Add-on profiles are never a person's only profile (the Access Planning Pack lists them separately).
+ADD_ON_PROFILES = ("PEPL Item Master", "PEPL Supplier Master", "PEPL Sales Invoicing")
 
 # One-time corrections to profiles already seeded on a site (applied by patch,
 # never on every migrate, so a role PEPL adds back by hand stays).
@@ -74,6 +96,11 @@ PROFILE_CORRECTIONS_V0_62 = {
 	"PEPL CEO": ("PEPL Tender Viewer",),
 	"PEPL Sales & Tender Manager": ("PEPL Tender Manager", "PEPL Tender Executive", "PEPL Tender Viewer"),
 	"PEPL Sales & Tender Executive": ("PEPL Tender Manager", "PEPL Tender Executive", "PEPL Tender Viewer"),
+}
+# CR3 (0.79.0): Decision 1 - Items only through PEPL Item Master; Decision 8 - Quality views stock, Stores posts it.
+PROFILE_CORRECTIONS_V0_79 = {
+	"PEPL Purchase Manager": ("Item Manager",),
+	"PEPL Quality Manager": ("Stock User",),
 }
 PROFILE_RENAMES_V0_62 = {
 	"PEPL Sales & Tender Manager": "PEPL Sales Manager",

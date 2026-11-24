@@ -10,6 +10,10 @@ the Quality Manager's login (Role Profile **PEPL Quality Manager**) and a CEO lo
 **UAT-VC-01** (calibrated 10 days ago) and **UAT-VC-02** (overdue), the customer **UAT QC Railway** with a submitted
 order for 30 UAT-QC-SHAFT, and sets the Quality Notification Owner to the Quality Manager.
 
+**Since 0.79.0 (CR3, PEPL Decision 8):** the Quality Manager sees stock but does not post it. Receipts and deliveries
+marked **Stores** are made by a login with the PEPL Stores profile (or by the consultant); the Quality Manager does
+everything else.
+
 ## A. Settings
 
 | # | Do this | You should see | Pass / Fail |
@@ -22,11 +26,11 @@ order for 30 UAT-QC-SHAFT, and sets the Quality Notification Owner to the Qualit
 
 | # | Do this | You should see | Pass / Fail |
 | --- | --- | --- | --- |
-| B1 | Purchase Receipt from UAT QC Supplier, 20 UAT-QC-PIN into Bought-Out Stores, Save | the Incoming QC panel: one draft QC Inspection for the line | |
+| B1 | **Stores (or the consultant):** Purchase Receipt from UAT QC Supplier, 20 UAT-QC-PIN into Bought-Out Stores, Save | the Incoming QC panel: one draft QC Inspection for the line | |
 | B2 | Open the inspection, type 10.0 and 10.05, Instrument UAT-VC-01, Save | the line green "in tolerance", the gauge "calibrated until …", "Result on submit: Accepted" | |
 | B3 | Change the instrument to UAT-VC-02 and Submit | refused: UAT-VC-02 is overdue (Calibration Gate) | |
-| B4 | Back to UAT-VC-01, Submit; Submit the receipt | both go through | |
-| B5 | A second receipt of 10; reading 10.4; Submit the inspection | Rejected; an **NCR** is raised (Major, Incoming, the supplier and receipt) and you get its ToDo | |
+| B4 | Back to UAT-VC-01, Submit; **Stores** submits the receipt | both go through | |
+| B5 | **Stores:** a second receipt of 10; you: reading 10.4; Submit the inspection | Rejected; an **NCR** is raised (Major, Incoming, the supplier and receipt) and you get its ToDo | |
 
 ## C. Instruments
 
@@ -65,10 +69,10 @@ order for 30 UAT-QC-SHAFT, and sets the Quality Notification Owner to the Qualit
 
 | # | Do this | You should see | Pass / Fail |
 | --- | --- | --- | --- |
-| G1 | Delivery Note for 5 UAT-QC-SHAFT to UAT QC Railway, Save | Dispatch QC: a draft final inspection "to be inspected" | |
-| G2 | Inspect 20.6, Submit the inspection; Submit the delivery | Rejected → NCR (Dispatch); the delivery asks for a reason (Soft Block) | |
-| G3 | New delivery of 5; inspect 20.0; Submit | still held: the shaft's NCR is open | |
-| G4 | Close that NCR (disposition, cost, signatures), Submit the delivery | it goes | |
+| G1 | **Stores:** Delivery Note for 5 UAT-QC-SHAFT to UAT QC Railway, Save | Dispatch QC: a draft final inspection "to be inspected" | |
+| G2 | Inspect 20.6, Submit the inspection; **Stores** submits the delivery | Rejected → NCR (Dispatch); the delivery asks for a reason (Soft Block) | |
+| G3 | **Stores:** new delivery of 5; you: inspect 20.0; Submit | still held: the shaft's NCR is open | |
+| G4 | Close that NCR (disposition, cost, signatures); **Stores** submits the delivery | it goes | |
 
 ## H. Inspection lot (agency)
 
@@ -77,7 +81,7 @@ order for 30 UAT-QC-SHAFT, and sets the Quality Notification Owner to the Qualit
 | H1 | On the UAT order: **Create → Inspection Lot**, lot size 20, agency RITES, Save | the lot panel "Next: request the lot number" | |
 | H2 | Lot Number Requested On, lot number; Offered On, 20 offered; PEPL Final Inspection | Offered | |
 | H3 | Inspected On, accepted 18, rejected 2, IC number and date | Inspected; NCR for the 2 rejected | |
-| H4 | Delivery Note of 20 against the order | the gate: "ICs … accepted 18 … this delivery would make 20" | |
+| H4 | **Stores:** Delivery Note of 20 against the order | the gate: "ICs … accepted 18 … this delivery would make 20" | |
 
 ## I. Drawing change (Production Manager)
 

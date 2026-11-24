@@ -2,6 +2,46 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.79.0 — CR3: PEPL's access plan (named logins, Role Profiles, cancel by HOD, export by CEO)
+
+PEPL answered the Access Planning Pack (24 Nov 2026). Tender data stays exactly as CR2 set it (only ankit@, sudam@,
+aviral@parasramkagroup.com).
+
+- **New Role Profiles** (20 in all): **PEPL Stores Manager** (Stock Manager + Stock User + PEPL Weighment – the Stores
+  HOD: stock correction after a count, Decision 3), **PEPL Accountant** (Accounts User – accounts staff; PEPL Accounts
+  stays for the Accounts HOD, who cancels), **PEPL Quality Executive** (inspects, raises NCRs, records
+  calibrations and lots; never signs off, closes or cancels), **PEPL Production & Quality Viewer** (view only), and
+  three add-ons given on top of a job profile: **PEPL Item Master** (Item Manager – new Items, Decision 1), **PEPL
+  Supplier Master** (Purchase Master Manager – new Suppliers, Decision 2), **PEPL Sales Invoicing** (raises Sales
+  Invoices, Decision 11). New roles: PEPL Stock Viewer, PEPL Quality Executive, PEPL Production Quality Viewer, PEPL
+  Sales Invoicing.
+- **Profile changes** (patch v0_79, once): PEPL Purchase Manager loses Item Manager (Decision 1); PEPL Quality Manager
+  loses Stock User and gets PEPL Stock Viewer – Quality sees stock, receipts and deliveries, Stores posts them
+  (Decision 8).
+- **Cancel only by the department head** (Decision 4): 27 submittable record types (orders, receipts, issues,
+  invoices, payments, Job Orders, Job Cards, BOMs, inspections, PEPL counts / weighments / runs …) are cancelled only
+  by their HOD role and the System Manager; Cancel is taken from every other role on each deploy, and given to a HOD
+  role that lacked it (with Write and Submit, as Frappe expects). Switch: System Parameters → Access.
+- **Cancellation summary** e-mail (daily job): every record cancelled the day before (Daily) or the week before (Weekly,
+  on Mondays) – record, who, when – to the PEPL CEO logins or the addresses in "Cancellation Summary To". Nothing is
+  sent when nothing was cancelled.
+- **BOMs only by the Production Manager** (Decision 7): the Foreman (Manufacturing User) keeps read only.
+- **Export only by the CEO** (Decision 9): Export is taken from every role except PEPL CEO and System Manager on every
+  DocType on each deploy (ERPNext's own "Desk User" export on Item included); the CEO gets Export on every business
+  record. Blank import templates still download (Frappe needs only read there). CR2's tender rights untouched: only
+  the Tender Access users export tender data. Extra roles may be listed in System Parameters → Access.
+- Removals change exactly one permission rule (role, level, if-owner) and leave a Permission Log, like Role Permission
+  Manager. Reports opened by the new roles get a Custom Role that keeps the report's own roles.
+- **System Parameters → Access** (new tab): Cancel Only by the Department Head, BOMs Made Only by the Production
+  Manager, Export to Excel Only by the CEO (all on), Roles That May Also Export, Cancellation Summary E-mail
+  (Daily / Weekly / Off), Cancellation Summary To.
+- **Check 79** (`docs/checks/check_79_cr3_access_plan.py`, read-only); **setup_cr3_logins.py** (one login per person
+  with the signed profiles; DRY_RUN first; the people list is kept outside the repository);
+  `docs/cr3_access_plan_guide.md` (what changed, PEPL test steps, consultant's order of work). Cycle 3b Quality
+  Manager UAT guide: receipts and deliveries are now made by Stores.
+- 39 tests (test_cr3_access_plan.py); test_work_package_a (20 profiles) and test_access_matrix (Items by Item Master)
+  updated.
+
 ## 0.78.0 — Cycle 3b Phase 6: testing and handover (C3b-T1)
 
 - **Cycle 3b health check** (PEPL System Health → "Download Cycle 3b health check", System Manager; read-only Excel):

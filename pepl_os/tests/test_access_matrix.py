@@ -56,9 +56,11 @@ class TestProfileAccess(PEPLTestCase):
 		self.assertRight("PEPL Stores", "Purchase Order", "read", YES)
 		self.assertRight("PEPL Stores", "Purchase Order", "create", "")
 
-	def test_purchase_manager_creates_suppliers_and_items(self):
+	def test_purchase_manager_creates_suppliers_item_master_creates_items(self):
+		# CR3 Decision 1: new Items only by the holders of the add-on profile PEPL Item Master.
 		self.assertRight("PEPL Purchase Manager", "Supplier", "create", YES)
-		self.assertRight("PEPL Purchase Manager", "Item", "create", YES)
+		self.assertRight("PEPL Purchase Manager", "Item", "create", "")
+		self.assertRight("PEPL Item Master", "Item", "create", YES)
 		self.assertRight("PEPL Purchase Manager", "Purchase Order", "submit", YES)
 
 	def test_ceo_views_everything_changes_nothing(self):

@@ -323,6 +323,8 @@ scheduler_events = {
 		f"{SCORECARD}.daily_vendor_scores",
 		# CR2: the Tender Access role and the Sales Order tender fields follow the list in site_config.json
 		f"{TENDER_ACCESS}.daily_sync",
+		# CR3 Decision 4: records cancelled yesterday (Daily) or last week (Weekly, on Mondays), e-mailed to the MD
+		"pepl_os.pepl_governance.access_plan.daily_cancellation_summary",
 	],
 	"cron": {
 		# C3a-X4: every Monday 02:30, last week's MTBF / MTTR / CPC for every machine
