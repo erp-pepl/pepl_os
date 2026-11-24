@@ -462,9 +462,9 @@ def what_user_sees(user):
 			counts[doctype] = 0
 		frappe.clear_last_message()
 	sample = frappe.get_all(TENDER, pluck="name", limit=1)
-	opens = bool(sample) and bool(
-		frappe.has_permission(TENDER, "read", doc=sample[0], user=user, print_logs=False)
-	)
+	# frappe.has_permission (v16) has no print_logs (only frappe.permissions.has_permission has); with throw off it
+	# prints nothing. 0.79.5: print_logs=False here stopped Check 62 with a TypeError on a site with tenders.
+	opens = bool(sample) and bool(frappe.has_permission(TENDER, "read", doc=sample[0], user=user))
 	order = None
 	if frappe.db.has_column("Sales Order", SALES_ORDER_FIELDS[0]):
 		order = (
@@ -480,7 +480,7 @@ def what_user_sees(user):
 		"opens_a_tender": opens,
 		"tender_sales_order": order,
 		"opens_tender_sales_order": bool(order)
-		and bool(frappe.has_permission("Sales Order", "read", doc=order, user=user, print_logs=False)),
+		and bool(frappe.has_permission("Sales Order", "read", doc=order, user=user)),
 	}
 
 

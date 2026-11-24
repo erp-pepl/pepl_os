@@ -2,6 +2,13 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.79.5 — Fix to CR2's Check 62 helper (bench, 24 Nov 2026)
+
+- `tender_access.what_user_sees` (used by Check 62, section 5) called `frappe.has_permission(..., print_logs=False)`;
+  Frappe v16's `frappe.has_permission` has no such argument (only `frappe.permissions.has_permission` has), so Check 62
+  stopped with a TypeError on any site with at least one tender. The argument is removed (with throw off nothing is
+  printed anyway). No change to who sees what. 1 regression test (test_cr2_tender_access). Check 62 unchanged.
+
 ## 0.79.4 — Fix to CR3: profile count, and the login script in the System Console (bench, 24 Nov 2026)
 
 - There are **19** PEPL Role Profiles (12 before CR3, 7 new), not 20: Check 79 and test_work_package_a expected 20

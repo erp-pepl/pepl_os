@@ -47,6 +47,17 @@ class TenderAccessCase(PEPLTestCase):
 
 
 class TestWhoMaySee(TenderAccessCase):
+	def test_what_user_sees_runs_on_a_site_with_a_tender(self):
+		# 0.79.5 regression: Check 62's helper called frappe.has_permission(..., print_logs=False), which v16 refuses
+		# (TypeError) once a tender exists on the site (bench, 24 Nov 2026).
+		tender = self.tender("TND-T-CR2-SEES")
+		if not frappe.db.exists(ta.TENDER, tender.name):
+			tender.db_insert()
+		for_plain = ta.what_user_sees(PLAIN)
+		self.assertFalse(for_plain["opens_a_tender"])
+		self.assertEqual(for_plain["counts"][ta.TENDER], 0)
+		self.assertTrue(ta.what_user_sees(ONE)["opens_a_tender"])
+
 	def test_listed_user_and_administrator_may_everyone_else_not(self):
 		self.assertTrue(ta.is_active())
 		self.assertTrue(ta.can_access(ONE))
