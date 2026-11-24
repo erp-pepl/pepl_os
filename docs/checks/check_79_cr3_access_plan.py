@@ -1,4 +1,4 @@
-# PEPL OS v0.79.3 - Check 79 rev 4: CR3 - PEPL's access plan (Access Planning Pack, 24 Nov 2026).
+# PEPL OS v0.79.4 - Check 79 rev 5 (runs on 0.79.3 or later): CR3 - PEPL's access plan (Access Planning Pack, 24 Nov 2026).
 # New Role Profiles (Stores Manager, Accountant, Quality Executive, Production & Quality Viewer, add-ons Item Master,
 # Supplier Master, Sales Invoicing), cancel only by the department head, BOMs only by the Production Manager,
 # export only by the CEO, the cancellation summary - and CR2's tender rule unchanged.
@@ -41,7 +41,7 @@ print("INFO  Cancellation Summary E-mail: " + str(sw.get("summary")) + "; goes t
 
 # ---------------- 2. Role Profiles ----------------
 profiles = status.get("profiles") or {}
-check(len(profiles) == 20, "2. 20 PEPL Role Profiles in the code (" + str(len(profiles)) + ")")
+check(len(profiles) == 19, "2. 19 PEPL Role Profiles in the code (" + str(len(profiles)) + ")")
 for name, p in sorted(profiles.items()):
     check(p.get("exists") and not p.get("missing"), "2. Role Profile " + name + " exists with all its roles (missing: " + str(p.get("missing")) + ")")
     if p.get("extra"):

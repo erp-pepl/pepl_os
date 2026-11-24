@@ -62,7 +62,7 @@ class TestRoleProfiles(PEPLTestCase):
 		# Executive, Tender Only, Engineering), the kiosk device login (C3a-B1), and CR3's Stores Manager, Quality
 		# Executive, Production & Quality Viewer, Accountant and three add-ons (Item Master, Supplier Master, Sales
 		# Invoicing).
-		self.assertEqual(len(roles.ROLE_PROFILES), 20)
+		self.assertEqual(len(roles.ROLE_PROFILES), 19)
 		for profile, expected in roles.ROLE_PROFILES.items():
 			self.assertTrue(frappe.db.exists("Role Profile", profile), profile)
 			have = set(frappe.get_all("Has Role", filters={"parent": profile}, pluck="role"))

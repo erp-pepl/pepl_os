@@ -2,6 +2,14 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.79.4 — Fix to CR3: profile count, and the login script in the System Console (bench, 24 Nov 2026)
+
+- There are **19** PEPL Role Profiles (12 before CR3, 7 new), not 20: Check 79 and test_work_package_a expected 20
+  (Check 79 on the bench: 71 passed, 1 failed on that line only). Both now expect 19. No change to the app.
+- `docs/checks/setup_cr3_logins.py` rev 2: the System Console refuses assignments to several names at once
+  (`name, email, ... = ...` → NameError `_unpack_sequence_`); one name per line now. Loops over several names
+  (`for a, b in ...`) are allowed.
+
 ## 0.79.3 — Fix to CR3: a report role that is not a role stopped the migrate (bench, 24 Nov 2026)
 
 - Seven Production reports and the Production Command Centre list "PEPL Production Manager" among their roles; it is
@@ -40,7 +48,7 @@ Entries for the Master System Document. Newest first.
 PEPL answered the Access Planning Pack (24 Nov 2026). Tender data stays exactly as CR2 set it (only ankit@, sudam@,
 aviral@parasramkagroup.com).
 
-- **New Role Profiles** (20 in all): **PEPL Stores Manager** (Stock Manager + Stock User + PEPL Weighment – the Stores
+- **New Role Profiles** (19 in all): **PEPL Stores Manager** (Stock Manager + Stock User + PEPL Weighment – the Stores
   HOD: stock correction after a count, Decision 3), **PEPL Accountant** (Accounts User – accounts staff; PEPL Accounts
   stays for the Accounts HOD, who cancels), **PEPL Quality Executive** (inspects, raises NCRs, records
   calibrations and lots; never signs off, closes or cancels), **PEPL Production & Quality Viewer** (view only), and

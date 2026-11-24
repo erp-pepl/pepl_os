@@ -1,4 +1,4 @@
-# PEPL OS v0.79.0 - setup_cr3_logins: one named login per person, with the Role Profiles PEPL signed off in the
+# PEPL OS v0.79.4 - setup_cr3_logins rev 2: one named login per person, with the Role Profiles PEPL signed off in the
 # Access Planning Pack (tab "6 People"). System Console, Type = Python, logged in as Administrator.
 #
 # 1. Paste the people into PEOPLE below (the consultant's filled copy is kept OUTSIDE the repository: it holds
@@ -37,7 +37,11 @@ except Exception as e:
 
 seen = []
 for row in PEOPLE:
-    name, email, mobile, profiles = row[0], (row[1] or "").strip().lower(), row[2], row[3]
+    # One name per line: the System Console does not allow "a, b = ..." (NameError _unpack_sequence_).
+    name = row[0]
+    email = (row[1] or "").strip().lower()
+    mobile = row[2]
+    profiles = row[3]
     if not email or "@" not in email or "." not in email.split("@")[-1]:
         problems.append(name + ": no valid login e-mail (" + str(row[1]) + ")")
         continue
@@ -82,7 +86,10 @@ else:
         frappe.get_doc({"doctype": "Role Profile", "role_profile": SM_PROFILE, "roles": [{"role": "System Manager"}]}).insert()
         print("Created Role Profile " + SM_PROFILE + " (System Manager)")
     for row in PEOPLE:
-        name, email, mobile, profiles = row[0], row[1].strip().lower(), row[2], list(row[3])
+        name = row[0]
+        email = row[1].strip().lower()
+        mobile = row[2]
+        profiles = list(row[3])
         if email in [s.lower() for s in SYSTEM_MANAGERS]:
             profiles.append(SM_PROFILE)
         parts = name.split(" ", 1)
