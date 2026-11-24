@@ -135,6 +135,29 @@ def ensure_roles():
 			frappe.db.set_value("Role", role_name, "home_page", ROLE_HOME_PAGES[role_name])
 
 
+def save_profile(profile):
+	"""Save (or insert) a Role Profile and bring its users' roles up to date now.
+
+	Frappe's Role Profile.on_update queues the update of its users and locks the profile until a background worker
+	has run that job. A second save of the same profile in one migrate then fails with DocumentLockedError
+	(bench, 24 Nov 2026: the v0_79 patch took Stock User out of PEPL Quality Manager, then ensure_role_profiles added
+	PEPL Stock Viewer to it). So a lock left by such a queued update is released first, and the users are updated
+	here at once; the queued job, when a worker runs it, only repeats that (harmless).
+	"""
+	is_new = profile.is_new()
+	if not is_new:
+		profile.unlock()
+	profile.flags.ignore_permissions = True
+	if is_new:
+		profile.insert()
+	else:
+		profile.save()
+	profile.unlock()
+	if not is_new:
+		profile.update_all_users()
+	return profile
+
+
 def ensure_role_profiles():
 	for profile_name, roles in ROLE_PROFILES.items():
 		existing_roles = [r for r in roles if frappe.db.exists("Role", r)]
@@ -147,7 +170,7 @@ def ensure_role_profiles():
 				continue
 			for role in missing:
 				profile.append("roles", {"role": role})
-			profile.save(ignore_permissions=True)
+			save_profile(profile)
 		else:
 			profile = frappe.get_doc(
 				{
@@ -156,7 +179,7 @@ def ensure_role_profiles():
 					"roles": [{"role": r} for r in existing_roles],
 				}
 			)
-			profile.insert(ignore_permissions=True)
+			save_profile(profile)
 
 
 def remove_roles_from_profiles(corrections):
@@ -171,6 +194,6 @@ def remove_roles_from_profiles(corrections):
 			continue
 		removed = sorted({row.role for row in profile.roles} - {row.role for row in keep})
 		profile.set("roles", [{"role": row.role} for row in keep])
-		profile.save(ignore_permissions=True)
+		save_profile(profile)
 		changed[profile_name] = removed
 	return changed

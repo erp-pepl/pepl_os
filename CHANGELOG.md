@@ -2,6 +2,17 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.79.1 — Fix to CR3: migrate stopped with DocumentLockedError on a Role Profile (bench, 24 Nov 2026)
+
+- Saving a Role Profile makes Frappe queue the update of its users and lock the profile until a background worker has
+  run that job. The v0_79 patch saved PEPL Quality Manager (Stock User out); seconds later, in the same migrate,
+  `ensure_role_profiles` saved it again (PEPL Stock Viewer in) and was refused: "This document is currently locked
+  and queued for execution". CI did not see it (in tests and on install Frappe runs that update at once).
+- Every Role Profile save of pepl_os now goes through `roles.save_profile`: a lock left by such a queued update is
+  released, the profile saved, and its users' roles updated at once (the queued job only repeats that). The rest of
+  the migrate (delete restriction, CEO view, CR2, CR3 rules) then runs as intended.
+- 2 regression tests (test_cr3_access_plan.TestProfileLock). Check 79 rev 2 needs 0.79.1.
+
 ## 0.79.0 — CR3: PEPL's access plan (named logins, Role Profiles, cancel by HOD, export by CEO)
 
 PEPL answered the Access Planning Pack (24 Nov 2026). Tender data stays exactly as CR2 set it (only ankit@, sudam@,

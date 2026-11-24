@@ -152,6 +152,55 @@ class TestProfileCorrection(PEPLTestCase):
 		self.assertEqual(roles.remove_roles_from_profiles(roles.PROFILE_CORRECTIONS_V0_79), {})
 
 
+class TestProfileLock(PEPLTestCase):
+	"""0.79.1 regression: a Role Profile saved twice in one migrate (patch, then ensure_role_profiles) was refused with
+	DocumentLockedError, because Frappe locks a saved profile until a worker has updated its users (bench, 24 Nov)."""
+
+	PROFILE = "PEPL Quality Manager"
+
+	def tearDown(self):
+		frappe.get_doc("Role Profile", self.PROFILE).unlock()
+
+	def _have(self):
+		return set(frappe.get_all("Has Role", filters={"parent": self.PROFILE}, pluck="role"))
+
+	def test_locked_profile_is_still_corrected_and_completed(self):
+		frappe.get_doc("Role Profile", self.PROFILE).lock()  # as left by the queued update of a first save
+		changed = roles.remove_roles_from_profiles({self.PROFILE: (ap.STOCK_VIEWER,)})
+		self.assertEqual(changed, {self.PROFILE: [ap.STOCK_VIEWER]})
+		frappe.get_doc("Role Profile", self.PROFILE).lock()
+		roles.ensure_role_profiles()
+		self.assertIn(ap.STOCK_VIEWER, self._have())
+		self.assertFalse(frappe.get_doc("Role Profile", self.PROFILE).is_locked)
+
+	def test_users_of_the_profile_follow_at_once(self):
+		field = (
+			frappe.get_all(
+				"DocField", filters={"parent": "User", "options": "User Role Profile"}, pluck="fieldname"
+			)
+			or [None]
+		)[0]
+		if not field:
+			return
+		email = "pepl.test.cr3.qm.profile@example.com"
+		if not frappe.db.exists("User", email):
+			frappe.get_doc(
+				{
+					"doctype": "User",
+					"email": email,
+					"first_name": "QM",
+					"send_welcome_email": 0,
+					field: [{"role_profile": self.PROFILE}],
+				}
+			).insert(ignore_permissions=True)
+		user_roles = lambda: set(frappe.get_all("Has Role", filters={"parent": email}, pluck="role"))  # noqa: E731
+		self.assertIn(ap.STOCK_VIEWER, user_roles())
+		roles.remove_roles_from_profiles({self.PROFILE: (ap.STOCK_VIEWER,)})
+		self.assertNotIn(ap.STOCK_VIEWER, user_roles())
+		roles.ensure_role_profiles()
+		self.assertIn(ap.STOCK_VIEWER, user_roles())
+
+
 class TestCancelByHod(PEPLTestCase):
 	def test_nobody_but_the_hod_cancels(self):
 		found = {d: ap.cancel_offenders(d) for d in ap.CANCEL_RULES if frappe.db.exists("DocType", d)}

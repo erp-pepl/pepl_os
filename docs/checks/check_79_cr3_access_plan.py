@@ -1,10 +1,10 @@
-# PEPL OS v0.79.0 - Check 79: CR3 - PEPL's access plan (Access Planning Pack, 24 Nov 2026).
+# PEPL OS v0.79.1 - Check 79 rev 2: CR3 - PEPL's access plan (Access Planning Pack, 24 Nov 2026).
 # New Role Profiles (Stores Manager, Accountant, Quality Executive, Production & Quality Viewer, add-ons Item Master,
 # Supplier Master, Sales Invoicing), cancel only by the department head, BOMs only by the Production Manager,
 # export only by the CEO, the cancellation summary - and CR2's tender rule unchanged.
 # System Console, Type = Python, logged in as Administrator (or a System Manager). Leave "Commit" UNTICKED:
 # this Check only reads.
-VERSION = "0.79.0"
+VERSION = "0.79.1"
 AP = "pepl_os.pepl_governance.access_plan"
 passed = []
 failed = []
