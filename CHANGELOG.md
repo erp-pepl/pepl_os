@@ -2,6 +2,35 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.81.0 — Cycle 4 H1: people and logins (C4-H1)
+
+- **Person Type on every Employee** (read only, from User ID): **Login User** – works in ERPNext under his own login
+  (actor); **Shop Floor** – no login (subject; at the machine he signs in on the kiosk with code + PIN).
+- **A device login is never a person's login:** an Employee's User ID holding a role in System Parameters → People →
+  Device Login Roles (PEPL Kiosk) is refused.
+- **Operator code = Employee Number:** a mismatch is refused on the Employee and on the PEPL Operator. **Make Operator**
+  button on the Employee (code = Employee Number; HR, Production or System Manager); **Make Employee** button on an
+  operator without one (a new Employee with the code as its number); an operator whose code is a new Employee's number
+  is linked to it when the Employee is saved.
+- **ERPNext's own rules PEPL changed (26 Nov 2026):** ERPNext switches a login off when its Employee is no longer
+  Active – PEPL keeps it on ("Keep the Login When an Employee Leaves", on). ERPNext restricts a linked login to its own
+  Employee record (Create User Permission) – off at PEPL ("Restrict a Login to Its Own Employee Record", off), so HR and
+  the heads see the Employees they need.
+- **Leaver ToDo PPL-LEAVER-LOGIN:** an Employee with a login set to Left → one ToDo (information) to "Leaver Login ToDo
+  To", else the Notification Fallback Owner.
+- **Idle logout:** a login without activity for more than **Idle Logout (Hours) = 3** (from 3 h 0 min 1 s) is logged
+  out: on its next request ("Session Expired", log in again) and by a job every minute. The person and every System
+  Manager get an e-mail each time; logins holding an exempt role (PEPL Kiosk) are never logged out by this rule; 0 =
+  off; every logout is in the Activity Log. pepl_os records each request's time per session (cache), because Frappe
+  writes a session's last activity only every 10 minutes. Frappe's own Session Expiry must stay longer (sites: 170 h).
+- **Report PEPL People Register:** every Employee (type, login, login on, operator, department, status), operators
+  without an Employee and desk logins without an Employee – with what to put right; filter "Only Rows to Put Right".
+- **Staff list template** `docs/templates/PEPL_Staff_List_Template.xlsx` (columns as ERPNext's Employee import;
+  required ones yellow; PF / ESIC / bank come with H5).
+- System Parameters → People: Idle Logout section (hours, exempt roles, e-mail System Managers) and Employees and Their
+  Logins section (keep login, leaver ToDo to, own-record restriction, device login roles). Idle hours checked 0–24.
+- Check 81 (`docs/checks/check_81_c4_h1_people.py`, rolls back by itself); 17 tests (test_c4_h1_people.py).
+
 ## 0.80.0 — Cycle 4 H0: Frappe HR (HRMS) in place (C4-H0)
 
 PEPL approved Frappe HR in writing (26 Nov 2026). Payroll stays out of scope: its screens come with the app but are

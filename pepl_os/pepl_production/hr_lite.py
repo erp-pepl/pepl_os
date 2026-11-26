@@ -73,10 +73,20 @@ def align_with_employee(doc):
 	if other:
 		frappe.throw(_("Employee {0} is already operator {1}.").format(doc.employee, other))
 	emp = frappe.db.get_value(
-		"Employee", doc.employee, ["employee_name", "date_of_joining", "user_id", "status"], as_dict=True
+		"Employee",
+		doc.employee,
+		["employee_name", "date_of_joining", "user_id", "status", "employee_number"],
+		as_dict=True,
 	)
 	if not emp:
 		return
+	# C4-H1: the operator code and the Employee Number are the same code
+	if emp.employee_number and doc.employee_code and emp.employee_number != doc.employee_code:
+		frappe.throw(
+			_("Operator code {0} differs from Employee Number {1} of {2}. They must be the same code.").format(
+				doc.employee_code, emp.employee_number, doc.employee
+			)
+		)
 	if emp.employee_name:
 		doc.operator_name = emp.employee_name
 	if emp.date_of_joining:

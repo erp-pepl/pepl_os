@@ -37,6 +37,9 @@ after_migrate = "pepl_os.install.after_migrate"
 
 # Client scripts for standard DocTypes are added per deliverable, e.g.
 # "Purchase Order": "public/js/purchase_order.js"
+# C4-H1: a request after the idle time ends the session at once ("Session Expired"); every request is recorded
+before_request = ["pepl_os.pepl_people.idle_logout.before_request"]
+
 doctype_js = {
 	# C2-07: stock, orders and approved suppliers per line
 	"Material Request": "public/js/material_request.js",
@@ -71,6 +74,8 @@ doctype_js = {
 	# C3a-P1: Job Order status panel (quantity, routing progress, delivery, LD)
 	# C3a-P4: customer-supplied material held against what the Job Order still needs
 	"Work Order": "public/js/work_order.js",
+	# C4-H1: "Make Operator" from an Employee (code = Employee Number)
+	"Employee": "public/js/employee.js",
 	# C3a-X6: reason dialog before submitting a plan that double-books a machine (Soft Block)
 	# C3a-P2: machine load panel (booked hours against available hours per machine)
 	"Production Plan": "public/js/production_plan.js",
@@ -156,7 +161,15 @@ doc_events = {
 	"ToDo": {"validate": f"{TENDER_ACCESS}.validate_todo"},
 	"DocShare": {"validate": f"{TENDER_ACCESS}.validate_docshare"},
 	# C3a-B3: an operator linked to an Employee follows it (name, joining date, login, Left / Inactive)
-	"Employee": {"on_update": "pepl_os.pepl_production.hr_lite.on_employee_update"},
+	# C4-H1: Person Type, no device login, no own-record restriction, operator code = Employee Number; after ERPNext's
+	# own on_update: the login stays on when the Employee leaves, leaver ToDo, operator linked by its code
+	"Employee": {
+		"validate": "pepl_os.pepl_people.people.validate_employee",
+		"on_update": [
+			"pepl_os.pepl_production.hr_lite.on_employee_update",
+			"pepl_os.pepl_people.people.on_employee_update",
+		],
+	},
 	"PEPL System Parameters": {
 		# C2-02: no negative days, percentages 0-100, class A + B below 100.
 		# C3a-X2: operator PIN length 4-6.
@@ -336,6 +349,8 @@ scheduler_events = {
 		"30 2 * * 1": ["pepl_os.pepl_production.machine_week.weekly_machine_figures"],
 		# C3a-X10: every morning 07:45, yesterday's Daily Stand-up, built and e-mailed
 		"45 7 * * *": ["pepl_os.pepl_production.standup.daily_standup"],
+		# C4-H1: every minute, sessions idle past System Parameters -> People: Idle Logout (Hours) are logged out
+		"* * * * *": ["pepl_os.pepl_people.idle_logout.run_idle_logout"],
 	},
 	"monthly": [
 		# C2-19: next month's draft Reorder Review for the Stores HOD

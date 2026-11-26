@@ -80,6 +80,9 @@ def validate_params(doc):
 		errors.append(
 			_("Absent Below (Hours) {0} cannot be more than Half Day Below (Hours) {1}.").format(absent, half)
 		)
+	idle = doc.get("custom_idle_logout_hours")
+	if idle not in (None, "") and not 0 <= flt(idle) <= 24:
+		errors.append(_("Idle Logout (Hours) must be between 0 and 24 (0 = off)."))
 	return errors
 
 

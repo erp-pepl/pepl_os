@@ -1033,9 +1033,91 @@ PEOPLE_FIELDS = _chain(
 			"default": "4",
 			"description": "Fewer hours worked than this = Absent. Cannot be more than Half Day Below.",
 		},
+		# C4-H1 - idle logout and logins of people (PEPL, 25 / 26 Nov 2026)
+		{
+			"fieldname": "custom_idle_logout_section",
+			"label": "Idle Logout",
+			"fieldtype": "Section Break",
+			"description": "A login with no activity for longer than this is logged out; the person and the System "
+			"Managers get an e-mail each time. Frappe's own Session Expiry (System Settings) must stay longer.",
+		},
+		{
+			"fieldname": "custom_idle_logout_hours",
+			"label": "Idle Logout (Hours)",
+			"fieldtype": "Float",
+			"default": "3",
+			"description": "3 = logged out from 3 hours 0 minutes 1 second without activity. 0 = off. 0 - 24.",
+		},
+		{
+			"fieldname": "custom_idle_logout_exempt_roles",
+			"label": "Idle Logout: Exempt Roles",
+			"fieldtype": "Small Text",
+			"default": "PEPL Kiosk",
+			"description": "One role per line. Logins holding one of these roles are never logged out by this rule "
+			"(the kiosk tablets are logged out by hand).",
+		},
+		{
+			"fieldname": "custom_idle_logout_notify_system_managers",
+			"label": "Idle Logout: E-mail the System Managers",
+			"fieldtype": "Check",
+			"default": "1",
+		},
+		{
+			"fieldname": "custom_people_logins_section",
+			"label": "Employees and Their Logins",
+			"fieldtype": "Section Break",
+		},
+		{
+			"fieldname": "custom_keep_login_when_employee_leaves",
+			"label": "Keep the Login When an Employee Leaves",
+			"fieldtype": "Check",
+			"default": "1",
+			"description": "ERPNext switches a login off when its Employee is no longer Active. PEPL keeps it on "
+			"(26 Nov 2026); the idle logout still applies and the leaver ToDo tells the System Manager.",
+		},
+		{
+			"fieldname": "custom_leaver_login_todo_to",
+			"label": "Leaver Login ToDo To",
+			"fieldtype": "Link",
+			"options": "User",
+			"description": "Who gets the ToDo when an Employee with a login leaves. Empty = Notification Fallback "
+			"Owner.",
+		},
+		{
+			"fieldname": "custom_restrict_login_to_own_employee",
+			"label": "Restrict a Login to Its Own Employee Record",
+			"fieldtype": "Check",
+			"default": "0",
+			"description": "ERPNext's 'Create User Permission'. Off: access comes from the job profiles (CR3), so HR "
+			"and the heads see the Employees they need.",
+		},
+		{
+			"fieldname": "custom_device_login_roles",
+			"label": "Device Login Roles",
+			"fieldtype": "Small Text",
+			"default": "PEPL Kiosk",
+			"description": "One role per line. A login holding one of these is a device (tablet), never a person's "
+			"login on an Employee.",
+		},
 	],
 	after="custom_cancellation_summary_to",  # after the whole Access tab
 )
+
+# C4-H1 - Person Type on the Employee (actor / subject)
+CUSTOM_FIELDS["Employee"] = [
+	*CUSTOM_FIELDS.get("Employee", []),
+	{
+		"fieldname": "custom_person_type",
+		"label": "Person Type",
+		"fieldtype": "Select",
+		"options": "Login User\nShop Floor",
+		"insert_after": "employee_number",
+		"read_only": 1,
+		"in_standard_filter": 1,
+		"description": "Login User: works in ERPNext under his own login. Shop Floor: no login - others record his "
+		"work; at the machine he signs in on the kiosk with his operator code and PIN. Set from User ID.",
+	},
+]
 
 CUSTOM_FIELDS[SYSTEM_PARAMETERS] += PEOPLE_FIELDS
 
