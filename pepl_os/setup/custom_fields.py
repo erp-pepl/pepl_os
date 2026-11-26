@@ -1000,6 +1000,45 @@ ACCESS_FIELDS = _chain(
 
 CUSTOM_FIELDS[SYSTEM_PARAMETERS] += ACCESS_FIELDS
 
+# C4-H0 - People (Frappe HR): PEPL's attendance rules (26 Nov 2026). They go into the Shift Type of every PEPL
+# Shift; a change here reaches the Shift Types at once (pepl_people.hr_setup.on_parameters_update).
+PEOPLE_FIELDS = _chain(
+	[
+		{"fieldname": "custom_people_tab", "label": "People", "fieldtype": "Tab Break"},
+		{
+			"fieldname": "custom_attendance_rules_section",
+			"label": "Attendance Rules",
+			"fieldtype": "Section Break",
+			"description": "Used by Frappe HR to mark each day from the punches: Present, Half Day or Absent, and "
+			"Late. Sunday is the weekly off (Holiday List).",
+		},
+		{
+			"fieldname": "custom_late_entry_grace_minutes",
+			"label": "Late Entry Grace (Minutes)",
+			"fieldtype": "Int",
+			"default": "15",
+			"description": "A first punch later than the shift start plus these minutes is marked Late. 0 - 120.",
+		},
+		{
+			"fieldname": "custom_half_day_below_hours",
+			"label": "Half Day Below (Hours)",
+			"fieldtype": "Float",
+			"default": "4.5",
+			"description": "Fewer hours worked than this (and not fewer than Absent Below) = Half Day.",
+		},
+		{
+			"fieldname": "custom_absent_below_hours",
+			"label": "Absent Below (Hours)",
+			"fieldtype": "Float",
+			"default": "4",
+			"description": "Fewer hours worked than this = Absent. Cannot be more than Half Day Below.",
+		},
+	],
+	after="custom_cancellation_summary_to",  # after the whole Access tab
+)
+
+CUSTOM_FIELDS[SYSTEM_PARAMETERS] += PEOPLE_FIELDS
+
 # C3b-Q1 - QC Inspection (ERPNext Quality Inspection): made with the receipt; its supplier.
 CUSTOM_FIELDS["Quality Inspection"] = [
 	{

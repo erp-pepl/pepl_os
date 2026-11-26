@@ -19,6 +19,7 @@ TRACK_VIEWS_DOCTYPES = (
 	"PEPL Supplier Approval",  # created in Cycle 2 (C2-08)
 	"Vendor Approval Status",
 	"PEPL Payment Tracker",
+	"Employee",  # C4-H0: personal and statutory data (PF / ESIC / PAN / bank / Aadhaar from H5)
 )
 
 

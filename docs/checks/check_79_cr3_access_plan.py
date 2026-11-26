@@ -1,10 +1,10 @@
-# PEPL OS v0.79.4 - Check 79 rev 5 (runs on 0.79.3 or later): CR3 - PEPL's access plan (Access Planning Pack, 24 Nov 2026).
+# PEPL OS v0.80.0 - Check 79 rev 6 (runs on 0.80.0 or later; rev 5 for 0.79.x): CR3 - PEPL's access plan (Access Planning Pack, 24 Nov 2026).
 # New Role Profiles (Stores Manager, Accountant, Quality Executive, Production & Quality Viewer, add-ons Item Master,
 # Supplier Master, Sales Invoicing), cancel only by the department head, BOMs only by the Production Manager,
 # export only by the CEO, the cancellation summary - and CR2's tender rule unchanged.
 # System Console, Type = Python, logged in as Administrator (or a System Manager). Leave "Commit" UNTICKED:
 # this Check only reads.
-VERSION = "0.79.3"
+VERSION = "0.80.0"
 AP = "pepl_os.pepl_governance.access_plan"
 passed = []
 failed = []
@@ -41,7 +41,7 @@ print("INFO  Cancellation Summary E-mail: " + str(sw.get("summary")) + "; goes t
 
 # ---------------- 2. Role Profiles ----------------
 profiles = status.get("profiles") or {}
-check(len(profiles) == 19, "2. 19 PEPL Role Profiles in the code (" + str(len(profiles)) + ")")
+check(len(profiles) == 21, "2. 21 PEPL Role Profiles in the code (" + str(len(profiles)) + "; CR3 19 + C4-H0 HR Manager, HR Assistant)")
 for name, p in sorted(profiles.items()):
     check(p.get("exists") and not p.get("missing"), "2. Role Profile " + name + " exists with all its roles (missing: " + str(p.get("missing")) + ")")
     if p.get("extra"):

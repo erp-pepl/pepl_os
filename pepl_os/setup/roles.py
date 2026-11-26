@@ -78,6 +78,10 @@ ROLE_PROFILES = {
 	"PEPL Item Master": ("Item Manager",),  # Decision 1: makes new Items (and Warehouses, Item Groups, UOMs)
 	"PEPL Supplier Master": ("Purchase Master Manager",),  # Decision 2: adds Suppliers and buying prices
 	"PEPL Sales Invoicing": ("PEPL Sales Invoicing",),  # Decision 11: raises Sales Invoices
+	# C4-H0 (Frappe HR, PEPL 26 Nov 2026): the HR head (Abhijay) - all of HR, approves leave; the HR assistant
+	# (Biswanath) - basic HR work, no approval (approval, statutory data and closed-month limits come in H3 / H5 / H2).
+	"PEPL HR Manager": ("HR Manager", "HR User", "Leave Approver"),
+	"PEPL HR Assistant": ("HR User",),
 }
 
 # Add-on profiles are never a person's only profile (the Access Planning Pack lists them separately).

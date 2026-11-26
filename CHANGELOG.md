@@ -2,6 +2,34 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.80.0 — Cycle 4 H0: Frappe HR (HRMS) in place (C4-H0)
+
+PEPL approved Frappe HR in writing (26 Nov 2026). Payroll stays out of scope: its screens come with the app but are
+not configured.
+- **pepl_os now requires Frappe HR** (`required_apps`: erpnext, hrms, pepl_sales). Frappe HR version-16 needs Frappe
+  16.60+ and ERPNext 16.50+. CI installs hrms (version-16) before pepl_sales and pepl_os.
+- **Two Role Profiles** (21 in all): **PEPL HR Manager** (HR Manager, HR User, Leave Approver – the HR head) and
+  **PEPL HR Assistant** (HR User – basic HR work, no approval). Check 79 rev 6 counts 21.
+- **HR records under PEPL's access rules:** Employee, Holiday List, Shift Type, Shift Assignment, Employee Checkin,
+  Attendance, Attendance Request, Leave Type, Leave Period, Leave Allocation and Leave Application are deleted only by
+  the System Manager, every change is recorded, and the CEO views them (changes nothing). Employee openings are
+  recorded too (View Log). Attendance, Attendance Request, Shift Assignment, Leave Allocation and Leave Application are
+  cancelled only by the HR head (HR Manager) – CR3 Decision 4, and they appear in the cancellation summary.
+- **System Parameters → People** (new tab): Late Entry Grace (Minutes) 15, Half Day Below (Hours) 4.5, Absent Below
+  (Hours) 4 (PEPL, 26 Nov 2026); checked on save (grace 0–120, absent ≤ half day); a change reaches the Shift Types at
+  once.
+- **Site set-up** `docs/checks/setup_c4_h0_hr.py` (System Console, as Administrator; preview with Commit unticked,
+  then Commit ticked) → `pepl_os.pepl_people.hr_setup.apply_hr_setup`: HR Settings (leave approver required, no
+  self-approval, no birthday / anniversary / holiday mails); Holiday List **PEPL Holidays 2026-2027** (every Sunday +
+  PEPL's 10 holidays of 2026; the 2027 holidays are added when PEPL sends them) as the default of every company without
+  one; Leave Types **Earned Leave** (holidays inside a leave count – sandwich –, never below zero, carried forward;
+  accrual comes in H3) and **Leave Without Pay** (sandwich); Leave Periods 2026 and 2027 for every company; one Shift
+  Type per active PEPL Shift with PEPL's rules (auto attendance off – attendance stays in Attendo for now); PEPL HR
+  Manager → Abhijay, PEPL HR Assistant → Biswanath (hr@). Safe to run again; never deletes.
+- Check 80 (`docs/checks/check_80_c4_h0_hrms.py`); 18 tests (test_c4_h0_hrms.py).
+- Note: until H5, the Employee's bank fields are visible to whoever views the Employee (the CEO included); H5 moves
+  PF / ESIC / PAN / bank / Aadhaar to a protected level before the package reaches demo or live.
+
 ## 0.79.5 — Fix to CR2's Check 62 helper (bench, 24 Nov 2026)
 
 - `tender_access.what_user_sees` (used by Check 62, section 5) called `frappe.has_permission(..., print_logs=False)`;

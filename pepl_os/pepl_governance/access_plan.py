@@ -64,6 +64,12 @@ CANCEL_RULES = {
 	"Purchase Invoice": ("Accounts Manager",),
 	"Payment Entry": ("Accounts Manager",),
 	"Journal Entry": ("Accounts Manager",),
+	# HR (C4-H0): the HR head (HR Manager role = PEPL HR Manager profile)
+	"Attendance": ("HR Manager",),
+	"Attendance Request": ("HR Manager",),
+	"Shift Assignment": ("HR Manager",),
+	"Leave Allocation": ("HR Manager",),
+	"Leave Application": ("HR Manager",),
 }
 
 # Frappe refuses (in Role Permission Manager) a Cancel right without Write and Submit, so a HOD role that has no row

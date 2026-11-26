@@ -7,7 +7,8 @@ app_license = "mit"
 
 # pepl_os builds on pepl_sales (System Parameters, ToDo engine, document
 # generator). Dependencies point one way only: pepl_os -> pepl_sales.
-required_apps = ["erpnext", "pepl_sales"]
+# C4-H0: Frappe HR (hrms) for Cycle 4 HR (PEPL's written approval, 26 Nov 2026); payroll stays unused.
+required_apps = ["erpnext", "hrms", "pepl_sales"]
 
 # Shared client helpers: pepl.ask_reason(), pepl.record_override(), pepl.panel()
 app_include_js = ["/assets/pepl_os/js/pepl_os_common.js"]
@@ -163,12 +164,16 @@ doc_events = {
 			"pepl_os.pepl_purchase.params.validate_purchase_params",
 			"pepl_os.pepl_production.params.validate_production_params",
 			"pepl_os.pepl_quality.params.validate_quality_params",
+			# C4-H0: attendance rules (late grace 0-120 min, absent hours <= half-day hours)
+			"pepl_os.pepl_people.params.validate_people_params",
 		],
 		"on_update": [
 			# A5: a changed audit-log retention applies immediately.
 			"pepl_os.pepl_governance.retention.on_parameters_update",
 			# C3b-Q1: a changed "Incoming QC: Stock Classes" ticks / unticks the items' inspection
 			f"{INCOMING_QC}.on_parameters_update",
+			# C4-H0: changed attendance rules reach the Shift Types of the PEPL Shifts at once
+			"pepl_os.pepl_people.hr_setup.on_parameters_update",
 		],
 	},
 	# C2-04: a company created after install gets PEPL's stores at once.

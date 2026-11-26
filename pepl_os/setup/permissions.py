@@ -57,6 +57,18 @@ CORE_DOCTYPES = (
 	"Production Plan",
 	# C2-15: Batch = heat number; deleting one breaks the heat trace.
 	"Batch",
+	# C4-H0 (Frappe HR): people, attendance and leave - delete only by the System Manager, the CEO views them.
+	"Employee",
+	"Holiday List",
+	"Shift Type",
+	"Shift Assignment",
+	"Employee Checkin",
+	"Attendance",
+	"Attendance Request",
+	"Leave Type",
+	"Leave Period",
+	"Leave Allocation",
+	"Leave Application",
 )
 
 # A5 - the audit trail itself.

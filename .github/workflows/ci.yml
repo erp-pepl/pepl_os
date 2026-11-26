@@ -63,6 +63,7 @@ jobs:
         working-directory: /home/runner/frappe-bench
         run: |
           bench get-app erpnext --branch version-16
+          bench get-app hrms --branch version-16
           bench get-app https://x-access-token:${{ secrets.PEPL_SALES_TOKEN }}@github.com/erp-pepl/pepl_sales --branch main
           bench get-app pepl_os $GITHUB_WORKSPACE
           bench setup requirements --dev
@@ -72,6 +73,7 @@ jobs:
         run: |
           bench new-site --db-root-password root --admin-password admin test_site
           bench --site test_site install-app erpnext
+          bench --site test_site install-app hrms
           bench --site test_site install-app pepl_sales
           bench --site test_site install-app pepl_os
 
