@@ -4,6 +4,7 @@ from pepl_os.common.letterhead import ensure_default_print_formats
 from pepl_os.pepl_governance.access_plan import apply_access_plan
 from pepl_os.pepl_governance.retention import apply_log_retention
 from pepl_os.pepl_governance.tender_access import apply_access_setup
+from pepl_os.pepl_people.statutory import ensure_statutory_access
 from pepl_os.pepl_production.command_centre import ensure_top_downtime_block
 from pepl_os.pepl_production.kiosk import point_kiosk_logins_home
 from pepl_os.pepl_production.masters import ensure_production_masters
@@ -50,6 +51,7 @@ def ensure_setup():
 	point_kiosk_logins_home()  # C3a-B1: kiosk logins open the kiosk after logging in
 	switch_stock_settings_once()  # C3b-Q1: ERPNext's QC 'Stop' actions -> 'Warn' (PEPL's gate decides), once
 	ensure_open_ncr_block()  # C3b-CC: the "Open NCRs by Severity" card on the Quality Command Centre
+	ensure_statutory_access()  # C4-H5: Employee level 6 (PF / ESIC / PAN / Aadhaar / bank / CTC) for HR Manager only
 
 
 def before_install():

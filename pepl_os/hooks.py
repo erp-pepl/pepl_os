@@ -164,7 +164,11 @@ doc_events = {
 	# C4-H1: Person Type, no device login, no own-record restriction, operator code = Employee Number; after ERPNext's
 	# own on_update: the login stays on when the Employee leaves, leaver ToDo, operator linked by its code
 	"Employee": {
-		"validate": "pepl_os.pepl_people.people.validate_employee",
+		"validate": [
+			"pepl_os.pepl_people.people.validate_employee",
+			# C4-H5: UAN / ESIC IP / PAN formats and uniqueness, Aadhaar check digit and mask
+			"pepl_os.pepl_people.statutory.validate_employee",
+		],
 		"on_update": [
 			"pepl_os.pepl_production.hr_lite.on_employee_update",
 			"pepl_os.pepl_people.people.on_employee_update",

@@ -2,6 +2,26 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.82.0 — Cycle 4 H5: statutory data – PF / ESIC / PAN / Aadhaar / bank, protected (C4-H5)
+
+- **Employee, Salary tab, section "Statutory (PF / ESIC / Aadhaar)":** PF Applicable, **UAN** (12 digits, unique),
+  PF Joining Date, EPS (Pension) Applicable, ESIC Applicable, **ESIC IP Number** (10 digits, unique), ESIC Dispensary,
+  **Aadhaar Number** (number only – PEPL; encrypted Password field, 12 digits with the Verhoeff check digit, never in
+  the Employee table), Aadhaar (Masked) "XXXX XXXX 1234", Father's / Husband's Name. Frappe HR's **PAN Number**
+  (format ABCDE1234F, upper case) and **Provident Fund Account** (the PF number) are used, not duplicated. Spaces and
+  hyphens in UAN / ESIC / Aadhaar are removed.
+- **Permission level 6 = statutory:** the fields above plus the bank fields (Bank Name, Bank A/C No., IBAN, IFSC, MICR)
+  and Cost to Company. Only **HR Manager** (PEPL HR Manager) and **System Manager** read and change level 6; the CEO, the
+  HR Assistant and every other role see the Employee without them (PEPL, 25 / 26 Nov 2026). Re-applied on every
+  deploy (another role's level-6 rule is removed).
+- **Show Aadhaar** (Employee → PEPL, HR Manager / System Manager): the full number on request; every showing is in the
+  Access Log ("Show Aadhaar") and a comment on the Employee names who saw it (without the number).
+- **Report PEPL Statutory Data Readiness** (HR Manager / System Manager): per Employee the PF / ESIC / PAN / Aadhaar
+  details on file and what is still missing (UAN / PF number when PF applies, ESIC IP when ESIC applies, PAN, Aadhaar,
+  father's / husband's name, date of birth, bank account, IFSC); filters Status, Only Missing.
+- Payroll and the statutory returns (ECR, ESIC contribution) stay out of scope.
+- Check 82 (`docs/checks/check_82_c4_h5_statutory.py`, rolls back by itself); 11 tests (test_c4_h5_statutory.py).
+
 ## 0.81.2 — Fix to C4-H1 idle logout: site time, e-mail addresses; tests read the Sessions table (CI #95)
 
 - **Idle time from Frappe's last-updated time** (used when pepl_os has no request time for a session, e.g. sessions

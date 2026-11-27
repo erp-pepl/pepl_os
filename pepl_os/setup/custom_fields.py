@@ -1119,6 +1119,83 @@ CUSTOM_FIELDS["Employee"] = [
 	},
 ]
 
+# C4-H5 - statutory register data (PF / ESIC / Aadhaar), permission level 6 (HR Manager + System Manager only)
+CUSTOM_FIELDS["Employee"] += _chain(
+	[
+		{
+			"fieldname": "custom_statutory_section",
+			"label": "Statutory (PF / ESIC / Aadhaar)",
+			"fieldtype": "Section Break",
+			"permlevel": 6,
+			"description": "Seen and changed only by HR Manager and System Manager. Payroll-ready data; no returns.",
+		},
+		{"fieldname": "custom_pf_applicable", "label": "PF Applicable", "fieldtype": "Check", "permlevel": 6},
+		{
+			"fieldname": "custom_uan",
+			"label": "UAN",
+			"fieldtype": "Data",
+			"permlevel": 6,
+			"description": "Universal Account Number, 12 digits.",
+		},
+		{
+			"fieldname": "custom_pf_joining_date",
+			"label": "PF Joining Date",
+			"fieldtype": "Date",
+			"permlevel": 6,
+		},
+		{
+			"fieldname": "custom_eps_applicable",
+			"label": "EPS (Pension) Applicable",
+			"fieldtype": "Check",
+			"permlevel": 6,
+		},
+		{"fieldname": "custom_statutory_cb1", "fieldtype": "Column Break", "permlevel": 6},
+		{
+			"fieldname": "custom_esic_applicable",
+			"label": "ESIC Applicable",
+			"fieldtype": "Check",
+			"permlevel": 6,
+		},
+		{
+			"fieldname": "custom_esic_ip_number",
+			"label": "ESIC IP Number",
+			"fieldtype": "Data",
+			"permlevel": 6,
+			"description": "Insurance Person number, 10 digits.",
+		},
+		{
+			"fieldname": "custom_esic_dispensary",
+			"label": "ESIC Dispensary",
+			"fieldtype": "Data",
+			"permlevel": 6,
+		},
+		{"fieldname": "custom_statutory_cb2", "fieldtype": "Column Break", "permlevel": 6},
+		{
+			"fieldname": "custom_aadhaar",
+			"label": "Aadhaar Number",
+			"fieldtype": "Password",
+			"permlevel": 6,
+			"description": "Number only, no copies (PEPL). Kept encrypted; checked (12 digits, check digit). The full "
+			"number: button PEPL -> Show Aadhaar (recorded).",
+		},
+		{
+			"fieldname": "custom_aadhaar_masked",
+			"label": "Aadhaar (Masked)",
+			"fieldtype": "Data",
+			"read_only": 1,
+			"permlevel": 6,
+		},
+		{
+			"fieldname": "custom_father_or_husband_name",
+			"label": "Father's / Husband's Name",
+			"fieldtype": "Data",
+			"permlevel": 6,
+			"description": "As in the statutory registers (PF / ESIC / Factories Act).",
+		},
+	],
+	after="provident_fund_account",  # Frappe HR's PF field, Salary tab
+)
+
 CUSTOM_FIELDS[SYSTEM_PARAMETERS] += PEOPLE_FIELDS
 
 # C3b-Q1 - QC Inspection (ERPNext Quality Inspection): made with the receipt; its supplier.
