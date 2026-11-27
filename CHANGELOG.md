@@ -2,6 +2,12 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.81.1 — Fix to C4-H1 test: the People Register test login had no desk role (CI #94)
+
+- test_people_register made a login without roles; Frappe saves such a login as a Website User, and the People Register
+  rightly lists only desk logins without an Employee, so the test's "login without an Employee" row was missing. The
+  test login now has a desk role (Sales User). No change to the app.
+
 ## 0.81.0 — Cycle 4 H1: people and logins (C4-H1)
 
 - **Person Type on every Employee** (read only, from User ID): **Login User** – works in ERPNext under his own login

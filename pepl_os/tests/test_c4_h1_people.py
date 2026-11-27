@@ -120,7 +120,9 @@ class TestPeople(PEPLTestCase):
 		user = make_user("c4.h1.register@example.com")
 		emp = make_employee("C4H1 Register", user_id=user)
 		make_operator("C4H1-91")
-		lonely = make_user("c4.h1.nobody@example.com")
+		# a login with a desk role: Frappe makes a login without any desk role a Website User (CI #94), and the register
+		# lists only desk (System User) logins
+		lonely = make_user("c4.h1.nobody@example.com", ["Sales User"])
 		rows = people.register_rows()
 		mine = next(r for r in rows if r.get("employee") == emp.name)
 		self.assertEqual(mine["person_type"], people.LOGIN_USER)
