@@ -2,6 +2,18 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.81.2 — Fix to C4-H1 idle logout: site time, e-mail addresses; tests read the Sessions table (CI #95)
+
+- **Idle time from Frappe's last-updated time** (used when pepl_os has no request time for a session, e.g. sessions
+  older than 0.81.0): Sessions.lastupdate is the site's local time (India) without a time zone, but was compared with
+  epoch seconds as if it were UTC – 5 h 30 min off on a server running on UTC (CI, Frappe Cloud). Now compared with
+  the site's own local time.
+- **E-mails go to e-mail addresses only:** the user id "Administrator" was handed to the mail server and refused
+  (SMTPRecipientsRefused in the bench Error Log, 27 Nov 2026). Administrator / Guest and logins without a valid e-mail
+  get no mail; the System Managers still do.
+- Tests: Sessions is a table, not a DocType – frappe.db.exists() cannot read it; the tests count the rows instead.
+  Regression tests for both fixes (test_c4_h1_people.py, now 18 tests).
+
 ## 0.81.1 — Fix to C4-H1 test: the People Register test login had no desk role (CI #94)
 
 - test_people_register made a login without roles; Frappe saves such a login as a Website User, and the People Register

@@ -34,6 +34,11 @@ def delete_without_commit(sid_hash=None, user=None, reason=None):
 	frappe.db.delete("Sessions", {"sid": sid_hash})
 
 
+def session_exists(sid):
+	# Sessions is a table, not a DocType: frappe.db.exists() cannot read it (CI #95)
+	return bool(frappe.db.sql("select count(*) from `tabSessions` where sid = %s", sid)[0][0])
+
+
 def add_session(user, sid, lastupdate):
 	frappe.db.sql(
 		"insert into `tabSessions` (user, sid, sessiondata, lastupdate, status) values (%s, %s, '{}', %s, 'Active')",
@@ -144,10 +149,13 @@ class TestIdleLogout(PEPLTestCase):
 	def test_idle_seconds(self):
 		now = time.time()
 		self.assertEqual(idle_logout.idle_seconds(now - 100, None, now), 100)
-		# only Frappe's last-updated time: 10 minutes added, never early
+		# only Frappe's last-updated time (the site's local time; the server may run on UTC - CI #95):
+		# 10 minutes added, never early
 		lastupdate = frappe.utils.add_to_date(frappe.utils.now_datetime(), hours=-4)
 		idle = idle_logout.idle_seconds(None, lastupdate, now)
 		self.assertAlmostEqual(idle, 4 * 3600 - 600, delta=5)
+		recent = frappe.utils.add_to_date(frappe.utils.now_datetime(), minutes=-5)
+		self.assertLess(idle_logout.idle_seconds(None, recent), 0)
 
 	def test_settings(self):
 		self.assertEqual(idle_logout.limit_seconds(), 3 * 3600)
@@ -171,8 +179,8 @@ class TestIdleLogout(PEPLTestCase):
 			ended = idle_logout.run_idle_logout()
 		self.assertIn(user, ended)
 		self.assertNotIn(busy, ended)
-		self.assertFalse(frappe.db.exists("Sessions", {"sid": "c4h1-idle-sid"}))
-		self.assertTrue(frappe.db.exists("Sessions", {"sid": "c4h1-busy-sid"}))
+		self.assertFalse(session_exists("c4h1-idle-sid"))
+		self.assertTrue(session_exists("c4h1-busy-sid"))
 		told.assert_called_once()
 
 	def test_kiosk_tablet_exempt(self):
@@ -184,7 +192,7 @@ class TestIdleLogout(PEPLTestCase):
 			patch.object(idle_logout, "delete_session", side_effect=delete_without_commit),
 		):
 			self.assertNotIn(tablet, idle_logout.run_idle_logout())
-		self.assertTrue(frappe.db.exists("Sessions", {"sid": "c4h1-kiosk-sid"}))
+		self.assertTrue(session_exists("c4h1-kiosk-sid"))
 
 	def test_request_after_the_idle_time_is_refused(self):
 		user = make_user("c4.h1.back@example.com")
@@ -201,7 +209,7 @@ class TestIdleLogout(PEPLTestCase):
 			with self.assertRaises(frappe.SessionExpired):
 				idle_logout.before_request()
 		told.assert_called_once()
-		self.assertFalse(frappe.db.exists("Sessions", {"sid": hash_sid(sid)}))
+		self.assertFalse(session_exists(hash_sid(sid)))
 
 	def test_request_in_time_is_recorded(self):
 		user = make_user("c4.h1.ontime@example.com")
@@ -225,3 +233,13 @@ class TestIdleLogout(PEPLTestCase):
 
 		self.assertEqual(len(hr_setup.validate_params(frappe._dict({"custom_idle_logout_hours": 30}))), 1)
 		self.assertEqual(hr_setup.validate_params(frappe._dict({"custom_idle_logout_hours": 3})), [])
+
+	def test_no_mail_to_administrator(self):
+		# bench 27 Nov 2026: "Administrator" was handed to the mail server as an address (SMTPRecipientsRefused)
+		manager = make_user("c4.h1.sm2@example.com", ["System Manager"])
+		with patch("frappe.sendmail") as sent:
+			idle_logout.notify("Administrator", 3 * 3600 + 1)
+		recipients = [r for c in sent.call_args_list for r in c.kwargs["recipients"]]
+		self.assertNotIn("Administrator", recipients)
+		self.assertIn(manager, recipients)
+		self.assertIsNone(idle_logout.email_of("Administrator"))

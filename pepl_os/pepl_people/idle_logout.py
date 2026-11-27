@@ -21,7 +21,7 @@ import time
 import frappe
 from frappe import _
 from frappe.sessions import delete_session, hash_sid
-from frappe.utils import flt, get_datetime, now_datetime
+from frappe.utils import flt, get_datetime, now_datetime, time_diff_in_seconds, validate_email_address
 
 from pepl_os.common import params
 
@@ -61,13 +61,17 @@ def mark_seen(sid_hash, when=None):
 
 
 def idle_seconds(last_seen, db_lastupdate, now=None):
-	"""Seconds since the last activity. last_seen: epoch seconds of the last request (pepl_os); db_lastupdate:
-	Frappe's Sessions.lastupdate (written at most every 10 minutes, so 10 minutes are added to it)."""
-	now = now or time.time()
+	"""Seconds since the last activity.
+
+	last_seen: epoch seconds of the last request (recorded by pepl_os, compared with epoch seconds now).
+	db_lastupdate: Frappe's Sessions.lastupdate - the site's local time (e.g. India) without a time zone, written at
+	most every 10 minutes. It is compared with the site's own local time now (never with epoch seconds: the server may
+	run on UTC - CI #95), and 10 minutes are added so a session is never ended early.
+	"""
 	if last_seen:
-		return now - last_seen
+		return (now or time.time()) - last_seen
 	if db_lastupdate:
-		return now - (get_datetime(db_lastupdate).timestamp() + FRAPPE_DB_LAG)
+		return time_diff_in_seconds(now_datetime(), get_datetime(db_lastupdate)) - FRAPPE_DB_LAG
 	return 0
 
 
@@ -78,7 +82,9 @@ def hours_text():
 
 def end_session(user, sid_hash, idle):
 	"""Log the session out and tell the person and the System Managers."""
-	delete_session(sid_hash=sid_hash, user=user, reason=_("PEPL: no activity for {0} hours").format(hours_text()))
+	delete_session(
+		sid_hash=sid_hash, user=user, reason=_("PEPL: no activity for {0} hours").format(hours_text())
+	)
 	frappe.cache.hdel(SEEN_KEY, sid_hash)
 	notify(user, idle)
 
@@ -100,22 +106,33 @@ def system_managers():
 	)
 
 
+def email_of(user):
+	"""The login's e-mail address, or None (Administrator / Guest, or no valid address). CI #95 / bench 27 Nov 2026:
+	the user id "Administrator" was given to the mail server as an address and refused (SMTPRecipientsRefused)."""
+	if user in ("Administrator", "Guest", None, ""):
+		return None
+	email = frappe.db.get_value("User", user, "email")
+	return email if email and validate_email_address(email) else None
+
+
 def notify(user, idle):
 	"""E-mail to the person and to every System Manager (PEPL: every time). Never raises."""
 	when = now_datetime().strftime("%d-%m-%Y %H:%M")
 	minutes = int(idle // 60)
 	name = frappe.db.get_value("User", user, "full_name") or user
 	try:
-		frappe.sendmail(
-			recipients=[user],
-			subject=_("You were logged out of ERPNext (no activity for {0} hours)").format(hours_text()),
-			message=_(
-				"Dear {0},<br><br>Your ERPNext login was not used for {1} minutes, so it was logged out at {2} "
-				"(PEPL rule: logout after {3} hours without activity). Please log in again when you need it."
-			).format(name, minutes, when, hours_text()),
-			now=False,
-		)
-		managers = [u for u in system_managers() if u != user]
+		own = email_of(user)
+		if own:
+			frappe.sendmail(
+				recipients=[own],
+				subject=_("You were logged out of ERPNext (no activity for {0} hours)").format(hours_text()),
+				message=_(
+					"Dear {0},<br><br>Your ERPNext login was not used for {1} minutes, so it was logged out at {2} "
+					"(PEPL rule: logout after {3} hours without activity). Please log in again when you need it."
+				).format(name, minutes, when, hours_text()),
+				now=False,
+			)
+		managers = [e for e in (email_of(u) for u in system_managers() if u != user) if e]
 		if managers and params.is_enabled(NOTIFY_FIELD, 1):
 			frappe.sendmail(
 				recipients=managers,
@@ -149,7 +166,9 @@ def before_request():
 	except Exception:
 		frappe.log_error(title="PEPL: idle check failed (request let through)")
 		return
-	raise frappe.SessionExpired(_("Logged out after {0} hours without activity. Please log in again.").format(hours_text()))
+	raise frappe.SessionExpired(
+		_("Logged out after {0} hours without activity. Please log in again.").format(hours_text())
+	)
 
 
 # ---------------- 2. every minute ----------------
@@ -198,6 +217,8 @@ def idle_status():
 		"system_managers": system_managers(),
 		"sessions": sessions,
 		"scheduled": bool(
-			frappe.db.exists("Scheduled Job Type", {"method": "pepl_os.pepl_people.idle_logout.run_idle_logout"})
+			frappe.db.exists(
+				"Scheduled Job Type", {"method": "pepl_os.pepl_people.idle_logout.run_idle_logout"}
+			)
 		),
 	}
