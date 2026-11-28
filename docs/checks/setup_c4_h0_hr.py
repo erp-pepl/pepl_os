@@ -1,4 +1,4 @@
-# PEPL OS v0.80.0 - Cycle 4 H0 set-up: Frappe HR for PEPL (PEPL's decisions of 25 / 26 Nov 2026).
+# PEPL OS v0.83.0 - Cycle 4 set-up rev 2 (H0 + H3): Frappe HR for PEPL (PEPL's decisions of 25 / 26 Nov 2026).
 # System Console, Type = Python, logged in as Administrator.
 # Run it FIRST with Commit UNTICKED (a preview: it prints what it would do and saves nothing), then again with
 # Commit TICKED (it saves). Check after the ticked run that the record shows "commit": 1. Safe to run again.
@@ -10,6 +10,9 @@
 #  5. Shift Types: one per active PEPL Shift, PEPL's rules from System Parameters -> People (late > 15 min, half day
 #     < 4.5 h, absent < 4 h). Auto attendance OFF (attendance stays in Attendo for now).
 #  6. Role Profiles: PEPL HR Manager -> Abhijay; PEPL HR Assistant -> Biswanath (hr@). A missing login is reported.
+#  Rev 2 (0.83.0): 2. also the Holiday List Assignment of every company (Frappe HR v16 reads holidays from it);
+#  7. leave approvers: Abhijay approves everyone's leave, Aviral approves Abhijay's (System Parameters -> People, and
+#     every Employee without an approver).
 HOLIDAY_LIST = "PEPL Holidays 2026-2027"
 FROM_DATE = "2026-01-01"
 TO_DATE = "2027-12-31"
@@ -29,6 +32,8 @@ HOLIDAYS = [
 YEARS = [2026, 2027]
 HR_MANAGERS = ["abhijay@parasramkagroup.com"]
 HR_ASSISTANTS = ["hr@parasramkagroup.com"]
+LEAVE_APPROVER = "abhijay@parasramkagroup.com"
+HR_HEAD_LEAVE_APPROVER = "aviral@parasramkagroup.com"
 
 
 def version_parts(value):
@@ -44,8 +49,8 @@ if "hrms" not in apps:
     problems.append("Frappe HR (hrms) is not installed on this site")
 if version_parts(apps.get("frappe")) < [16, 60, 0]:
     problems.append("Frappe must be 16.60 or newer for Frappe HR (now " + str(apps.get("frappe")) + ")")
-if version_parts(apps.get("pepl_os")) < [0, 80, 0]:
-    problems.append("pepl_os must be 0.80.0 or newer (now " + str(apps.get("pepl_os")) + ")")
+if version_parts(apps.get("pepl_os")) < [0, 83, 0]:
+    problems.append("pepl_os must be 0.83.0 or newer (now " + str(apps.get("pepl_os")) + ")")
 if problems:
     for p in problems:
         print("STOP  " + p)
@@ -60,8 +65,10 @@ else:
         years=YEARS,
         hr_managers=HR_MANAGERS,
         hr_assistants=HR_ASSISTANTS,
+        leave_approver=LEAVE_APPROVER,
+        hr_head_leave_approver=HR_HEAD_LEAVE_APPROVER,
     )
     for line in lines:
         print(line)
     print("")
-    print("DONE - saved only if Commit was ticked (the record must show \"commit\": 1). Then run Check 80.")
+    print("DONE - saved only if Commit was ticked (the record must show \"commit\": 1). Then run Check 80 and Check 83.")

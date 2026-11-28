@@ -1099,6 +1099,64 @@ PEOPLE_FIELDS = _chain(
 			"description": "One role per line. A login holding one of these is a device (tablet), never a person's "
 			"login on an Employee.",
 		},
+		# C4-H3 - Earned Leave and leave approval (PEPL, 25 / 26 Nov 2026)
+		{
+			"fieldname": "custom_leave_section",
+			"label": "Leave",
+			"fieldtype": "Section Break",
+			"description": "Earned Leave: 1 day per N days worked (Present / Work From Home = 1, Half Day = 0.5), "
+			"counted for closed months; Sundays / holidays inside a leave count as leave (sandwich).",
+		},
+		{
+			"fieldname": "custom_el_days_worked_per_leave",
+			"label": "Days Worked per Earned Leave",
+			"fieldtype": "Float",
+			"default": "20",
+		},
+		{
+			"fieldname": "custom_el_counted_from",
+			"label": "Earned Leave Counted From",
+			"fieldtype": "Date",
+			"description": "The first day whose attendance in ERPNext earns leave (go-live). Empty = not counting yet. "
+			"An Employee's EL Opening Balance As On date takes precedence when later.",
+		},
+		{
+			"fieldname": "custom_attendance_lock_day",
+			"label": "Attendance Lock Day",
+			"fieldtype": "Int",
+			"default": "7",
+			"description": "A month closes on this day of the next month (PEPL: 7th). Earned Leave counts closed months; "
+			"later changes to a closed month need a reason (H2). 1 - 28.",
+		},
+		{
+			"fieldname": "custom_leave_types_used",
+			"label": "Leave Types Used at PEPL",
+			"fieldtype": "Small Text",
+			"default": "Earned Leave\nLeave Without Pay",
+			"description": "One per line. Other leave types are refused in Leave Applications.",
+		},
+		{
+			"fieldname": "custom_sandwich_across_applications",
+			"label": "Sandwich Across Two Applications",
+			"fieldtype": "Check",
+			"default": "1",
+			"description": "Leave on both sides of Sundays / holidays in two separate applications: the holidays count as "
+			"leave too (PEPL). The later application is stretched over them.",
+		},
+		{
+			"fieldname": "custom_default_leave_approver",
+			"label": "Default Leave Approver",
+			"fieldtype": "Link",
+			"options": "User",
+			"description": "Approves everyone's leave (PEPL: the HR head, Abhijay Mehta).",
+		},
+		{
+			"fieldname": "custom_hr_head_leave_approver",
+			"label": "Leave Approver of the HR Head",
+			"fieldtype": "Link",
+			"options": "User",
+			"description": "Approves the Default Leave Approver's own leave (PEPL: Aviral Parasramka).",
+		},
 	],
 	after="custom_cancellation_summary_to",  # after the whole Access tab
 )
@@ -1194,6 +1252,25 @@ CUSTOM_FIELDS["Employee"] += _chain(
 		},
 	],
 	after="provident_fund_account",  # Frappe HR's PF field, Salary tab
+)
+
+# C4-H3 - Earned Leave opening balance (PEPL sends the balances later)
+CUSTOM_FIELDS["Employee"] += _chain(
+	[
+		{
+			"fieldname": "custom_el_opening_balance",
+			"label": "EL Opening Balance",
+			"fieldtype": "Float",
+			"description": "Earned Leave balance brought in from before ERPNext (PEPL's register).",
+		},
+		{
+			"fieldname": "custom_el_opening_as_on",
+			"label": "EL Opening Balance As On",
+			"fieldtype": "Date",
+			"description": "The date of that balance. Days worked after it earn leave in ERPNext.",
+		},
+	],
+	after="leave_approver",  # Frappe HR's approver, Attendance & Leaves section
 )
 
 CUSTOM_FIELDS[SYSTEM_PARAMETERS] += PEOPLE_FIELDS

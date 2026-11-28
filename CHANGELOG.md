@@ -2,6 +2,31 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.83.0 — Cycle 4 H3: Earned Leave the PEPL way (C4-H3)
+
+- **Earned Leave = 1 day per 20 days worked** (System Parameters → People → Leave: Days Worked per Earned Leave 20),
+  from the first day; Present / Work From Home = 1 day, Half Day = 0.5. Counted only for **closed months** (Attendance
+  Lock Day 7: after the 7th of the next month). A daily job keeps each Active Employee's Earned Leave allocation of the
+  year equal to opening balance (dated in that year) + leave earned in that year; the part of 20 days not yet earned
+  carries on to the next month and year. After December closes (8 January) the new year's allocation is made with the
+  balance carried forward. HR / System Manager can run it at once (`pepl_people.leave.run_el_accrual_now`).
+- **Earned Leave Counted From** (go-live date, empty until PEPL sets it) and per Employee **EL Opening Balance / EL
+  Opening Balance As On** (Attendance & Leaves section; PEPL sends the balances later).
+- **Only Earned Leave and Leave Without Pay** are applied for ("Leave Types Used at PEPL"); Earned Leave beyond the
+  balance is refused (allow_negative off), HR enters the extra days as Leave Without Pay.
+- **Sandwich across two applications** (PEPL): leave on both sides of Sundays / holidays in separate applications –
+  the later application is stretched over the holidays (Frappe HR then counts them, "Include holidays") and its reason
+  says so. Inside one application Frappe HR's own rule already counts them.
+- **Approver:** every Employee gets the **Default Leave Approver** (Abhijay); the approver's own leave goes to the
+  **Leave Approver of the HR Head** (Aviral). **Only the leave approver (or a System Manager) approves or rejects** – the
+  HR Assistant cannot.
+- **Fix to H0: Holiday List Assignment.** Frappe HR v16 reads holidays from a submitted Holiday List Assignment, not
+  the company's default list (found 28 Nov 2026; leave and attendance would stop with "No Holiday List was found").
+  The set-up now assigns "PEPL Holidays 2026-2027" to every company from 1 Jan 2026.
+- Set-up rev 2 (`docs/checks/setup_c4_h0_hr.py`, needs 0.83.0): adds the assignments and the two approvers (and gives
+  every Employee without one its approver). Check 83 (`docs/checks/check_83_c4_h3_leave.py`, rolls back by itself);
+  14 tests (test_c4_h3_leave.py).
+
 ## 0.82.0 — Cycle 4 H5: statutory data – PF / ESIC / PAN / Aadhaar / bank, protected (C4-H5)
 
 - **Employee, Salary tab, section "Statutory (PF / ESIC / Aadhaar)":** PF Applicable, **UAN** (12 digits, unique),

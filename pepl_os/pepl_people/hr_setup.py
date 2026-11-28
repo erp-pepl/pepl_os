@@ -80,6 +80,12 @@ def validate_params(doc):
 		errors.append(
 			_("Absent Below (Hours) {0} cannot be more than Half Day Below (Hours) {1}.").format(absent, half)
 		)
+	lock = doc.get("custom_attendance_lock_day")
+	if lock not in (None, "") and not 1 <= cint(lock) <= 28:
+		errors.append(_("Attendance Lock Day must be between 1 and 28."))
+	per = doc.get("custom_el_days_worked_per_leave")
+	if per not in (None, "") and flt(per) <= 0:
+		errors.append(_("Days Worked per Earned Leave must be more than 0."))
 	idle = doc.get("custom_idle_logout_hours")
 	if idle not in (None, "") and not 0 <= flt(idle) <= 24:
 		errors.append(_("Idle Logout (Hours) must be between 0 and 24 (0 = off)."))
@@ -167,6 +173,54 @@ def set_company_holiday_lists(name):
 		elif co.default_holiday_list != name:
 			result[co.name] = "kept " + co.default_holiday_list
 	return result
+
+
+def ensure_holiday_list_assignments(name, from_date):
+	"""Frappe HR v16 reads holidays from a submitted Holiday List Assignment (not the company default): one per company
+	for PEPL's list from `from_date` (C4-H3; found 28 Nov 2026). Returns {company: "assigned" | "had it"}."""
+	result = {}
+	if not frappe.db.exists("DocType", "Holiday List Assignment"):
+		return result
+	for company in frappe.get_all("Company", pluck="name"):
+		if frappe.db.exists(
+			"Holiday List Assignment",
+			{
+				"assigned_to": company,
+				"holiday_list": name,
+				"docstatus": 1,
+				"from_date": ["<=", getdate(from_date)],
+			},
+		):
+			result[company] = "had it"
+			continue
+		doc = frappe.get_doc(
+			{
+				"doctype": "Holiday List Assignment",
+				"applicable_for": "Company",
+				"assigned_to": company,
+				"holiday_list": name,
+				"from_date": getdate(from_date),
+			}
+		)
+		doc.flags.ignore_permissions = True
+		doc.insert()
+		doc.submit()
+		result[company] = "assigned"
+	return result
+
+
+def holiday_list_assignments(name):
+	"""{company: from_date} of submitted assignments of this list (for the Checks)."""
+	if not frappe.db.exists("DocType", "Holiday List Assignment"):
+		return {}
+	return {
+		r.assigned_to: str(r.from_date)
+		for r in frappe.get_all(
+			"Holiday List Assignment",
+			filters={"holiday_list": name, "docstatus": 1, "applicable_for": "Company"},
+			fields=["assigned_to", "from_date"],
+		)
+	}
 
 
 # ---------------- 3. Leave Types ----------------
@@ -311,8 +365,18 @@ def add_profile(user, profile):
 
 # ---------------- the set-up ----------------
 @frappe.whitelist()
-def apply_hr_setup(holiday_list, from_date, to_date, holidays, years, hr_managers=None, hr_assistants=None):
-	"""Run 1-6. System Manager only. Returns the lines to print. Commit is the caller's (System Console)."""
+def apply_hr_setup(
+	holiday_list,
+	from_date,
+	to_date,
+	holidays,
+	years,
+	hr_managers=None,
+	hr_assistants=None,
+	leave_approver=None,
+	hr_head_leave_approver=None,
+):
+	"""Run 1-7. System Manager only. Returns the lines to print. Commit is the caller's (System Console)."""
 	frappe.only_for("System Manager")
 	holidays = frappe.parse_json(holidays) if isinstance(holidays, str) else holidays
 	years = frappe.parse_json(years) if isinstance(years, str) else years
@@ -336,6 +400,8 @@ def apply_hr_setup(holiday_list, from_date, to_date, holidays, years, hr_manager
 	)
 	for company, state in set_company_holiday_lists(holiday_list).items():
 		lines.append(f"2. Company {company}: default holiday list {state}")
+	for company, state in ensure_holiday_list_assignments(holiday_list, from_date).items():
+		lines.append(f"2. Company {company}: Holiday List Assignment (Frappe HR) {state}")
 	lt = ensure_leave_types()
 	lines.append(
 		"3. Leave Types: " + ("; ".join(f"{k}: {', '.join(v)}" for k, v in lt.items()) or "already right")
@@ -353,6 +419,24 @@ def apply_hr_setup(holiday_list, from_date, to_date, holidays, years, hr_manager
 		lines.append(f"6. {user}: {HR_MANAGER_PROFILE} {add_profile(user, HR_MANAGER_PROFILE)}")
 	for user in hr_assistants:
 		lines.append(f"6. {user}: {HR_ASSISTANT_PROFILE} {add_profile(user, HR_ASSISTANT_PROFILE)}")
+	# 7. C4-H3: leave approvers (System Parameters -> People) and every Employee's approver
+	from pepl_os.pepl_people import leave
+
+	for field, user in (
+		(leave.DEFAULT_APPROVER_FIELD, leave_approver),
+		(leave.HEAD_APPROVER_FIELD, hr_head_leave_approver),
+	):
+		if not user:
+			continue
+		if not frappe.db.exists("User", user):
+			lines.append(f"7. {user}: no such login - approver not set")
+			continue
+		if params.get(field) != user:
+			frappe.db.set_single_value(params.SYSTEM_PARAMETERS, field, user)
+			lines.append(f"7. {field} = {user}")
+	if leave_approver or hr_head_leave_approver:
+		changed = leave.apply_leave_approvers()
+		lines.append(f"7. Employees given their leave approver: {len(changed)}")
 	return lines
 
 
@@ -369,6 +453,7 @@ def hr_setup_status(holiday_list, years):
 			c.name: c.default_holiday_list
 			for c in frappe.get_all("Company", fields=["name", "default_holiday_list"])
 		},
+		"assignments": holiday_list_assignments(holiday_list),
 		"leave_types": {},
 		"leave_periods": {},
 		"shift_types": {},

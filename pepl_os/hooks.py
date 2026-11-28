@@ -168,11 +168,19 @@ doc_events = {
 			"pepl_os.pepl_people.people.validate_employee",
 			# C4-H5: UAN / ESIC IP / PAN formats and uniqueness, Aadhaar check digit and mask
 			"pepl_os.pepl_people.statutory.validate_employee",
+			# C4-H3: the PEPL leave approver (Abhijay; for Abhijay himself, Aviral)
+			"pepl_os.pepl_people.leave.set_leave_approver",
 		],
 		"on_update": [
 			"pepl_os.pepl_production.hr_lite.on_employee_update",
 			"pepl_os.pepl_people.people.on_employee_update",
 		],
+	},
+	# C4-H3: sandwich across two applications; only PEPL's leave types; only the leave approver decides
+	"Leave Application": {
+		"before_validate": "pepl_os.pepl_people.leave.before_validate_application",
+		"validate": "pepl_os.pepl_people.leave.validate_application",
+		"before_submit": "pepl_os.pepl_people.leave.before_submit_application",
 	},
 	"PEPL System Parameters": {
 		# C2-02: no negative days, percentages 0-100, class A + B below 100.
@@ -347,6 +355,8 @@ scheduler_events = {
 		f"{TENDER_ACCESS}.daily_sync",
 		# CR3 Decision 4: records cancelled yesterday (Daily) or last week (Weekly, on Mondays), e-mailed to the MD
 		"pepl_os.pepl_governance.access_plan.daily_cancellation_summary",
+		# C4-H3: Earned Leave = 1 per 20 days worked, for closed months (after the 7th)
+		"pepl_os.pepl_people.leave.daily_el_accrual",
 	],
 	"cron": {
 		# C3a-X4: every Monday 02:30, last week's MTBF / MTTR / CPC for every machine
