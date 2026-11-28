@@ -2,6 +2,14 @@
 
 Entries for the Master System Document. Newest first.
 
+## 0.83.1 — Fix to C4-H3: a leave application without an approver takes the Employee's (Check 83)
+
+- Frappe HR fills a Leave Application's approver only in the form (browser). An application made any other way –
+  System Console (Check 83 on the bench, 28 Nov 2026), data import, API – came without one and Frappe HR refused it
+  ("Leave Approver is mandatory"). Before validation the application now takes the Employee's Leave Approver, or the
+  PEPL default (Default Leave Approver; the HR head's own leave: Leave Approver of the HR Head).
+- Regression test (test_c4_h3_leave.py, now 15 tests). Check 83 unchanged – run it again on 0.83.1.
+
 ## 0.83.0 — Cycle 4 H3: Earned Leave the PEPL way (C4-H3)
 
 - **Earned Leave = 1 day per 20 days worked** (System Parameters → People → Leave: Days Worked per Earned Leave 20),

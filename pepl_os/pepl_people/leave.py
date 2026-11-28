@@ -339,8 +339,25 @@ def stretch_for_sandwich(doc):
 	return notes
 
 
+def fill_leave_approver(doc):
+	"""The Employee's leave approver (else the PEPL default) when the application has none. Frappe HR fills it only
+	in the form (browser); an application made any other way - System Console, import, API - came without one and was
+	refused "Leave Approver is mandatory" (Check 83, 28 Nov 2026)."""
+	if not doc.meta.has_field("leave_approver") or doc.get("leave_approver") or not doc.get("employee"):
+		return None
+	emp = (
+		frappe.db.get_value("Employee", doc.employee, ["leave_approver", "user_id"], as_dict=True)
+		or frappe._dict()
+	)
+	approver = emp.get("leave_approver") or default_approver_for(emp)
+	if approver:
+		doc.leave_approver = approver
+	return approver
+
+
 def before_validate_application(doc, method=None):
 	"""doc_events: Leave Application before_validate."""
+	fill_leave_approver(doc)
 	stretch_for_sandwich(doc)
 
 

@@ -91,6 +91,18 @@ class TestApproverAndTypes(LeaveCase):
 		hr_head = make_employee("C4H3 Head", user_id=self.approver)
 		self.assertEqual(hr_head.leave_approver, head)  # nobody approves his own leave
 
+	def test_approver_filled_when_the_application_has_none(self):
+		# Check 83, 28 Nov 2026: an application made outside the form came without an approver and was refused
+		emp = make_employee("C4H3 NoApprover", leave_approver=self.approver)
+		allocate(emp, 2027, 5)
+		app = application(emp, "2027-02-03", "2027-02-03", None)
+		self.assertEqual(app.leave_approver, self.approver)
+		set_param(leave.DEFAULT_APPROVER_FIELD, self.approver)
+		emp2 = make_employee("C4H3 NoApprover2")
+		frappe.db.set_value("Employee", emp2.name, "leave_approver", None)
+		allocate(emp2, 2027, 5)
+		self.assertEqual(application(emp2, "2027-02-04", "2027-02-04", None).leave_approver, self.approver)
+
 	def test_only_pepl_leave_types(self):
 		emp = make_employee("C4H3 Types", leave_approver=self.approver)
 		allocate(emp, 2027, 5)
